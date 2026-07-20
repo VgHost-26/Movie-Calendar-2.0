@@ -41,7 +41,7 @@ const buttonVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  }
+  },
 )
 
 function Button({
@@ -85,4 +85,4 @@ function LinkButton({
   )
 }
 
-export { Button, LinkButton }
+export { Button, LinkButton, buttonVariants }
