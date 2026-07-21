@@ -8,6 +8,7 @@ export const PLATFORMS = [
   'Peacock',
   'Paramount+',
   'YouTube',
+  'Cinema'
 ] as const
 
 export const WEEKDAYS = [

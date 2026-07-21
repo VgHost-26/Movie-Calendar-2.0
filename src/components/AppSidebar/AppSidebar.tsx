@@ -26,7 +26,7 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarMenu>
           {PAGES.map((page) => (
-            <SidebarMenuItem>
+            <SidebarMenuItem key={page.title}>
               <SidebarMenuButton onPress={() => navigate(page.link)}>
                 <NavIcon name={page.icon} />
                 {page.title}
