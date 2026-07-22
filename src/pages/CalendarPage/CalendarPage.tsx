@@ -4,8 +4,7 @@ import { Card } from '@/components/ui/card'
 import { WEEKDAYS } from '@/global/globals'
 import type { Movie } from '@/Types/types'
 import { getCalendarGrid } from '@/utils/dateDunctions'
-import { format } from 'date-fns/fp/format'
-import { addMonths, isEqual, subMonths } from 'date-fns'
+import { addMonths, subMonths, format, isSameMonth } from 'date-fns'
 import { ChevronLeftIcon, ChevronRightIcon, TimerResetIcon } from 'lucide-react'
 import { useState } from 'react'
 
@@ -18,8 +17,8 @@ const MOCKED_MOVIES: Movie[] = [
   },
 ]
 
+const currentDate = new Date()
 const CalendarPage = () => {
-  const currentDate = new Date()
   const [viewingDate, setViewingDate] = useState(currentDate)
 
   const monthDays = getCalendarGrid(viewingDate)
@@ -45,14 +44,14 @@ const CalendarPage = () => {
       <div className="flex w-full items-end justify-between">
         {/* check if different font will align on the bottom */}
         <div>
-          <h5 className="text-5xl font-bold text-primary">{format('yyyy', viewingDate)}</h5>
+          <h5 className="text-5xl font-bold text-primary">{format(viewingDate, 'yyyy')}</h5>
           <h1 className="ml-[-0.05em] text-9xl font-bold uppercase">
-            {format('MMMM', viewingDate)}
+            {format(viewingDate, 'MMMM')}
           </h1>
         </div>
         <div>
           {/* not working */}
-          {isEqual(viewingDate, currentDate) ? null : (
+          {isSameMonth(viewingDate, currentDate) ? null : (
             <Button variant="secondary" onClick={() => setViewingDate(currentDate)}>
               <TimerResetIcon />
             </Button>
