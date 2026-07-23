@@ -6,6 +6,7 @@ import { PLATFORMS } from '@/global/globals'
 import DatePicker from '../ui/date-picker'
 import type { CalendarDate } from '@internationalized/date'
 import { Button } from '../ui/button'
+import { toast } from 'sonner'
 
 type Props = {
   date: CalendarDate | null
@@ -19,6 +20,7 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
     if (handleOpenChange) {
       handleOpenChange(false)
     }
+    toast.success('Movie added successfully!')
   }
   return (
     <Dialog>
