@@ -50,7 +50,7 @@
   --popover: #171717;
   --popover-foreground: #fafafa;
   --primary: #ffb4a5;
-  --primary-foreground: #ffffff;
+  --primary-foreground: var(--color-background);
   --secondary: #262626;
   --secondary-foreground: #fafafa;
   --muted: #262626;

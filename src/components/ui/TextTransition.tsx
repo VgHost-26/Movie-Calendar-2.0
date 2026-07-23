@@ -1,5 +1,6 @@
-import { type ReactNode } from 'react'
+import { useMemo, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+
 type Props = {
   direction?: 'up' | 'down'
   speed?: number
@@ -8,23 +9,26 @@ type Props = {
 
 // TODO: fix rapid changes - occur very rarely
 const TextTransition = ({ children, direction = 'up', speed = 300 }: Props) => {
-  const isUp = direction === 'up'
-  const variants = {
-    initial: {
-      y: isUp ? '100%' : '-100%',
-    },
-    animate: {
-      y: '0%',
-    },
-    exit: {
-      y: isUp ? '-100%' : '100%',
-    },
-  }
+  const variants = useMemo(() => {
+    const isUp = direction === 'up'
+    return {
+      initial: {
+        y: isUp ? '100%' : '-100%',
+      },
+      animate: {
+        y: '0%',
+      },
+      exit: {
+        y: isUp ? '-100%' : '100%',
+      },
+    }
+  }, [direction])
+
   return (
-    <div className="relative flex flex-col overflow-y-hidden">
+    <div className="relative flex flex-col overflow-hidden">
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span
-          key={children?.toString()}
+          key={`${children?.toString()}`}
           variants={variants}
           initial="initial"
           animate="animate"

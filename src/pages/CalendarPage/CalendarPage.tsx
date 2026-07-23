@@ -1,6 +1,7 @@
 import CalendarCard from '@/components/calendar/CalendarCard'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import TextTransition from '@/components/ui/TextTransition'
 import { WEEKDAYS } from '@/global/globals'
 import type { Movie } from '@/Types/types'
 import { getCalendarGrid } from '@/utils/dateDunctions'
@@ -20,6 +21,7 @@ const MOCKED_MOVIES: Movie[] = [
 const currentDate = new Date()
 const CalendarPage = () => {
   const [viewingDate, setViewingDate] = useState(currentDate)
+  const [switchDirection, setSwitchDirection] = useState<'up' | 'down'>('up')
 
   const monthDays = getCalendarGrid(viewingDate)
   const monthDaysWithMovies = monthDays.map((day) => {
@@ -42,24 +44,36 @@ const CalendarPage = () => {
   return (
     <div className="flex flex-1 flex-col items-start gap-4 p-4">
       <div className="flex w-full items-end justify-between">
-        {/* check if different font will align on the bottom */}
-        <div>
-          <h5 className="text-5xl font-bold text-primary">{format(viewingDate, 'yyyy')}</h5>
+        <div className="flex flex-1 flex-col">
+          <h5 className="text-5xl font-bold text-primary">
+            <TextTransition speed={200} direction={switchDirection}>
+              {format(viewingDate, 'yyyy')}
+            </TextTransition>
+          </h5>
           <h1 className="ml-[-0.05em] text-9xl font-bold uppercase">
-            {format(viewingDate, 'MMMM')}
+            <TextTransition direction={switchDirection}>
+              {format(viewingDate, 'MMMM')}
+            </TextTransition>
           </h1>
         </div>
         <div>
-          {/* not working */}
           {isSameMonth(viewingDate, currentDate) ? null : (
-            <Button variant="secondary" onClick={() => setViewingDate(currentDate)}>
+            <Button variant="secondary" onPress={() => setViewingDate(currentDate)}>
               <TimerResetIcon />
             </Button>
           )}
-          <Button variant="secondary" onClick={handlePreviousMonth}>
+          <Button
+            variant="secondary"
+            onMouseOver={() => setSwitchDirection('down')}
+            onPress={handlePreviousMonth}
+          >
             <ChevronLeftIcon />
           </Button>
-          <Button variant="secondary" onClick={handleNextMonth}>
+          <Button
+            variant="secondary"
+            onMouseOver={() => setSwitchDirection('up')}
+            onPress={handleNextMonth}
+          >
             <ChevronRightIcon />
           </Button>
         </div>

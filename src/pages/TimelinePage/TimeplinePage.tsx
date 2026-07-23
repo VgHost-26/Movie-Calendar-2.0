@@ -120,8 +120,8 @@ const TimelinePageContent = () => {
         />
       </ReactLenis>
       <div className="p-4">
-        <Button size={'icon'} variant={'secondary'} onPress={handleScrollToFirstMovie}>
-          <ChevronLeft />
+        <Button size={'icon'} variant={'default'} className="p-0" onPress={handleScrollToFirstMovie}>
+          <ChevronLeft className="text-primary-foreground" />
         </Button>
       </div>
     </div>
