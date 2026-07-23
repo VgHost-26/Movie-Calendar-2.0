@@ -1,10 +1,14 @@
 import { Button } from '@/components/ui/button'
-import { differenceInDays } from 'date-fns'
 import { ChevronLeft } from 'lucide-react'
-import { useCallback, useMemo, useRef } from 'react'
-import { ReactLenis, type LenisRef } from 'lenis/react'
-import TimelineMovieCard from '@/components/timeline/TimelineMovieCard'
+import { ReactLenis } from 'lenis/react'
+import { useTimeline } from '@/hooks/useTimeline'
+import { TimelineContextProvider } from '@/components/providers/TimelineContext'
+import { useMemo, useState } from 'react'
+import { differenceInDays } from 'date-fns/differenceInDays'
 import type { Movie } from '@/Types/types'
+import { format } from 'date-fns'
+import TimelineContent from '@/components/timeline/TimelineContent'
+import TextTransition from '@/components/ui/TextTransition'
 
 const MOCKED_MOVIES: Movie[] = [
   {
@@ -12,6 +16,12 @@ const MOCKED_MOVIES: Movie[] = [
     title: 'Batman',
     platform: 'HBO Max',
     poster: 'https://static.posters.cz/image/1300/133029.jpg',
+  },
+  {
+    date: '2026-06-02',
+    title: 'Batman',
+    platform: 'HBO Max',
+    poster: 'https://static.posters.cz/image/1300/133028.jpg',
   },
   {
     date: '2026-07-19',
@@ -41,75 +51,79 @@ const MOCKED_MOVIES: Movie[] = [
     date: '2026-08-29',
     title: 'Spiderman',
     platform: 'HBO Max',
-    poster: 'https://static.posters.cz/image/1300/133032.jpg',
+    poster: 'https://static.posters.cz/image/1300/133040.jpg',
   },
   {
     date: '2026-08-29',
     title: 'Spiderman',
     platform: 'HBO Max',
-    poster: 'https://static.posters.cz/image/1300/133032.jpg',
+    poster: 'https://static.posters.cz/image/1300/133040.jpg',
   },
   {
     date: '2026-08-29',
     title: 'Spiderman',
     platform: 'HBO Max',
-    poster: 'https://static.posters.cz/image/1300/133032.jpg',
+    poster: 'https://static.posters.cz/image/1300/133040.jpg',
   },
 ]
+// move to zustand
 const currentDate = new Date()
-const TimelinePage = () => {
-  const lenisRef = useRef<LenisRef>(null)
+const TimelinePage = () => (
+  <TimelineContextProvider>
+    <TimelinePageContent />
+  </TimelineContextProvider>
+)
+const TimelinePageContent = () => {
+  const { scrollToCard, activeCardIndex, registerLenisRef } = useTimeline()
+  // TODO: Create type
+  const [scrollDirection, setScrollDirection] = useState<-1 | 1 | 0>(0)
 
   const isReleased = (movieDate: string) => {
     return differenceInDays(new Date(movieDate), currentDate) < 0
   }
+
   const firstUnreleasedMovieIndex = useMemo(
     () => MOCKED_MOVIES.findIndex((m) => !isReleased(m.date)),
     [],
   )
-  const scrollTo = useCallback(
-    (target: string | number | HTMLElement, options?: object) => {
-      lenisRef.current?.lenis?.scrollTo(target, options)
-    },
-    [lenisRef],
-  )
+
   // hold first element left offset (80px)
   // treat first unreleased as first one, or last released as first one
   const handleScrollToFirstMovie = () => {
-    const selector = `[data-movie-index="${firstUnreleasedMovieIndex}"]`
-    const offset = -16
-    console.log('scrolling to first movie', selector, lenisRef)
-    scrollTo(selector, {
-      offset,
-      duration: 1.5,
-    })
+    scrollToCard(firstUnreleasedMovieIndex)
   }
+
+  const activeCardMonth = useMemo(() => {
+    const activeMovie = MOCKED_MOVIES[activeCardIndex]
+    if (!activeMovie) return 'Timeline'
+    return format(activeMovie.date, 'MMMM')
+  }, [activeCardIndex])
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
       <div className="flex flex-none items-end gap-2 p-4">
-        <h1 className="mb-[-0.025em] ml-[-0.05em] text-9xl font-bold uppercase">Timeline</h1>
-        <Button size={'icon'} variant={'secondary'} onPress={handleScrollToFirstMovie}>
-          <ChevronLeft />
-        </Button>
+        <h1 className="mb-[-0.025em] ml-[-0.05em] w-full text-9xl font-bold uppercase">
+          <TextTransition direction={scrollDirection !== 1 ? 'down' : 'up'}>
+            {activeCardMonth}
+          </TextTransition>
+        </h1>
       </div>
       <ReactLenis
         className="flex-1 overflow-hidden"
         options={{ orientation: 'horizontal', gestureOrientation: 'vertical', smoothWheel: true }}
-        ref={lenisRef}
+        ref={registerLenisRef}
       >
-        <div className="flex w-max items-center gap-20 pl-4">
-          {MOCKED_MOVIES.map((movie, i) => (
-            <TimelineMovieCard
-              key={`${movie.title}-${i}`}
-              movie={movie}
-              isReleased={isReleased}
-              firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
-              i={i}
-            />
-          ))}
-        </div>
+        <TimelineContent
+          movies={MOCKED_MOVIES}
+          firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
+          setScrollDirection={setScrollDirection}
+        />
       </ReactLenis>
+      <div className="p-4">
+        <Button size={'icon'} variant={'secondary'} onPress={handleScrollToFirstMovie}>
+          <ChevronLeft />
+        </Button>
+      </div>
     </div>
   )
 }

@@ -5,12 +5,17 @@ import { differenceInDays } from 'date-fns'
 
 type Props = {
   movie: Movie
-  isReleased: (date: string) => boolean
   firstUnreleasedMovieIndex: number
   i: number
 }
 const currentDate = new Date()
-const TimelineMovieCard = ({ movie, isReleased, firstUnreleasedMovieIndex, i }: Props) => {
+
+const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, i }: Props) => {
+  // TODO: Move this to a utility function
+  const isReleased = (movieDate: string) => {
+    return differenceInDays(new Date(movieDate), currentDate) < 0
+  }
+
   return (
     <AspectRatio
       data-movie-index={i}
