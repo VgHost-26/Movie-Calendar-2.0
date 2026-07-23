@@ -4,11 +4,11 @@ import { ReactLenis } from 'lenis/react'
 import { useTimeline } from '@/hooks/useTimeline'
 import { TimelineContextProvider } from '@/components/providers/TimelineContext'
 import { useMemo, useState } from 'react'
-import { differenceInDays } from 'date-fns/differenceInDays'
 import type { Movie } from '@/Types/types'
 import { format } from 'date-fns'
 import TimelineContent from '@/components/timeline/TimelineContent'
 import TextTransition from '@/components/ui/TextTransition'
+import { isReleased } from '@/utils/movieFunctions'
 
 const MOCKED_MOVIES: Movie[] = [
   {
@@ -66,8 +66,6 @@ const MOCKED_MOVIES: Movie[] = [
     poster: 'https://static.posters.cz/image/1300/133040.jpg',
   },
 ]
-// move to zustand
-const currentDate = new Date()
 const TimelinePage = () => (
   <TimelineContextProvider>
     <TimelinePageContent />
@@ -78,13 +76,9 @@ const TimelinePageContent = () => {
   // TODO: Create type
   const [scrollDirection, setScrollDirection] = useState<-1 | 1 | 0>(0)
 
-  const isReleased = (movieDate: string) => {
-    return differenceInDays(new Date(movieDate), currentDate) < 0
-  }
-
   const firstUnreleasedMovieIndex = useMemo(
     () => MOCKED_MOVIES.findIndex((m) => !isReleased(m.date)),
-    [],
+    [/*movies*/],
   )
 
   // hold first element left offset (80px)
@@ -120,7 +114,12 @@ const TimelinePageContent = () => {
         />
       </ReactLenis>
       <div className="p-4">
-        <Button size={'icon'} variant={'default'} className="p-0" onPress={handleScrollToFirstMovie}>
+        <Button
+          size={'icon'}
+          variant={'default'}
+          className="p-0"
+          onPress={handleScrollToFirstMovie}
+        >
           <ChevronLeft className="text-primary-foreground" />
         </Button>
       </div>

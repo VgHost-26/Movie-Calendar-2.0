@@ -2,6 +2,7 @@ import type { Movie } from '@/Types/types'
 import { AspectRatio } from '../ui/aspect-ratio'
 import { Badge } from '../ui/badge'
 import { differenceInDays } from 'date-fns'
+import { isReleased } from '@/utils/movieFunctions'
 
 type Props = {
   movie: Movie
@@ -12,9 +13,6 @@ const currentDate = new Date()
 
 const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, i }: Props) => {
   // TODO: Move this to a utility function
-  const isReleased = (movieDate: string) => {
-    return differenceInDays(new Date(movieDate), currentDate) < 0
-  }
 
   return (
     <AspectRatio
