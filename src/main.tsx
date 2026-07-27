@@ -1,7 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.tsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout/MainLayout.tsx'
 import TimelinePage from './pages/TimelinePage/TimeplinePage.tsx'
@@ -15,7 +14,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <App />,
+        element: <CalendarPage />,
         // loader: <></>
       },
       {
