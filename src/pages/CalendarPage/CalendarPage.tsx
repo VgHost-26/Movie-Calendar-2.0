@@ -45,11 +45,11 @@ const CalendarPage = () => {
     <div className="flex flex-1 flex-col items-start gap-4 p-4">
       <div className="flex w-full items-end justify-between">
         <div className="flex flex-1 flex-col">
-          <h5 className="text-5xl font-bold text-primary">
+          {/* <h5 className="text-5xl font-bold text-primary">
             <TextTransition speed={200} direction={switchDirection}>
               {format(viewingDate, 'yyyy')}
             </TextTransition>
-          </h5>
+          </h5> */}
           <h1 className="ml-[-0.05em] text-9xl font-bold uppercase">
             <TextTransition direction={switchDirection}>
               {format(viewingDate, 'MMMM')}

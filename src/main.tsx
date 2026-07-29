@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout/MainLayout.tsx'
-import TimelinePage from './pages/TimelinePage/TimeplinePage.tsx'
+import TimelinePage from './pages/TimelinePage/TimelinePage.tsx'
 import CalendarPage from './pages/CalendarPage/CalendarPage.tsx'
 
 const router = createBrowserRouter([

@@ -95,8 +95,8 @@ const TimelinePageContent = () => {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      <div className="flex flex-none items-end gap-2 p-4">
-        <h1 className="mb-[-0.025em] ml-[-0.05em] w-full text-9xl font-bold uppercase">
+      <div className="flex flex-none items-end p-4">
+        <h1 className="ml-[-0.05em] w-full text-9xl font-bold uppercase">
           <TextTransition direction={scrollDirection !== 1 ? 'down' : 'up'}>
             {activeCardMonth}
           </TextTransition>
