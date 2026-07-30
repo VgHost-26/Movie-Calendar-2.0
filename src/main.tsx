@@ -6,6 +6,9 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout/MainLayout.tsx'
 import TimelinePage from './pages/TimelinePage/TimelinePage.tsx'
 import CalendarPage from './pages/CalendarPage/CalendarPage.tsx'
+import LoginPage from './pages/LoginPage/LoginPage.tsx'
+import SignupPage from './pages/SignupPage/SignupPage.tsx'
+import SettingsPage from './pages/SettingsPage/SettingsPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -25,6 +28,18 @@ const router = createBrowserRouter([
       {
         path: 'calendar',
         element: <CalendarPage />,
+      },
+      {
+        path: 'login',
+        element: <LoginPage />,
+      },
+      {
+        path: 'signup',
+        element: <SignupPage />,
+      },
+      {
+        path: 'settings',
+        element: <SettingsPage />,
       },
     ],
   },
