@@ -21,14 +21,17 @@ export const TimelineContextProvider = ({ children }: { children: React.ReactNod
   const scrollToCard = useCallback((index: number) => {
     if (lenisRef.current && lenisRef.current.lenis) {
       const selector = `[data-movie-index="${index}"]`
-      const el = document.querySelector(selector)
+      // const el = document.querySelector(selector)
+      // const parent = el?.parentElement
       let offset = 0
 
-      if (el) {
-        // TODO: fix this
-        const marginLeft = parseFloat(getComputedStyle(el).paddingLeft) || 0
-        offset = marginLeft 
-      }
+      // if (parent) {
+      // TODO: fix this
+      // const marginLeft = parseFloat(getComputedStyle(parent).paddingLeft)
+      // console.log(marginLeft)
+      const marginLeft = -16
+      offset = marginLeft
+      // }
 
       lenisRef.current.lenis.scrollTo(selector, { offset, duration: 1.5 })
     } else {

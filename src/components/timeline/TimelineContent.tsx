@@ -32,7 +32,6 @@ const TimelineContent = ({ movies, firstUnreleasedMovieIndex, setScrollDirection
         }
       }
     })
-    console.log('closestIndex:', closestIndex)
     setActiveCardIndex(closestIndex)
   })
 

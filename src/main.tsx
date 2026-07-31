@@ -2,13 +2,32 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, redirect, RouterProvider } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout/MainLayout.tsx'
 import TimelinePage from './pages/TimelinePage/TimelinePage.tsx'
 import CalendarPage from './pages/CalendarPage/CalendarPage.tsx'
 import LoginPage from './pages/LoginPage/LoginPage.tsx'
 import SignupPage from './pages/SignupPage/SignupPage.tsx'
 import SettingsPage from './pages/SettingsPage/SettingsPage.tsx'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from './lib/firebase.ts'
+
+function getCurrentUser(): Promise<typeof auth.currentUser> {
+  return new Promise((resolve) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe();
+      resolve(user);
+    });
+  });
+}
+
+const authLoader = async () => {
+  const user = await getCurrentUser();
+  if (user) {
+    return redirect('/timeline')
+  }
+  return null
+}
 
 const router = createBrowserRouter([
   {
@@ -19,7 +38,6 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <App />,
-        // loader: <></>
       },
       {
         path: 'timeline',
@@ -31,11 +49,13 @@ const router = createBrowserRouter([
       },
       {
         path: 'login',
-        element: <LoginPage />,
+        loader: authLoader,
+        element: <LoginPage />
       },
       {
         path: 'signup',
-        element: <SignupPage />,
+        loader: authLoader,
+        element: <SignupPage />
       },
       {
         path: 'settings',

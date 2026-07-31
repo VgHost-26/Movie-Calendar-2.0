@@ -51,7 +51,7 @@ const MOCKED_MOVIES: Movie[] = [
     date: '2026-08-29',
     title: 'Spiderman',
     platform: 'HBO Max',
-    poster: 'https://static.posters.cz/image/1300/133040.jpg',
+    poster: 'https://static.posters.cz/image/1300/133044.jpg',
   },
   {
     date: '2026-08-29',

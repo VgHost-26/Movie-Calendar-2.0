@@ -5,13 +5,15 @@ import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui
 import { Input } from '@/components/ui/input'
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
+  const navigate = useNavigate()
   const handleLoginWithGoogle = async () => {
     const provider = new GoogleAuthProvider()
     try {
       await signInWithPopup(auth, provider)
+      navigate('/timeline')
     } catch (error) {
       console.error('Error signing in with Google:', error)
     }
