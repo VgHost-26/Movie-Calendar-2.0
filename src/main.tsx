@@ -28,6 +28,13 @@ const authLoader = async () => {
   }
   return null
 }
+const accountLoader = async () => {
+  const user = await getCurrentUser();
+  if (!user) {
+    return redirect('/login')
+  }
+  return null
+}
 
 const router = createBrowserRouter([
   {
@@ -62,6 +69,11 @@ const router = createBrowserRouter([
         path: 'settings',
         element: <SettingsPage />,
       },
+      {
+        path: 'account',
+        loader: accountLoader,
+        // element: <AccountPage />,
+      }
     ],
   },
 ])

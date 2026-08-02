@@ -11,11 +11,14 @@ import {
 } from '@/components/ui/sidebar'
 import { MAIN_PAGES, FOOTER_PAGES, type PageItem } from '@/pages/pages'
 import NavIcon from '../NavIcon/NavIcon'
+import useAuth from '@/hooks/useAuth'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 // TODO: do ogarnięcia
 export function AppSidebar() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { user } = useAuth()
 
   const isItemActive = (item: PageItem) => {
     if (
@@ -93,10 +96,28 @@ export function AppSidebar() {
                         : 'text-muted-foreground hover:bg-[#161619] hover:text-white [&_svg]:text-[#737373] hover:[&_svg]:text-white'
                     } group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0!`}
                   >
-                    <NavIcon
-                      name={page.icon}
-                      className="size-5 shrink-0 transition-all duration-150"
-                    />
+                    {page.icon === 'account' ? (
+                      user?.photoURL ? (
+                        <div>
+                          <Avatar size="sm">
+                            <AvatarImage
+                              src={user?.photoURL}
+                              alt="Profile"
+                            />
+                            <AvatarFallback>{user?.displayName?.charAt(0)}</AvatarFallback>
+                          </Avatar>
+                        </div>
+                      ) : (
+                        <div>
+                          <NavIcon name={page.icon} />
+                        </div>
+                      )
+                    ) : (
+                      <NavIcon
+                        name={page.icon}
+                        className="size-5 shrink-0 transition-all duration-150"
+                      />
+                    )}
                     <span className="text-sm font-medium tracking-wide group-data-[collapsible=icon]:hidden">
                       {page.title}
                     </span>
