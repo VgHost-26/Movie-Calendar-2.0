@@ -10,6 +10,7 @@ import SignupPage from './pages/SignupPage/SignupPage.tsx'
 import SettingsPage from './pages/SettingsPage/SettingsPage.tsx'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from './lib/firebase.ts'
+import { redirect } from 'react-router-dom'
 
 function getCurrentUser(): Promise<typeof auth.currentUser> {
   return new Promise((resolve) => {
