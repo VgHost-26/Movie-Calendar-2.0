@@ -1,19 +1,46 @@
-import { CalendarIcon, CircleOffIcon, TimelineIcon, type LucideIcon } from 'lucide-react'
+import {
+  Clapperboard,
+  Bookmark,
+  Eye,
+  Film,
+  Theater,
+  Archive,
+  Settings,
+  LogOut,
+  Calendar,
+  History,
+  CircleOff,
+  type LucideIcon,
+} from 'lucide-react'
 
 type Props = {
   name: string
+  className?: string
 }
 
 const iconMap: Record<string, LucideIcon> = {
-  calendar: CalendarIcon,
-  timeline: TimelineIcon,
+  clapperboard: Clapperboard,
+  premieres: Clapperboard,
+  bookmark: Bookmark,
+  watchlist: Bookmark,
+  eye: Eye,
+  film: Film,
+  theaters: Film,
+  theater: Theater,
+  archive: Archive,
+  archives: Archive,
+  settings: Settings,
+  logout: LogOut,
+  exit: LogOut,
+  calendar: Calendar,
+  timeline: History,
 }
 
-const NavIcon = ({ name }: Props) => {
-  const Icon = iconMap[name]
+const NavIcon = ({ name, className }: Props) => {
+  const Icon = iconMap[name.toLowerCase()] || CircleOff
 
-  if (!Icon) return <CircleOffIcon />
-  return <Icon />
+  return <Icon className={className} />
 }
 
 export default NavIcon
+
