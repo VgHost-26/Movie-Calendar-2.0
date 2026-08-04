@@ -1,6 +1,6 @@
 import { Dialog } from '../ui/dialog'
 import { useState } from 'react'
-import { Field, FieldLabel, FieldLegend, FieldSet } from '../ui/field'
+import { Field, FieldDescription, FieldLabel, FieldLegend, FieldSet } from '../ui/field'
 import { PLATFORMS } from '@/global/globals'
 import DatePicker from '../ui/date-picker'
 import type { CalendarDate } from '@internationalized/date'
@@ -12,6 +12,9 @@ import type { MovieFormData } from '@/Types/types'
 import { movieSchema } from '@/schemas/zotSchemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { Input } from '../ui/input'
+import { AspectRatio } from '../ui/aspect-ratio'
+import { fetchMovie } from '@/api/apiTMDB'
 
 type Props = {
   date: CalendarDate | null
@@ -27,6 +30,8 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
     reset,
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
     control,
   } = useForm<MovieFormData>({
@@ -45,6 +50,7 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
       title: data.title,
       date: selectedDate ? selectedDate.toString() : '',
       platform: data.platform,
+      poster: data.poster || '',
     }
     try {
       await addMovie(movieData)
@@ -60,6 +66,20 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
       return
     }
   }
+
+  const handleTitleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const title = e.target.value
+    const movieList = await fetchMovie(title)
+    console.log('Fetched movie data:', movieList)
+    if (movieList.length > 0) {
+      const movieData = movieList[0]
+      const partialPosterPath = movieData.poster_path
+      const posterUrl = `https://image.tmdb.org/t/p/w1280/${partialPosterPath}`
+      console.log('Poster URL:', posterUrl)
+      setValue('poster', posterUrl)
+    }
+  }
+
   return (
     <Dialog>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -69,6 +89,7 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
             <FieldLabel htmlFor="title">Title</FieldLabel>
             <input
               {...register('title')}
+              onBlur={handleTitleChange}
               type="text"
               id="title"
               name="title"
@@ -122,6 +143,21 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
               />
             </Field>
           </div>
+          <Field>
+            <FieldLabel htmlFor="poster">Poster</FieldLabel>
+            <Input type="text" placeholder="Poster (optional)" {...register('poster')} />
+            <FieldDescription>Preview</FieldDescription>
+            <AspectRatio ratio={2 / 3} className="">
+              <img
+                src={
+                  watch('poster') ||
+                  'https://www.juliedray.com/wp-content/uploads/2022/01/sans-affiche.png'
+                }
+                alt="Poster preview"
+                className="w-full"
+              />
+            </AspectRatio>
+          </Field>
           <div className="flex justify-end gap-4">
             <Button type="button" variant="secondary">
               Cancel
