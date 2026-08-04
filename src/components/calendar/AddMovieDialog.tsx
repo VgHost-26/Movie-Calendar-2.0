@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Input } from '../ui/input'
 import { AspectRatio } from '../ui/aspect-ratio'
 import { fetchMovie } from '@/api/apiTMDB'
+import imagePlaceholder from '@/assets/images/poster-placeholder.png'
 
 type Props = {
   date: CalendarDate | null
@@ -151,7 +152,7 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
               <img
                 src={
                   watch('poster') ||
-                  'https://www.juliedray.com/wp-content/uploads/2022/01/sans-affiche.png'
+                  imagePlaceholder
                 }
                 alt="Poster preview"
                 className="w-full"

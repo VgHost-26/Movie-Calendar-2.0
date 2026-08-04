@@ -3,6 +3,7 @@ import { AspectRatio } from '../ui/aspect-ratio'
 import { Badge } from '../ui/badge'
 import { differenceInDays } from 'date-fns'
 import { isReleased } from '@/utils/movieFunctions'
+import posterPlaceholder from '@/assets/images/poster-placeholder.png'
 
 type Props = {
   movie: Movie
@@ -23,7 +24,7 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, i }: Props) => {
       className="h-[80dvh]"
     >
       <img
-        src={movie.poster ? movie.poster : 'https://www.juliedray.com/wp-content/uploads/2022/01/sans-affiche.png'}
+        src={movie.poster ? movie.poster : posterPlaceholder}
         // alt={movie.title}
         className={`h-full object-cover ${isReleased(movie.date) ? '' : 'grayscale'}`}
       />
