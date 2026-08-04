@@ -23,8 +23,8 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, i }: Props) => {
       className="h-[80dvh]"
     >
       <img
-        src={movie.poster}
-        alt={movie.title}
+        src={movie.poster ? movie.poster : 'https://www.juliedray.com/wp-content/uploads/2022/01/sans-affiche.png'}
+        // alt={movie.title}
         className={`h-full object-cover ${isReleased(movie.date) ? '' : 'grayscale'}`}
       />
       <div className="absolute inset-0 flex flex-1 flex-col justify-between p-4">

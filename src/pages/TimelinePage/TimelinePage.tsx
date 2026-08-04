@@ -9,6 +9,8 @@ import { format } from 'date-fns'
 import TimelineContent from '@/components/timeline/TimelineContent'
 import TextTransition from '@/components/ui/TextTransition'
 import { isReleased } from '@/utils/movieFunctions'
+import { useGetMovies } from '@/api/apiFirebase'
+import useAuth from '@/hooks/useAuth'
 
 const MOCKED_MOVIES: Movie[] = [
   {
@@ -84,10 +86,24 @@ const TimelinePageContent = () => {
   const { scrollToCard, activeCardIndex, registerLenisRef } = useTimeline()
   // TODO: Create type
   const [scrollDirection, setScrollDirection] = useState<-1 | 1 | 0>(0)
+  const { user, loading } = useAuth()
+  const userId = user?.uid ?? ''
+
+  const { data, isLoading } = useGetMovies(userId)
+
+  const movies = useMemo(() => {
+    if (isLoading) {
+      return []
+    }
+    if (!data) {
+      return []
+    }
+    return data
+  }, [data, isLoading])
 
   const firstUnreleasedMovieIndex = useMemo(
-    () => MOCKED_MOVIES.findIndex((m) => !isReleased(m.date)),
-    [/*movies*/],
+    () => movies.findIndex((m) => !isReleased(m.date)),
+    [movies],
   )
 
   // hold first element left offset (80px)
@@ -97,7 +113,7 @@ const TimelinePageContent = () => {
   }
 
   const activeCardMonth = useMemo(() => {
-    const activeMovie = MOCKED_MOVIES[activeCardIndex]
+    const activeMovie = movies[activeCardIndex]
     if (!activeMovie) return 'Timeline'
     return format(activeMovie.date, 'MMMM')
   }, [activeCardIndex])
@@ -117,7 +133,7 @@ const TimelinePageContent = () => {
         ref={registerLenisRef}
       >
         <TimelineContent
-          movies={MOCKED_MOVIES}
+          movies={movies}
           firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
           setScrollDirection={setScrollDirection}
         />

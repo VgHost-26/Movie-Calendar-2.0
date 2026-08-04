@@ -59,6 +59,6 @@ export function useAddMovie() {
   return { addMovie, isLoading, error }
 }
 
-export function useEditMovie(){}
+export function useEditMovie() {}
 
 export function useDeleteMovie() {}

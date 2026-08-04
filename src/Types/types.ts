@@ -8,8 +8,8 @@ export interface Movie {
   date: string
   title: string
   platform: Platform
-  createdAt: string
   poster?: string
+  createdAt?: string
   trailerURL?: string
 }
 
