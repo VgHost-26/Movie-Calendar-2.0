@@ -37,9 +37,9 @@ const CalendarCard = ({ movies, calendarDate }: Props) => {
             {format(date, 'dd')}
           </CardTitle>
         </CardHeader>
-        <CardFooter className="flex">
+        <CardFooter className="grid">
           {movies.map((movie) => (
-            <div className="flex flex-1 items-end justify-between">
+            <div id={movie.id} className="flex flex-1 items-end justify-between">
               <p className="text-xl font-bold">{movie.title}</p>
               <Badge variant="secondary">
                 {movie.platform}

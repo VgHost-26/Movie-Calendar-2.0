@@ -42,7 +42,7 @@ const TimelineContent = ({ movies, firstUnreleasedMovieIndex, setScrollDirection
           ref={(el) => {
             itemRefs.current[i] = el
           }}
-          key={`${movie.title}-${i}`}
+          key={`${movie.id}`}
         >
           <TimelineMovieCard
             movie={movie}
@@ -51,6 +51,8 @@ const TimelineContent = ({ movies, firstUnreleasedMovieIndex, setScrollDirection
           />
         </div>
       ))}
+      {/* NOTE: magick number */}
+      <div className="w-[calc(100dvw-(160dvh/3)-142px)]"></div>
     </div>
   )
 }

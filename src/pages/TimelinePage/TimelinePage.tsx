@@ -12,54 +12,63 @@ import { isReleased } from '@/utils/movieFunctions'
 
 const MOCKED_MOVIES: Movie[] = [
   {
+    id: '1',
     date: '2026-06-01',
     title: 'Batman',
     platform: 'HBO Max',
     poster: 'https://static.posters.cz/image/1300/133029.jpg',
   },
   {
+    id: '2',
     date: '2026-06-02',
     title: 'Batman',
     platform: 'HBO Max',
     poster: 'https://static.posters.cz/image/1300/133028.jpg',
   },
   {
+    id: '3',
     date: '2026-07-19',
     title: 'Batman',
     platform: 'Netflix',
     poster: 'https://static.posters.cz/image/1300/133030.jpg',
   },
   {
+    id: '4',
     date: '2026-07-26',
     title: 'Superman',
     platform: 'Disney+',
     poster: 'https://static.posters.cz/image/1300/133031.jpg',
   },
   {
+    id: '5',
     date: '2026-07-29',
     title: 'Spiderman',
     platform: 'HBO Max',
     poster: 'https://static.posters.cz/image/1300/133032.jpg',
   },
   {
+    id: '6',
     date: '2026-07-29',
     title: 'Spiderman',
     platform: 'HBO Max',
     poster: 'https://static.posters.cz/image/1300/133032.jpg',
   },
   {
+    id: '7',
     date: '2026-08-29',
     title: 'Spiderman',
     platform: 'HBO Max',
     poster: 'https://static.posters.cz/image/1300/133044.jpg',
   },
   {
+    id: '8',
     date: '2026-08-29',
     title: 'Spiderman',
     platform: 'HBO Max',
     poster: 'https://static.posters.cz/image/1300/133040.jpg',
   },
   {
+    id: '9',
     date: '2026-08-29',
     title: 'Spiderman',
     platform: 'HBO Max',

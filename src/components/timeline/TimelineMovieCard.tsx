@@ -20,7 +20,7 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, i }: Props) => {
       {...(firstUnreleasedMovieIndex === i && { 'data-first-unreleased': true })}
       key={`${movie.date}-${i}`}
       ratio={2 / 3}
-      className="h-[80dvh] max-w-[90dvw]"
+      className="h-[80dvh]"
     >
       <img
         src={movie.poster}

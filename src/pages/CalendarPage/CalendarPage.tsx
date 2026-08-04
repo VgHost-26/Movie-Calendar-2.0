@@ -1,37 +1,41 @@
+import { useGetMovies } from '@/api/apiFirebase'
 import CalendarCard from '@/components/calendar/CalendarCard'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import TextTransition from '@/components/ui/TextTransition'
 import { WEEKDAYS } from '@/global/globals'
+import useAuth from '@/hooks/useAuth'
 import type { Movie } from '@/Types/types'
 import { getCalendarGrid } from '@/utils/dateFunctions'
 import { addMonths, subMonths, format, isSameMonth } from 'date-fns'
 import { ChevronLeftIcon, ChevronRightIcon, TimerResetIcon } from 'lucide-react'
-import { useState } from 'react'
-
-const MOCKED_MOVIES: Movie[] = [
-  {
-    date: '2026-07-26',
-    title: 'Batman',
-    platform: 'Netflix',
-    poster: 'https://static.posters.cz/image/1300/133030.jpg',
-  },
-]
+import { useEffect, useMemo, useState } from 'react'
 
 const currentDate = new Date()
 const CalendarPage = () => {
   const [viewingDate, setViewingDate] = useState(currentDate)
   const [switchDirection, setSwitchDirection] = useState<'up' | 'down'>('up')
 
-  const monthDays = getCalendarGrid(viewingDate)
-  const monthDaysWithMovies = monthDays.map((day) => {
-    const moviesForDay = MOCKED_MOVIES.filter((movie) => {
-      const movieDate = new Date(movie.date)
-      return movieDate.toDateString() === day.date.toDateString()
-    })
+  const { user, loading } = useAuth()
+  const userId = user?.uid ?? ''
+  console.log('authLoading:', loading, 'userId:', userId)
+  const { data: movies, isLoading, error, isFetching } = useGetMovies(userId)
+  
+  console.log('query state:', { isLoading, isFetching, dataLength: movies?.length });
 
-    return { ...day, movies: moviesForDay }
-  })
+  const monthDays = getCalendarGrid(viewingDate)
+  const monthDaysWithMovies = useMemo(() => {
+    return monthDays.map((day) => {
+      let moviesForDay: Movie[] = []
+      if (movies) {
+        moviesForDay = movies.filter((movie) => {
+          const movieDate = new Date(movie.date)
+          return movieDate.toDateString() === day.date.toDateString()
+        })
+      }
+      return { ...day, movies: moviesForDay }
+    })
+  }, [movies, monthDays])
 
   const handlePreviousMonth = () => {
     setViewingDate((prevDate) => subMonths(prevDate, 1))
@@ -40,6 +44,20 @@ const CalendarPage = () => {
   const handleNextMonth = () => {
     setViewingDate((prevDate) => addMonths(prevDate, 1))
   }
+
+  useEffect(() => {
+    if (isLoading) {
+      console.log('loading')
+      return
+    }
+    if (error) {
+      console.log('error:', error)
+      return
+    }
+    if (movies) {
+      console.log(movies)
+    }
+  }, [movies, error, isLoading])
 
   return (
     <div className="flex flex-1 flex-col items-start gap-4 p-4">

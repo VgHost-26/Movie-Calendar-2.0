@@ -2,11 +2,14 @@ import useAuth from '@/hooks/useAuth'
 import { signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { Button } from '@/components/ui/button'
+import { useQueryClient } from '@tanstack/react-query'
 
 const SettingsPage = () => {
   const { user, loading, isAuthenticated } = useAuth()
-  const handleLogout = () => {
-    signOut(auth)
+  const queryClient = useQueryClient()
+  const handleLogout = async () => {
+    await signOut(auth)
+    queryClient.clear()
   }
 
   if (loading) {

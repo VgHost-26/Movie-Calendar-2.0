@@ -1,13 +1,19 @@
 import { PLATFORMS } from '@/global/globals'
+import type { movieSchema } from '@/schemas/zotSchemas'
+import type z from 'zod'
 
 export type Platform = (typeof PLATFORMS)[number]
 export interface Movie {
+  id: string
   date: string
   title: string
   platform: Platform
+  createdAt: string
   poster?: string
   trailerURL?: string
 }
+
+export type MovieFormData = z.infer<typeof movieSchema>
 
 export interface CalendarDay {
   date: Date
