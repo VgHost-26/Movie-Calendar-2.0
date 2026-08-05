@@ -1,5 +1,5 @@
 import { db } from '@/lib/firebase'
-import type { Movie } from '@/Types/types'
+import type { Movie, MovieFormData } from '@/Types/types'
 import {
   addDoc,
   collection,
@@ -9,6 +9,7 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
 } from 'firebase/firestore'
 import { useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
 import useAuth from '@/hooks/useAuth'
@@ -68,7 +69,32 @@ export function useAddMovie() {
   return { addMovie, isLoading, error }
 }
 
-export function useEditMovie() {}
+export function useUpdateMovie() {
+  const { user } = useAuth()
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<Error | null>(null)
+  const queryClient = useQueryClient()
+
+  const updateMovie = async (movieId: string, updatedMovie: Partial<MovieFormData>) => {
+    if (!user) {
+      setError(new Error('User not authenticated'))
+      return
+    }
+    setIsLoading(true)
+    setError(null)
+    try {
+      await setDoc(doc(db, 'users', user.uid, 'movies', movieId), updatedMovie, { merge: true })
+      queryClient.invalidateQueries({ queryKey: ['movies', user.uid] })
+    } catch (err) {
+      setError(err as Error)
+      throw err
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return { updateMovie, isLoading, error }
+}
 
 export function useDeleteMovie() {
   const { user } = useAuth()

@@ -9,11 +9,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { movieSchema } from '@/schemas/zotSchemas'
 import type { Movie, MovieFormData } from '@/Types/types'
 import { AnimatePresence, motion } from 'framer-motion'
-import { XIcon } from 'lucide-react'
+import { ChevronLeftIcon } from 'lucide-react'
 import { CalendarDate } from '@internationalized/date'
-import { useDeleteMovie } from '@/api/apiFirebase'
+import { useDeleteMovie, useUpdateMovie } from '@/api/apiFirebase'
 import { toast } from 'sonner'
-import { Popover, PopoverHeader, PopoverTitle, PopoverTrigger } from '../ui/popover'
 import { AlertDeleteButton } from '../ui/delete-button'
 
 type Props = {
@@ -32,6 +31,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData }: Props) => {
   )
   const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(calendarDate)
   const { deleteMovie } = useDeleteMovie()
+  const { updateMovie } = useUpdateMovie()
   const {
     reset,
     register,
@@ -56,6 +56,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData }: Props) => {
 
   const onSubmit = async (data: MovieFormData) => {
     console.log('editing movie:', data)
+    updateMovie(movieData.id, data)
   }
 
   const handleDelete = () => {
@@ -84,7 +85,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData }: Props) => {
             <FieldSet>
               <FieldLegend className="flex items-center gap-2">
                 <Button size="icon-xs" type="button" variant="secondary" onPress={handleCancel}>
-                  <XIcon />
+                  <ChevronLeftIcon />
                 </Button>
                 Edit Movie
               </FieldLegend>
