@@ -6,6 +6,7 @@ import { isReleased } from '@/utils/movieFunctions'
 import TimelineMovieEditor from './TimelineMovieEditor'
 import { useEffect, useState } from 'react'
 import { useTimeline } from '@/hooks/useTimeline'
+import { PLATFORMS_ICONS } from '@/global/globals'
 
 type Props = {
   movie: Movie
@@ -50,8 +51,12 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, i }: Props) => {
         />
         <div className="absolute inset-0 flex flex-1 flex-col justify-between p-4">
           <div className="ml-auto flex">
-            {/* TODO: Style this badge, or all of them */}
-            <Badge variant={'default'}>{movie.platform}</Badge>
+            <img
+              title={movie.platform}
+              src={PLATFORMS_ICONS[movie.platform]}
+              alt={movie.platform}
+              className="h-10 bg-accent p-2"
+            />
           </div>
           <div className="flex flex-1 items-end justify-between">
             <div className="flex items-baseline gap-2">
