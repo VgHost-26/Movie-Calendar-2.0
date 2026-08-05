@@ -73,6 +73,11 @@
   --sidebar-border: #262626;
   --sidebar-ring: #ffb4a5;
 
+  --sidebar-width: 14rem;
+  --sidebar-width-icon: 4rem;
+
+
+
 }
 
 .light {
@@ -216,6 +221,14 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 
 
+  --padding-window: calc(var(--spacing) * 4);
+  --width-window-no-sidebar-with-padding: calc(100dvw - var(--sidebar-width) - (2 * var(--padding-window)));
+  --width-window-no-sidebar-icon-with-padding: calc(100dvw - var(--sidebar-width-icon) - (2 * var(--padding-window)));
+
+  --width-timeline-card: calc(80dvh * (2 / 3));
+
+  --width-window-no-sidebar-icon-no-card-with-padding: calc(var(--width-window-no-sidebar-icon-with-padding) - var(--width-timeline-card));
+  --max-width-window-no-sidebar-icon-no-card-with-padding: var(--width-window-no-sidebar-icon-no-card-with-padding);
 }
 
 @layer base {

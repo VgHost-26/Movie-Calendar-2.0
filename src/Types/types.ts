@@ -2,6 +2,13 @@ import { PLATFORMS } from '@/global/globals'
 import type { movieSchema } from '@/schemas/zotSchemas'
 import type z from 'zod'
 
+export const ScrollDirection = {
+  BACKWARD: -1,
+  NONE: 0,
+  FORWARD: 1,
+} as const
+export type ScrollDirection = (typeof ScrollDirection)[keyof typeof ScrollDirection]
+
 export type Platform = (typeof PLATFORMS)[number]
 export interface Movie {
   id: string
