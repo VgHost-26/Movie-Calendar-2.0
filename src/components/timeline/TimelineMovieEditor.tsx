@@ -3,7 +3,7 @@ import { Field, FieldLabel, FieldLegend, FieldSet } from '../ui/field'
 import DatePicker from '../ui/date-picker'
 import { useState } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
-import { PLATFORMS } from '@/global/globals'
+import { PLATFORMS, PLATFORMS_ICONS } from '@/global/globals'
 import { Button } from '../ui/button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { movieSchema } from '@/schemas/zotSchemas'
@@ -11,6 +11,10 @@ import type { Movie, MovieFormData } from '@/Types/types'
 import { AnimatePresence, motion } from 'framer-motion'
 import { XIcon } from 'lucide-react'
 import { CalendarDate } from '@internationalized/date'
+import { useDeleteMovie } from '@/api/apiFirebase'
+import { toast } from 'sonner'
+import { Popover, PopoverHeader, PopoverTitle, PopoverTrigger } from '../ui/popover'
+import { AlertDeleteButton } from '../ui/delete-button'
 
 type Props = {
   isOpen: boolean
@@ -27,7 +31,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData }: Props) => {
     dateObj.getDate(),
   )
   const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(calendarDate)
-
+  const { deleteMovie } = useDeleteMovie()
   const {
     reset,
     register,
@@ -52,6 +56,12 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData }: Props) => {
 
   const onSubmit = async (data: MovieFormData) => {
     console.log('editing movie:', data)
+  }
+
+  const handleDelete = () => {
+    deleteMovie(movieData.id)
+    onOpenChange(false)
+    toast.success('Movie deleted successfully!')
   }
 
   return (
@@ -124,8 +134,12 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData }: Props) => {
                         </SelectTrigger>
                         <SelectContent>
                           {PLATFORMS.map((platform) => (
-                            // TODO: add icons
                             <SelectItem id={platform} key={platform} value={platform}>
+                              <img
+                                src={PLATFORMS_ICONS[platform]}
+                                alt={`${platform} icon`}
+                                className="mr-2 size-4"
+                              />
                               {platform}
                             </SelectItem>
                           ))}
@@ -163,9 +177,13 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData }: Props) => {
                 />
               </Field>
               <div className="flex justify-end gap-4">
-                <Button type="button" variant="destructive">
+                <AlertDeleteButton
+                  title="Delete Movie"
+                  description="Are you sure you want to delete this movie?"
+                  onConfirm={handleDelete}
+                >
                   Delete
-                </Button>
+                </AlertDeleteButton>
                 <Button type="button" variant="secondary" onPress={handleCancel}>
                   Cancel
                 </Button>

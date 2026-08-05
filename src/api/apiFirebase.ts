@@ -1,6 +1,15 @@
 import { db } from '@/lib/firebase'
 import type { Movie } from '@/Types/types'
-import { addDoc, collection, getDocs, orderBy, query, serverTimestamp } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  serverTimestamp,
+} from 'firebase/firestore'
 import { useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
 import useAuth from '@/hooks/useAuth'
 import { useState } from 'react'
@@ -61,4 +70,18 @@ export function useAddMovie() {
 
 export function useEditMovie() {}
 
-export function useDeleteMovie() {}
+export function useDeleteMovie() {
+  const { user } = useAuth()
+  const queryClient = useQueryClient()
+
+  const deleteMovie = async (movieId: string) => {
+    if (!user) {
+      throw new Error('User not authenticated')
+    }
+
+    await deleteDoc(doc(db, 'users', user.uid, 'movies', movieId))
+    queryClient.invalidateQueries({ queryKey: ['movies', user.uid] })
+  }
+
+  return { deleteMovie }
+}
