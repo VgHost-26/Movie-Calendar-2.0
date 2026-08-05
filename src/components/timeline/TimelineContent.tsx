@@ -1,22 +1,21 @@
 import { useTimeline } from '@/hooks/useTimeline'
 import TimelineMovieCard from './TimelineMovieCard'
-import type { Movie } from '@/Types/types'
+import type { Movie, ScrollDirection } from '@/Types/types'
 import { useLenis } from 'lenis/react'
-import { useRef, type Dispatch } from 'react'
+import { useRef } from 'react'
 
 type Props = {
   movies: Movie[]
   firstUnreleasedMovieIndex: number
-  setScrollDirection: Dispatch<-1 | 1 | 0>
 }
 
-const TimelineContent = ({ movies, firstUnreleasedMovieIndex, setScrollDirection }: Props) => {
-  const { setActiveCardIndex } = useTimeline()
+const TimelineContent = ({ movies, firstUnreleasedMovieIndex }: Props) => {
+  const { setActiveCardIndex, setScrollDirection } = useTimeline()
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
-
+  const windowWidth = window.innerWidth
+  
   useLenis(({ scroll, direction }) => {
     setScrollDirection(direction)
-    const windowWidth = window.innerWidth
     const leftQuarter = scroll + windowWidth / 4
 
     let closestIndex = 0

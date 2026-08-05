@@ -4,7 +4,7 @@ import { ReactLenis } from 'lenis/react'
 import { useTimeline } from '@/hooks/useTimeline'
 import { TimelineContextProvider } from '@/components/providers/TimelineContext'
 import { useMemo, useState } from 'react'
-import type { Movie } from '@/Types/types'
+import type { Movie, ScrollDirection } from '@/Types/types'
 import { format } from 'date-fns'
 import TimelineContent from '@/components/timeline/TimelineContent'
 import TextTransition from '@/components/ui/TextTransition'
@@ -83,9 +83,8 @@ const TimelinePage = () => (
   </TimelineContextProvider>
 )
 const TimelinePageContent = () => {
-  const { scrollToCard, activeCardIndex, registerLenisRef } = useTimeline()
+  const { scrollToCard, activeCardIndex, registerLenisRef, scrollDirection } = useTimeline()
   // TODO: Create type
-  const [scrollDirection, setScrollDirection] = useState<-1 | 1 | 0>(0)
   const { user, loading } = useAuth()
   const userId = user?.uid ?? ''
 
@@ -120,11 +119,10 @@ const TimelinePageContent = () => {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      <div className="flex flex-none items-end p-4">
+      {/* <div className="absolute inset-0 z-110 ml-auto h-dvh w-window-no-sidebar-icon-with-padding bg-amber-600 outline"></div> */}
+      <div className="flex flex-none items-end p-window">
         <h1 className="ml-[-0.05em] w-full text-9xl font-bold uppercase">
-          <TextTransition direction={scrollDirection !== 1 ? 'down' : 'up'}>
-            {activeCardMonth}
-          </TextTransition>
+          <TextTransition direction={scrollDirection}>{activeCardMonth}</TextTransition>
         </h1>
       </div>
       <ReactLenis
@@ -135,10 +133,9 @@ const TimelinePageContent = () => {
         <TimelineContent
           movies={movies}
           firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
-          setScrollDirection={setScrollDirection}
         />
       </ReactLenis>
-      <div className="p-4">
+      <div className="p-window">
         <Button
           size={'icon'}
           variant={'default'}

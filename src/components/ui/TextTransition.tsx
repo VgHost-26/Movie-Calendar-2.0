@@ -1,16 +1,17 @@
 import { useMemo, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { ScrollDirection } from '@/Types/types'
 
 type Props = {
-  direction?: 'up' | 'down'
+  direction?: ScrollDirection
   speed?: number
   children: ReactNode
 }
 
 // TODO: fix rapid changes - occur very rarely
-const TextTransition = ({ children, direction = 'up', speed = 300 }: Props) => {
+const TextTransition = ({ children, direction = ScrollDirection.FORWARD, speed = 300 }: Props) => {
   const variants = useMemo(() => {
-    const isUp = direction === 'up'
+    const isUp = direction === ScrollDirection.BACKWARD
     return {
       initial: {
         y: isUp ? '100%' : '-100%',
