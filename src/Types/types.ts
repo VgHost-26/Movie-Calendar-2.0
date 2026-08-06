@@ -19,6 +19,7 @@ export interface Movie {
   createdAt?: string
   trailerURL?: string
   TMDBId?: number
+  YoutubeId?: string
 }
 
 export type MovieFormData = z.infer<typeof movieSchema>

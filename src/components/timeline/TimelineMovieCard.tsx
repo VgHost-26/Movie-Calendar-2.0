@@ -11,17 +11,18 @@ import { PLATFORMS_ICONS } from '@/global/globals'
 type Props = {
   movie: Movie
   firstUnreleasedMovieIndex: number
-  i: number
+  index: number
 }
 const currentDate = new Date()
 
-const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, i }: Props) => {
+const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index: i }: Props) => {
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [posterPreview, setPosterPreview] = useState(movie.poster || posterPlaceholder)
 
   const { scrollToCard, activeCardIndex, lenisRef } = useTimeline()
 
   const handleCardClick = () => {
+    // TODO: Close other open editors
     setIsEditOpen((prev) => !prev)
     scrollToCard(i)
   }

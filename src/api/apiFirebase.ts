@@ -14,6 +14,7 @@ import {
 import { useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
 import useAuth from '@/hooks/useAuth'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 const fetchMovies = async (userId: string) => {
   const q = query(collection(db, 'users', userId, 'movies'), orderBy('date', 'asc'))
@@ -84,9 +85,11 @@ export function useUpdateMovie() {
     setError(null)
     try {
       await setDoc(doc(db, 'users', user.uid, 'movies', movieId), updatedMovie, { merge: true })
+      toast.success('Movie updated successfully!')
       queryClient.invalidateQueries({ queryKey: ['movies', user.uid] })
     } catch (err) {
       setError(err as Error)
+      toast.error('Failed to update movie. Please try again.')
       throw err
     } finally {
       setIsLoading(false)
@@ -105,8 +108,15 @@ export function useDeleteMovie() {
       throw new Error('User not authenticated')
     }
 
-    await deleteDoc(doc(db, 'users', user.uid, 'movies', movieId))
-    queryClient.invalidateQueries({ queryKey: ['movies', user.uid] })
+    try {
+      await deleteDoc(doc(db, 'users', user.uid, 'movies', movieId))
+      toast.success('Movie deleted successfully!')
+      queryClient.invalidateQueries({ queryKey: ['movies', user.uid] })
+    } catch (err) {
+      console.error('Error deleting movie:', err)
+      toast.error('Failed to delete movie. Please try again.')
+      throw err
+    }
   }
 
   return { deleteMovie }

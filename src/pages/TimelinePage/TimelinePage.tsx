@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button'
-import { ChevronLeft } from 'lucide-react'
+import { CalendarSyncIcon, ChevronLeft, ChevronRightIcon, PlusIcon } from 'lucide-react'
 import { ReactLenis } from 'lenis/react'
 import { useTimeline } from '@/hooks/useTimeline'
 import { TimelineContextProvider } from '@/components/providers/TimelineContext'
 import { useMemo, useState } from 'react'
 import type { Movie, ScrollDirection } from '@/Types/types'
-import { format } from 'date-fns'
+import { differenceInDays, format } from 'date-fns'
 import TimelineContent from '@/components/timeline/TimelineContent'
 import TextTransition from '@/components/ui/TextTransition'
 import { isReleased } from '@/utils/movieFunctions'
@@ -77,6 +77,7 @@ const MOCKED_MOVIES: Movie[] = [
     poster: 'https://static.posters.cz/image/1300/133040.jpg',
   },
 ]
+const currentDate = new Date()
 const TimelinePage = () => (
   <TimelineContextProvider>
     <TimelinePageContent />
@@ -130,21 +131,37 @@ const TimelinePageContent = () => {
         options={{ orientation: 'horizontal', gestureOrientation: 'vertical', smoothWheel: true }}
         ref={registerLenisRef}
       >
-        <TimelineContent
-          movies={movies}
-          firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
-        />
+        <TimelineContent movies={movies} firstUnreleasedMovieIndex={firstUnreleasedMovieIndex} />
       </ReactLenis>
-      <div className="p-window">
-        <Button
-          size={'icon'}
-          variant={'default'}
-          className="p-0"
-          onPress={handleScrollToFirstMovie}
-        >
-          <ChevronLeft className="text-primary-foreground" />
-        </Button>
-      </div>
+      <footer className="flex gap-6 p-window">
+        <div className="flex gap-2">
+          <Button size={'icon'} variant={'default'} onPress={handleScrollToFirstMovie}>
+            <ChevronRightIcon className="text-primary-foreground" />
+          </Button>
+          <Button size={'icon'} variant={'default'} onPress={() => {}}>
+            <PlusIcon className="text-primary-foreground" />
+          </Button>
+        </div>
+        <div className="flex items-end text-muted-foreground">
+          <p>
+            Next release:{' '}
+            <span className="text-primary">
+              {movies[firstUnreleasedMovieIndex]?.title || 'No upcoming releases'}
+            </span>{' '}
+            {movies[firstUnreleasedMovieIndex]?.date && (
+              <span>
+                [
+                {`in 
+                ${differenceInDays(new Date(movies[firstUnreleasedMovieIndex].date), currentDate)
+                  .toString()
+                  .padStart(2, '0')}
+                days`}
+                ]
+              </span>
+            )}
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }

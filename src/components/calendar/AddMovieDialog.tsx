@@ -133,7 +133,6 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
                     </SelectTrigger>
                     <SelectContent>
                       {PLATFORMS.map((platform) => (
-                        // TODO: add icons
                         <SelectItem id={platform} key={platform} value={platform}>
                           {platform}
                         </SelectItem>
@@ -150,10 +149,7 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
             <FieldDescription>Preview</FieldDescription>
             <AspectRatio ratio={2 / 3} className="">
               <img
-                src={
-                  watch('poster') ||
-                  imagePlaceholder
-                }
+                src={watch('poster') || imagePlaceholder}
                 alt="Poster preview"
                 className="w-full"
               />

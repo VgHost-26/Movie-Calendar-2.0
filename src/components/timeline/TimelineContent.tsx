@@ -1,6 +1,6 @@
 import { useTimeline } from '@/hooks/useTimeline'
 import TimelineMovieCard from './TimelineMovieCard'
-import type { Movie, ScrollDirection } from '@/Types/types'
+import type { Movie } from '@/Types/types'
 import { useLenis } from 'lenis/react'
 import { useRef } from 'react'
 
@@ -13,7 +13,7 @@ const TimelineContent = ({ movies, firstUnreleasedMovieIndex }: Props) => {
   const { setActiveCardIndex, setScrollDirection } = useTimeline()
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const windowWidth = window.innerWidth
-  
+
   useLenis(({ scroll, direction }) => {
     setScrollDirection(direction)
     const leftQuarter = scroll + windowWidth / 4
@@ -46,12 +46,12 @@ const TimelineContent = ({ movies, firstUnreleasedMovieIndex }: Props) => {
           <TimelineMovieCard
             movie={movie}
             firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
-            i={i}
+            index={i}
           />
         </div>
       ))}
       {/* NOTE: magick number */}
-      <div className="w-[calc(100dvw-(160dvh/3)-142px)]"></div>
+      <div className="w-[calc(100dvw-(160dvh/3)-160px)]"></div>
     </div>
   )
 }

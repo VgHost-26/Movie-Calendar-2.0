@@ -413,9 +413,9 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
 
   const handleSearchPoster = async () => {
     const title = watch('title').trim()
-    
+
     try {
-      const response = await mutateAsync({ query: title   })
+      const response = await mutateAsync({ query: title })
       if (response && response.results.length > 0) {
         if (response.results.length > 1) {
           setMorePosters(response.results)
@@ -546,19 +546,21 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                     <Button type="button" variant="secondary" onPress={handleSearchPoster}>
                       Autodetect
                     </Button>
-                    <TooltipTrigger>
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        size="icon"
-                        onPress={handleShowMorePosters}
-                      >
-                        <ChevronDownIcon />
-                      </Button>
-                      <Tooltip placement="top end">
-                        <p>Show More Posters</p>
-                      </Tooltip>
-                    </TooltipTrigger>
+                    {morePosters.length > 1 && (
+                      <TooltipTrigger>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="icon"
+                          onPress={handleShowMorePosters}
+                        >
+                          <ChevronDownIcon className={`${morePostersOpen ? 'rotate-180' : ''}`} />
+                        </Button>
+                        <Tooltip placement="top end">
+                          <p>Show More Posters</p>
+                        </Tooltip>
+                      </TooltipTrigger>
+                    )}
                   </div>
                 </div>
               </Field>
@@ -581,20 +583,34 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                       className="overflow-hidden"
                     >
                       <div className="flex gap-2">
-                        {morePosters.map((movie) => (
-                          <AspectRatio
-                            ratio={2 / 3}
-                            className="w-[calc(var(--width-timeline-card)/6)] shrink-0 cursor-pointer"
-                            key={movie.id}
-                          >
-                            <img
-                              src={getPosterUrl(movie)}
-                              alt={movie.title}
-                              className="w-full object-cover"
-                              onClick={() => handleSwitchPoster(getPosterUrl(movie))}
-                            />
-                          </AspectRatio>
-                        ))}
+                        {morePosters.map((movie) => {
+                          const posterUrl = getPosterUrl(movie)
+                          if (!posterUrl) return
+                          return (
+                            <TooltipTrigger>
+                              <AspectRatio
+                                ratio={2 / 3}
+                                className="w-[calc(var(--width-timeline-card)/6)] shrink-0 cursor-pointer"
+                                key={movie.id}
+                              >
+                                <img
+                                  src={posterUrl}
+                                  alt={movie.title}
+                                  className="w-full object-cover"
+                                  onClick={() => handleSwitchPoster(posterUrl)}
+                                />
+                              </AspectRatio>
+                              <Tooltip>
+                                <p>
+                                  {movie.title}{' '}
+                                  {movie.release_date
+                                    ? `(${movie.release_date.split('-')[0]})`
+                                    : ''}
+                                </p>
+                              </Tooltip>
+                            </TooltipTrigger>
+                          )
+                        })}
                       </div>
                     </ReactLenis>
                   </motion.div>
