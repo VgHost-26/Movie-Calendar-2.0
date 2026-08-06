@@ -1,11 +1,10 @@
-import {  type Movie } from '@/Types/types'
+import { type Movie } from '@/Types/types'
 import { AspectRatio } from '../ui/aspect-ratio'
-import { Badge } from '../ui/badge'
 import { differenceInDays } from 'date-fns'
 import { isReleased } from '@/utils/movieFunctions'
 import posterPlaceholder from '@/assets/images/poster-placeholder.png'
 import TimelineMovieEditor from './TimelineMovieEditor'
-import {  useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTimeline } from '@/hooks/useTimeline'
 import { PLATFORMS_ICONS } from '@/global/globals'
 
@@ -18,6 +17,8 @@ const currentDate = new Date()
 
 const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, i }: Props) => {
   const [isEditOpen, setIsEditOpen] = useState(false)
+  const [posterPreview, setPosterPreview] = useState(movie.poster || posterPlaceholder)
+
   const { scrollToCard, activeCardIndex, lenisRef } = useTimeline()
 
   const handleCardClick = () => {
@@ -31,6 +32,14 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, i }: Props) => {
     }
   })
 
+  const posterToDisplay = useMemo(() => {
+    if (isEditOpen) {
+      return posterPreview || posterPlaceholder
+    } else {
+      return movie.poster || posterPlaceholder
+    }
+  }, [isEditOpen, posterPreview, movie.poster])
+
   return (
     <div className="flex">
       <AspectRatio
@@ -42,11 +51,7 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, i }: Props) => {
         className="z-90 h-[80dvh] cursor-pointer"
       >
         <img
-          src={
-            movie.poster
-              ? movie.poster
-              : posterPlaceholder
-          }
+          src={posterToDisplay}
           // alt={movie.title}
           className={`h-full object-cover ${isReleased(movie.date) ? '' : 'grayscale'}`}
         />
@@ -78,7 +83,12 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, i }: Props) => {
           </div>
         </div>
       </AspectRatio>
-      <TimelineMovieEditor isOpen={isEditOpen} onOpenChange={setIsEditOpen} movieData={movie} />
+      <TimelineMovieEditor
+        isOpen={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        movieData={movie}
+        setPosterPreview={setPosterPreview}
+      />
     </div>
   )
 }

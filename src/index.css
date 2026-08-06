@@ -226,9 +226,11 @@
   --width-window-no-sidebar-icon-with-padding: calc(100dvw - var(--sidebar-width-icon) - (2 * var(--padding-window)));
 
   --width-timeline-card: calc(80dvh * (2 / 3));
+  --max-width-timeline-card: var(--width-timeline-card);
 
   --width-window-no-sidebar-icon-no-card-with-padding: calc(var(--width-window-no-sidebar-icon-with-padding) - var(--width-timeline-card));
   --max-width-window-no-sidebar-icon-no-card-with-padding: var(--width-window-no-sidebar-icon-no-card-with-padding);
+
 }
 
 @layer base {
