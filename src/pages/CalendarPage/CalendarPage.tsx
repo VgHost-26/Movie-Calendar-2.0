@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card'
 import TextTransition from '@/components/ui/TextTransition'
 import { WEEKDAYS } from '@/global/globals'
 import useAuth from '@/hooks/useAuth'
-import type { Movie } from '@/Types/types'
+import type { Movie, ScrollDirection } from '@/Types/types'
 import { getCalendarGrid } from '@/utils/dateFunctions'
 import { addMonths, subMonths, format, isSameMonth } from 'date-fns'
 import { ChevronLeftIcon, ChevronRightIcon, TimerResetIcon } from 'lucide-react'
@@ -14,14 +14,14 @@ import { useEffect, useMemo, useState } from 'react'
 const currentDate = new Date()
 const CalendarPage = () => {
   const [viewingDate, setViewingDate] = useState(currentDate)
-  const [switchDirection, setSwitchDirection] = useState<'up' | 'down'>('up')
+  const [switchDirection, setSwitchDirection] = useState<ScrollDirection>(1)
 
   const { user, loading } = useAuth()
   const userId = user?.uid ?? ''
   console.log('authLoading:', loading, 'userId:', userId)
   const { data: movies, isLoading, error, isFetching } = useGetMovies(userId)
-  
-  console.log('query state:', { isLoading, isFetching, dataLength: movies?.length });
+
+  console.log('query state:', { isLoading, isFetching, dataLength: movies?.length })
 
   const monthDays = getCalendarGrid(viewingDate)
   const monthDaysWithMovies = useMemo(() => {
@@ -82,14 +82,14 @@ const CalendarPage = () => {
           )}
           <Button
             variant="secondary"
-            onMouseOver={() => setSwitchDirection('down')}
+            onMouseOver={() => setSwitchDirection(-1)}
             onPress={handlePreviousMonth}
           >
             <ChevronLeftIcon />
           </Button>
           <Button
             variant="secondary"
-            onMouseOver={() => setSwitchDirection('up')}
+            onMouseOver={() => setSwitchDirection(1)}
             onPress={handleNextMonth}
           >
             <ChevronRightIcon />

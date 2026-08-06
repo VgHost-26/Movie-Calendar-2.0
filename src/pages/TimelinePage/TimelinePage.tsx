@@ -11,6 +11,8 @@ import TextTransition from '@/components/ui/TextTransition'
 import { isReleased } from '@/utils/movieFunctions'
 import { useGetMovies } from '@/api/apiFirebase'
 import useAuth from '@/hooks/useAuth'
+import AddMovieDialog from '@/components/calendar/AddMovieDialog'
+import { DialogTrigger } from '@/components/ui/dialog'
 
 const MOCKED_MOVIES: Movie[] = [
   {
@@ -85,7 +87,8 @@ const TimelinePage = () => (
 )
 const TimelinePageContent = () => {
   const { scrollToCard, activeCardIndex, registerLenisRef, scrollDirection } = useTimeline()
-  // TODO: Create type
+  const [isAddMovieDialogOpen, setIsAddMovieDialogOpen] = useState(false)
+
   const { user, loading } = useAuth()
   const userId = user?.uid ?? ''
 
@@ -120,7 +123,6 @@ const TimelinePageContent = () => {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      {/* <div className="absolute inset-0 z-110 ml-auto h-dvh w-window-no-sidebar-icon-with-padding bg-amber-600 outline"></div> */}
       <div className="flex flex-none items-end p-window">
         <h1 className="ml-[-0.05em] w-full text-9xl font-bold uppercase">
           <TextTransition direction={scrollDirection}>{activeCardMonth}</TextTransition>
@@ -138,9 +140,12 @@ const TimelinePageContent = () => {
           <Button size={'icon'} variant={'default'} onPress={handleScrollToFirstMovie}>
             <ChevronRightIcon className="text-primary-foreground" />
           </Button>
-          <Button size={'icon'} variant={'default'} onPress={() => {}}>
-            <PlusIcon className="text-primary-foreground" />
-          </Button>
+          <DialogTrigger isOpen={isAddMovieDialogOpen} onOpenChange={setIsAddMovieDialogOpen}>
+            <Button size={'icon'} variant={'default'}>
+              <PlusIcon className="text-primary-foreground" />
+            </Button>
+            <AddMovieDialog handleOpenChange={setIsAddMovieDialogOpen} />
+          </DialogTrigger>
         </div>
         <div className="flex items-end text-muted-foreground">
           <p>

@@ -49,7 +49,7 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index: i }: Props
         {...(firstUnreleasedMovieIndex === i && { 'data-first-unreleased': true })}
         key={`${movie.date}-${i}`}
         ratio={2 / 3}
-        className="z-90 h-[80dvh] cursor-pointer"
+        className="z-50 h-[80dvh] cursor-pointer"
       >
         <img
           src={posterToDisplay}

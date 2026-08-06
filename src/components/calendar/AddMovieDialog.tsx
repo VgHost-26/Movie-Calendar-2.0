@@ -14,16 +14,15 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Input } from '../ui/input'
 import { AspectRatio } from '../ui/aspect-ratio'
-import { fetchMovie } from '@/api/apiTMDB'
 import imagePlaceholder from '@/assets/images/poster-placeholder.png'
 
 type Props = {
-  date: CalendarDate | null
-  handleOpenChange?: (open: boolean) => void
+  date?: CalendarDate | null
+  handleOpenChange: (open: boolean) => void
 }
 
 const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
-  const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(date)
+  const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(date ?? null)
 
   const { addMovie, isLoading, error } = useAddMovie()
 
@@ -68,18 +67,18 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
     }
   }
 
-  const handleTitleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const title = e.target.value
-    const movieList = await fetchMovie(title)
-    console.log('Fetched movie data:', movieList)
-    if (movieList.length > 0) {
-      const movieData = movieList[0]
-      const partialPosterPath = movieData.poster_path
-      const posterUrl = `https://image.tmdb.org/t/p/w1280/${partialPosterPath}`
-      console.log('Poster URL:', posterUrl)
-      setValue('poster', posterUrl)
-    }
-  }
+  // const handleTitleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const title = e.target.value
+  //   const movieList = await fetchMovie(title)
+  //   console.log('Fetched movie data:', movieList)
+  //   if (movieList.length > 0) {
+  //     const movieData = movieList[0]
+  //     const partialPosterPath = movieData.poster_path
+  //     const posterUrl = `https://image.tmdb.org/t/p/w1280/${partialPosterPath}`
+  //     console.log('Poster URL:', posterUrl)
+  //     setValue('poster', posterUrl)
+  //   }
+  // }
 
   return (
     <Dialog>
@@ -90,7 +89,6 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
             <FieldLabel htmlFor="title">Title</FieldLabel>
             <input
               {...register('title')}
-              onBlur={handleTitleChange}
               type="text"
               id="title"
               name="title"
@@ -145,9 +143,14 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
           </div>
           <Field>
             <FieldLabel htmlFor="poster">Poster</FieldLabel>
-            <Input type="text" placeholder="Poster (optional)" {...register('poster')} />
+            <div className="flex">
+              <Input type="text" placeholder="Poster (optional)" {...register('poster')} />{' '}
+              <Button type="button" variant="secondary">
+                Autodetect
+              </Button>
+            </div>
             <FieldDescription>Preview</FieldDescription>
-            <AspectRatio ratio={2 / 3} className="">
+            <AspectRatio ratio={2 / 3} className="max-w-2/4">
               <img
                 src={watch('poster') || imagePlaceholder}
                 alt="Poster preview"
@@ -156,7 +159,7 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
             </AspectRatio>
           </Field>
           <div className="flex justify-end gap-4">
-            <Button type="button" variant="secondary">
+            <Button type="button" variant="secondary" onPress={() => handleOpenChange(false)}>
               Cancel
             </Button>
             <Button type="submit" variant="default">
