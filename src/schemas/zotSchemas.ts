@@ -10,4 +10,6 @@ export const movieSchema = z.object({
   platform: z.enum(PLATFORMS),
   trailerURL: z.string().optional(),
   poster: z.string().optional(),
+  TMDBId: z.number().optional(),
+  YoutubeId: z.string().optional(),
 })

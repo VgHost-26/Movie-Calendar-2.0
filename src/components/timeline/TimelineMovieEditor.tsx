@@ -14,11 +14,12 @@ import { CalendarDate } from '@internationalized/date'
 import { useDeleteMovie, useUpdateMovie } from '@/api/apiFirebase'
 import { toast } from 'sonner'
 import { AlertDeleteButton } from '../ui/delete-button'
-import { getPosterUrl, useSearchMoviesMutation, useSearchMultiMutation } from '@/api/apiTMDB'
+import { getPosterUrl, useSearchMultiMutation } from '@/api/apiTMDB'
 import type { TMDBMovie, TMDBMulti } from '@/Types/tmdbTypes'
 import { AspectRatio } from '../ui/aspect-ratio'
 import ReactLenis from 'lenis/react'
 import { Tooltip, TooltipTrigger } from '../ui/tooltip'
+import { useTimelineStore } from '@/store/store'
 
 type Props = {
   isOpen: boolean
@@ -38,6 +39,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
   const [morePostersOpen, setMorePostersOpen] = useState(false)
   const [morePosters, setMorePosters] = useState<TMDBMulti[]>([])
   const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(calendarDate)
+  const clearFocusedCardId = useTimelineStore((state) => state.clearFocusedCardId)
 
   const { deleteMovie } = useDeleteMovie()
   const { updateMovie } = useUpdateMovie()
@@ -65,6 +67,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
     onOpenChange(false)
     setMorePostersOpen(false)
     setPosterPreview(movieData.poster || '')
+    clearFocusedCardId()
     reset()
   }
 
@@ -98,6 +101,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
         console.log('Poster URL found:', posterUrl)
         setValue('poster', posterUrl)
         setPosterPreview(posterUrl)
+        setValue('TMDBId', firstResult.id)
       }
     } catch (error) {
       console.error('Error searching for poster:', error)
@@ -109,7 +113,10 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
     setMorePostersOpen((prev) => !prev)
   }
 
-  const handleSwitchPoster = (posterUrl: string) => {
+  const handleSwitchPoster = (movie: TMDBMulti | TMDBMovie) => {
+    const { poster_path, id } = movie
+    const posterUrl = poster_path ? `https://image.tmdb.org/t/p/w500${poster_path}` : ''
+    setValue('TMDBId', id)
     setValue('poster', posterUrl)
     setPosterPreview(posterUrl)
     // setMorePostersOpen(false)
@@ -254,6 +261,8 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                       <div className="flex gap-2">
                         {morePosters.map((movie) => {
                           const posterUrl = getPosterUrl(movie)
+                          const tooltipTitle = `${movie.title} ${movie.release_date ? `(${movie.release_date.split('-')[0]})` : ''}`
+
                           if (!posterUrl) return
                           return (
                             <TooltipTrigger>
@@ -266,16 +275,11 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                                   src={posterUrl}
                                   alt={movie.title}
                                   className="w-full object-cover"
-                                  onClick={() => handleSwitchPoster(posterUrl)}
+                                  onClick={() => handleSwitchPoster(movie)}
                                 />
                               </AspectRatio>
                               <Tooltip>
-                                <p>
-                                  {movie.title}{' '}
-                                  {movie.release_date
-                                    ? `(${movie.release_date.split('-')[0]})`
-                                    : ''}
-                                </p>
+                                <p>{tooltipTitle}</p>
                               </Tooltip>
                             </TooltipTrigger>
                           )

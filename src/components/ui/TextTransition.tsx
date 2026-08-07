@@ -4,12 +4,20 @@ import { ScrollDirection } from '@/Types/types'
 
 type Props = {
   direction?: ScrollDirection
+  exitDirection?: 'same' | 'opposite'
   speed?: number
   children: ReactNode
+  className?: string
 }
 
 // TODO: fix rapid changes - occur very rarely
-const TextTransition = ({ children, direction = ScrollDirection.FORWARD, speed = 300 }: Props) => {
+const TextTransition = ({
+  children,
+  direction = ScrollDirection.FORWARD,
+  exitDirection = 'same',
+  speed = 300,
+  className,
+}: Props) => {
   const variants = useMemo(() => {
     const isUp = direction === ScrollDirection.BACKWARD
     return {
@@ -20,16 +28,22 @@ const TextTransition = ({ children, direction = ScrollDirection.FORWARD, speed =
         y: '0%',
       },
       exit: {
-        y: isUp ? '-100%' : '100%',
+        y: isUp
+          ? exitDirection === 'same'
+            ? '-100%'
+            : '100%'
+          : exitDirection === 'same'
+            ? '100%'
+            : '-100%',
       },
     }
-  }, [direction])
+  }, [direction, exitDirection])
 
   return (
-    <div className="relative flex flex-col overflow-hidden">
-      <AnimatePresence mode="popLayout" initial={false}>
+    <div className={`relative flex flex-col overflow-hidden ${className || ''}`}>
+      <AnimatePresence mode="popLayout">
         <motion.span
-          key={`${children?.toString()}`}
+          key={children?.toString()}
           variants={variants}
           initial="initial"
           animate="animate"

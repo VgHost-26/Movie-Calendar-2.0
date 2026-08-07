@@ -4,9 +4,10 @@ import { differenceInDays } from 'date-fns'
 import { isReleased } from '@/utils/movieFunctions'
 import posterPlaceholder from '@/assets/images/poster-placeholder.png'
 import TimelineMovieEditor from './TimelineMovieEditor'
-import { useMemo, useState } from 'react'
+import {  useMemo, useState } from 'react'
 import { useTimeline } from '@/hooks/useTimeline'
 import { PLATFORMS_ICONS } from '@/global/globals'
+import { useTimelineStore } from '@/store/store'
 
 type Props = {
   movie: Movie
@@ -15,18 +16,26 @@ type Props = {
 }
 const currentDate = new Date()
 
-const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index: i }: Props) => {
+const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) => {
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [posterPreview, setPosterPreview] = useState(movie.poster || posterPlaceholder)
 
-  const { scrollToCard, activeCardIndex, lenisRef } = useTimeline()
+  const { scrollToCard, lenisRef } = useTimeline()
+  const setFocusedCardId = useTimelineStore((state) => state.setFocusedCardId)
 
   const handleCardClick = () => {
     // TODO: Close other open editors
-    setIsEditOpen((prev) => !prev)
-    scrollToCard(i)
+    if (isEditOpen) {
+      setIsEditOpen(false)
+      setFocusedCardId(null)
+    } else {
+      setFocusedCardId(movie.id)
+      scrollToCard(index)
+      setIsEditOpen(true)
+    }
   }
 
+  // close on scroll
   lenisRef?.current?.lenis?.on('scroll', (e) => {
     if (e.userData && e.userData.source !== 'scrollToCard') {
       setIsEditOpen(false)
@@ -41,13 +50,23 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index: i }: Props
     }
   }, [isEditOpen, posterPreview, movie.poster])
 
+  // useEffect(() => {
+  //   // TODO: fix thiss so it will not scroll too far when both are oppen and one will close and move the scroll position
+  //   // if (focusedCardId !== movie.id) {
+  //   //   setIsEditOpen(false)
+  //   // } else {
+  //   //   setIsEditOpen(true)
+  //   //   scrollToCard(index)
+  //   // }
+  // }, [focusedCardId, isEditOpen])
+
   return (
     <div className="flex">
       <AspectRatio
         onClick={handleCardClick}
-        data-movie-index={i}
-        {...(firstUnreleasedMovieIndex === i && { 'data-first-unreleased': true })}
-        key={`${movie.date}-${i}`}
+        data-movie-index={index}
+        {...(firstUnreleasedMovieIndex === index && { 'data-first-unreleased': true })}
+        key={`${movie.date}-${index}`}
         ratio={2 / 3}
         className="z-50 h-[80dvh] cursor-pointer"
       >

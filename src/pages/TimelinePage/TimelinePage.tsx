@@ -1,10 +1,9 @@
 import { Button } from '@/components/ui/button'
-import { CalendarSyncIcon, ChevronLeft, ChevronRightIcon, PlusIcon } from 'lucide-react'
+import { ChevronRightIcon, PlusIcon } from 'lucide-react'
 import { ReactLenis } from 'lenis/react'
 import { useTimeline } from '@/hooks/useTimeline'
 import { TimelineContextProvider } from '@/components/providers/TimelineContext'
 import { useMemo, useState } from 'react'
-import type { Movie, ScrollDirection } from '@/Types/types'
 import { differenceInDays, format } from 'date-fns'
 import TimelineContent from '@/components/timeline/TimelineContent'
 import TextTransition from '@/components/ui/TextTransition'
@@ -13,72 +12,8 @@ import { useGetMovies } from '@/api/apiFirebase'
 import useAuth from '@/hooks/useAuth'
 import AddMovieDialog from '@/components/calendar/AddMovieDialog'
 import { DialogTrigger } from '@/components/ui/dialog'
+import { useTimelineStore } from '@/store/store'
 
-const MOCKED_MOVIES: Movie[] = [
-  {
-    id: '1',
-    date: '2026-06-01',
-    title: 'Batman',
-    platform: 'HBO Max',
-    poster: 'https://static.posters.cz/image/1300/133029.jpg',
-  },
-  {
-    id: '2',
-    date: '2026-06-02',
-    title: 'Batman',
-    platform: 'HBO Max',
-    poster: 'https://static.posters.cz/image/1300/133028.jpg',
-  },
-  {
-    id: '3',
-    date: '2026-07-19',
-    title: 'Batman',
-    platform: 'Netflix',
-    poster: 'https://static.posters.cz/image/1300/133030.jpg',
-  },
-  {
-    id: '4',
-    date: '2026-07-26',
-    title: 'Superman',
-    platform: 'Disney+',
-    poster: 'https://static.posters.cz/image/1300/133031.jpg',
-  },
-  {
-    id: '5',
-    date: '2026-07-29',
-    title: 'Spiderman',
-    platform: 'HBO Max',
-    poster: 'https://static.posters.cz/image/1300/133032.jpg',
-  },
-  {
-    id: '6',
-    date: '2026-07-29',
-    title: 'Spiderman',
-    platform: 'HBO Max',
-    poster: 'https://static.posters.cz/image/1300/133032.jpg',
-  },
-  {
-    id: '7',
-    date: '2026-08-29',
-    title: 'Spiderman',
-    platform: 'HBO Max',
-    poster: 'https://static.posters.cz/image/1300/133044.jpg',
-  },
-  {
-    id: '8',
-    date: '2026-08-29',
-    title: 'Spiderman',
-    platform: 'HBO Max',
-    poster: 'https://static.posters.cz/image/1300/133040.jpg',
-  },
-  {
-    id: '9',
-    date: '2026-08-29',
-    title: 'Spiderman',
-    platform: 'HBO Max',
-    poster: 'https://static.posters.cz/image/1300/133040.jpg',
-  },
-]
 const currentDate = new Date()
 const TimelinePage = () => (
   <TimelineContextProvider>
@@ -92,6 +27,7 @@ const TimelinePageContent = () => {
   const { user, loading } = useAuth()
   const userId = user?.uid ?? ''
 
+  const focusedCardId = useTimelineStore((state) => state.focusedCardId)
   const { data, isLoading } = useGetMovies(userId)
 
   const movies = useMemo(() => {
@@ -116,16 +52,37 @@ const TimelinePageContent = () => {
   }
 
   const activeCardMonth = useMemo(() => {
+    const focusedMovie = movies.find((m) => m.id === focusedCardId)
+    if (focusedMovie) {
+      return format(focusedMovie.date, 'MMMM')
+    }
     const activeMovie = movies[activeCardIndex]
     if (!activeMovie) return 'Timeline'
     return format(activeMovie.date, 'MMMM')
-  }, [activeCardIndex])
+  }, [activeCardIndex, focusedCardId])
+
+  const focusedCardDate = useMemo(() => {
+    if (!focusedCardId) return ' '
+    const focusedMovie = movies.find((m) => m.id === focusedCardId)
+    if (!focusedMovie) return ' '
+    const date = new Date(focusedMovie.date)
+    const [day, ending] = format(date, 'do').split(/(\d+)/).filter(Boolean)
+    return (
+      <>
+        {day}
+        <span className="text-[0.6em] font-light lowercase leading-none">{ending}</span>
+      </>
+    )
+  }, [focusedCardId, movies])
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
       <div className="flex flex-none items-end p-window">
-        <h1 className="ml-[-0.05em] w-full text-9xl font-bold uppercase">
+        <h1 className="ml-[-0.05em] flex w-full gap-10 text-9xl font-bold uppercase">
           <TextTransition direction={scrollDirection}>{activeCardMonth}</TextTransition>
+          <TextTransition direction={-1} exitDirection="opposite" className="w-[4ch]">
+            {focusedCardDate}
+          </TextTransition>
         </h1>
       </div>
       <ReactLenis
