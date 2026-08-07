@@ -15,7 +15,7 @@ export interface TimelineContextProps {
 }
 
 export const TimelineContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const [activeCardIndex, setActiveCardIndex] = useState(0)
+  const [activeCardIndex, setActiveCardIndex] = useState(0) // Card in the center of the screen
   const [scrollDirection, setScrollDirection] = useState<ScrollDirection>(0)
   const lenisRef = useRef<LenisRef | null>(null)
 

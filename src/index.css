@@ -272,3 +272,17 @@
 
 
 }
+
+.number-trim {
+  /* Chrome, Edge, Safari: crop the box to the actual cap-height/baseline */
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+}
+
+/* Firefox doesn't support text-box-trim yet — approximate it by hand */
+@supports not (text-box-trim: trim-both) {
+  .number-trim {
+    /* tune these two values by eye for your actual font-family */
+    margin-block: -0.12em -0.1em;
+  }
+}

@@ -85,18 +85,23 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
             />
           </div>
           <div className="flex flex-1 items-end justify-between">
-            <div className="flex items-baseline gap-2">
+            <div className="flex gap-2">
               {isReleased(movie.date) ? (
                 <h1 className="text-5xl font-bold text-white">Released</h1>
               ) : (
-                <h1 className="text-8xl font-bold text-white">
-                  {differenceInDays(new Date(movie.date), currentDate).toString().padStart(2, '0')}
-                </h1>
-              )}
-              {isReleased(movie.date) ? (
-                ''
-              ) : (
-                <span className="font-heading text-lg text-primary">Days left</span>
+                <div className="flex items-stretch gap-1">
+                  <h1 className="number-trim flex items-center text-8xl leading-none font-bold text-white">
+                    {differenceInDays(new Date(movie.date), currentDate)
+                      .toString()
+                      .padStart(2, '0')}
+                  </h1>
+
+                  <div className="flex items-center justify-center">
+                    <span className="text-md rotate-180 font-heading text-primary [text-align-last:justify] [text-orientation:sideways] [writing-mode:vertical-rl]">
+                      Days left
+                    </span>
+                  </div>
+                </div>
               )}
             </div>
             <h2 className="text-4xl font-bold text-white">{movie.title}</h2>

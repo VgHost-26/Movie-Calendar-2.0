@@ -35,7 +35,7 @@ const TimelineContent = ({ movies, firstUnreleasedMovieIndex }: Props) => {
   })
 
   return (
-    <div className="flex w-max items-center gap-20 pl-4">
+    <div className="flex bg-red-400 w-max items-center gap-20 pl-4">
       {movies.map((movie, i) => (
         <div
           ref={(el) => {
@@ -50,7 +50,7 @@ const TimelineContent = ({ movies, firstUnreleasedMovieIndex }: Props) => {
           />
         </div>
       ))}
-      {/* NOTE: magick number */}
+      {/* NOTE: magic number */}
       <div className="w-[calc(100dvw-(160dvh/3)-160px)]"></div>
     </div>
   )

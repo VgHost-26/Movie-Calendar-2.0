@@ -70,14 +70,14 @@ const TimelinePageContent = () => {
     return (
       <>
         {day}
-        <span className="text-[0.6em] font-light lowercase leading-none">{ending}</span>
+        <span className="text-[0.6em] leading-none font-light lowercase">{ending}</span>
       </>
     )
   }, [focusedCardId, movies])
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      <div className="flex flex-none items-end p-window">
+      <div className="flex items-end p-window">
         <h1 className="ml-[-0.05em] flex w-full gap-10 text-9xl font-bold uppercase">
           <TextTransition direction={scrollDirection}>{activeCardMonth}</TextTransition>
           <TextTransition direction={-1} exitDirection="opposite" className="w-[4ch]">
