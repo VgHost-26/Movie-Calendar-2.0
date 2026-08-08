@@ -43,13 +43,12 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
 
   const { deleteMovie } = useDeleteMovie()
   const { updateMovie } = useUpdateMovie()
-  const { mutateAsync, data, isPending } = useSearchMultiMutation()
+  const { mutateAsync } = useSearchMultiMutation()
   const {
     reset,
     setValue,
     register,
     handleSubmit,
-    formState: { errors },
     control,
     watch,
   } = useForm<MovieFormData>({
@@ -133,11 +132,11 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
           exit={{ translateX: '-100%', marginRight: 'calc(var(--width-timeline-card) * -1)' }}
           transition={{ duration: 0.4, ease: 'easeInOut' }}
 
-          className={`z-10 w-timeline-card max-w-window-no-sidebar-icon-no-card-with-padding overflow-hidden bg-background`}
+          className={`z-10 w-timeline-card h-full overflow-y-auto scrollbar-hide bg-background max-w-window-no-sidebar-icon-no-card-with-padding`}
         >
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex w-timeline-card flex-col gap-4 p-4"
+            className="flex w-full flex-col gap-4 p-4"
           >
             <FieldSet>
               <FieldLegend className="flex items-center gap-2">

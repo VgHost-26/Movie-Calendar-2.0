@@ -4,7 +4,7 @@ import { differenceInDays } from 'date-fns'
 import { isReleased } from '@/utils/movieFunctions'
 import posterPlaceholder from '@/assets/images/poster-placeholder.png'
 import TimelineMovieEditor from './TimelineMovieEditor'
-import {  useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTimeline } from '@/hooks/useTimeline'
 import { PLATFORMS_ICONS } from '@/global/globals'
 import { useTimelineStore } from '@/store/store'
@@ -39,6 +39,7 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
   lenisRef?.current?.lenis?.on('scroll', (e) => {
     if (e.userData && e.userData.source !== 'scrollToCard') {
       setIsEditOpen(false)
+      setFocusedCardId(null)
     }
   })
 
@@ -61,50 +62,51 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
   // }, [focusedCardId, isEditOpen])
 
   return (
-    <div className="flex">
+    <div className="flex h-full">
       <AspectRatio
         onClick={handleCardClick}
         data-movie-index={index}
         {...(firstUnreleasedMovieIndex === index && { 'data-first-unreleased': true })}
         key={`${movie.date}-${index}`}
         ratio={2 / 3}
-        className="z-50 h-[80dvh] cursor-pointer"
+        className="z-50 h-full w-timeline-card cursor-pointer"
       >
         <img
           src={posterToDisplay}
           // alt={movie.title}
-          className={`h-full object-cover ${isReleased(movie.date) ? '' : 'grayscale'}`}
+          className={`h-full w-full object-cover ${isReleased(movie.date) ? '' : 'grayscale'}`}
         />
-        <div className="absolute inset-0 flex flex-1 flex-col justify-between p-4">
+        <div className="absolute inset-0 flex flex-1 flex-col justify-between p-3 bg-linear-0 from-0% from-black/80 to-30% to-transparent ">
+          {/* Platform badge */}
           <div className="ml-auto flex">
             <img
               title={movie.platform}
               src={PLATFORMS_ICONS[movie.platform]}
               alt={movie.platform}
-              className="h-10 bg-accent p-2"
+              className="h-10 bg-accent p-1.5"
             />
           </div>
-          <div className="flex flex-1 items-end justify-between">
-            <div className="flex gap-2">
+          <div className="flex flex-1 items-end justify-between ">
+            <div>
               {isReleased(movie.date) ? (
                 <h1 className="text-5xl font-bold text-white">Released</h1>
               ) : (
-                <div className="flex items-stretch gap-1">
-                  <h1 className="number-trim flex items-center text-8xl leading-none font-bold text-white">
+                <div className="flex items-stretch gap-0.5">
+                  <h1 className="number-trim flex items-center text-8xl font-bold text-white">
                     {differenceInDays(new Date(movie.date), currentDate)
                       .toString()
                       .padStart(2, '0')}
                   </h1>
 
                   <div className="flex items-center justify-center">
-                    <span className="text-md rotate-180 font-heading text-primary [text-align-last:justify] [text-orientation:sideways] [writing-mode:vertical-rl]">
+                    <span className="text-md rotate-180 font-heading leading-none text-primary [text-align-last:justify] [text-orientation:sideways] [writing-mode:vertical-rl]">
                       Days left
                     </span>
                   </div>
                 </div>
               )}
             </div>
-            <h2 className="text-4xl font-bold text-white">{movie.title}</h2>
+            <h2 className="text-4xl leading-tight font-bold text-white">{movie.title}</h2>
           </div>
         </div>
       </AspectRatio>

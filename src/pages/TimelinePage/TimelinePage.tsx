@@ -24,7 +24,7 @@ const TimelinePageContent = () => {
   const { scrollToCard, activeCardIndex, registerLenisRef, scrollDirection } = useTimeline()
   const [isAddMovieDialogOpen, setIsAddMovieDialogOpen] = useState(false)
 
-  const { user, loading } = useAuth()
+  const { user } = useAuth()
   const userId = user?.uid ?? ''
 
   const focusedCardId = useTimelineStore((state) => state.focusedCardId)
@@ -69,8 +69,8 @@ const TimelinePageContent = () => {
     const [day, ending] = format(date, 'do').split(/(\d+)/).filter(Boolean)
     return (
       <>
-        {day}
-        <span className="text-[0.6em] leading-none font-light lowercase">{ending}</span>
+        {day?.padStart(2, '0')}
+        <span className="text-[0.6em] leading-0 font-light lowercase">{ending}</span>
       </>
     )
   }, [focusedCardId, movies])
@@ -86,7 +86,7 @@ const TimelinePageContent = () => {
         </h1>
       </div>
       <ReactLenis
-        className="flex-1 overflow-hidden"
+        className="timeline-lenis flex-1 overflow-hidden"
         options={{ orientation: 'horizontal', gestureOrientation: 'vertical', smoothWheel: true }}
         ref={registerLenisRef}
       >

@@ -2,7 +2,7 @@ import { useTimeline } from '@/hooks/useTimeline'
 import TimelineMovieCard from './TimelineMovieCard'
 import type { Movie } from '@/Types/types'
 import { useLenis } from 'lenis/react'
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 
 type Props = {
   movies: Movie[]
@@ -12,11 +12,29 @@ type Props = {
 const TimelineContent = ({ movies, firstUnreleasedMovieIndex }: Props) => {
   const { setActiveCardIndex, setScrollDirection } = useTimeline()
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
-  const windowWidth = window.innerWidth
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Calculate a reasonable initial height estimate to prevent layout shifts on mount
+  const [containerHeight, setContainerHeight] = useState(() =>
+    typeof window !== 'undefined' ? Math.max(400, window.innerHeight - 350) : 600,
+  )
+
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerHeight(entry.contentRect.height)
+      }
+    })
+
+    resizeObserver.observe(containerRef.current)
+    return () => resizeObserver.disconnect()
+  }, [])
 
   useLenis(({ scroll, direction }) => {
     setScrollDirection(direction)
-    const leftQuarter = scroll + windowWidth / 4
+    const leftQuarter = scroll + window.innerWidth / 4
 
     let closestIndex = 0
     let minDist = Infinity
@@ -34,14 +52,26 @@ const TimelineContent = ({ movies, firstUnreleasedMovieIndex }: Props) => {
     setActiveCardIndex(closestIndex)
   })
 
+  const cardWidth = containerHeight * (2 / 3)
+
   return (
-    <div className="flex bg-red-400 w-max items-center gap-20 pl-4">
+    <div
+      ref={containerRef}
+      style={
+        {
+          '--width-timeline-card': `${cardWidth}px`,
+          '--max-width-timeline-card': `${cardWidth}px`,
+        } as React.CSSProperties
+      }
+      className="flex h-full w-max items-stretch gap-20 pl-4"
+    >
       {movies.map((movie, i) => (
         <div
           ref={(el) => {
             itemRefs.current[i] = el
           }}
           key={`${movie.id}`}
+          className="flex h-full items-center"
         >
           <TimelineMovieCard
             movie={movie}
@@ -50,8 +80,11 @@ const TimelineContent = ({ movies, firstUnreleasedMovieIndex }: Props) => {
           />
         </div>
       ))}
-      {/* NOTE: magic number */}
-      <div className="w-[calc(100dvw-(160dvh/3)-160px)]"></div>
+      {/* Spacer to allow scrolling the last card to the target alignment point */}
+      <div
+        style={{ width: `calc(100vw - ${cardWidth}px - 80px - var(--sidebar-width-icon) - var(--padding-window) * 1.5)` }}
+        className="shrink-0"
+      ></div>
     </div>
   )
 }
