@@ -107,7 +107,7 @@ const TimelinePageContent = () => {
         <div className="flex items-end text-muted-foreground">
           <p>
             Next release:{' '}
-            <span className="text-primary">
+            <span className="text-primary hover:underline hover:cursor-pointer" onClick={handleScrollToFirstMovie}>
               {movies[firstUnreleasedMovieIndex]?.title || 'No upcoming releases'}
             </span>{' '}
             {movies[firstUnreleasedMovieIndex]?.date && (
