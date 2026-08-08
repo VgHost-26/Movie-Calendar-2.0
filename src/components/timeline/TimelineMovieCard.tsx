@@ -89,7 +89,7 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
           <div className="flex flex-1 items-end justify-between ">
             <div>
               {isReleased(movie.date) ? (
-                <h1 className="text-5xl font-bold text-white">Released</h1>
+                <h1 className="text-5xl font-semibold text-white">Released</h1>
               ) : (
                 <div className="flex items-stretch gap-0.5">
                   <h1 className="number-trim flex items-center text-8xl font-bold text-white">
@@ -106,7 +106,7 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
                 </div>
               )}
             </div>
-            <h2 className="text-4xl leading-tight font-bold text-white">{movie.title}</h2>
+            <h2 className="text-4xl leading-tight font-semibold text-white">{movie.title}</h2>
           </div>
         </div>
       </AspectRatio>
