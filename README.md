@@ -1,5 +1,6 @@
-# Movie Calendar (Work in progress)
+# Movie Calendar 2.0 (Work in progress)
 App to track upcoming movie premiers
+This is complete rework of my first ever React app 
 
 ## Idea
 Have you ever watched a trailer of a movie and thought "This will be an interesting movie to watch" and then realised that premier is next year. Then you forget about it and probably never watch that thing.
