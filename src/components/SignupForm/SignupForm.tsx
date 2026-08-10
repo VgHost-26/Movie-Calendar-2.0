@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input"
 import { Link, useNavigate } from "react-router-dom"
 import { auth } from "@/lib/firebase"
 import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth"
-import { useForm, type FieldError } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import type { SignupFormData } from "@/Types/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signupSchema } from "@/schemas/zotSchemas"
@@ -51,16 +51,16 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 
     try {
       setLoading(true)
-      const response = await createUserWithEmailAndPassword(auth, email, password)
-      console.log('reponse: ', response)
-      toast('Account created successfully', {
-        description: 'Welcome to Movie Calendar!',
-      })
+      await createUserWithEmailAndPassword(auth, email, password)
+
       if (auth.currentUser) {
         await updateProfile(auth.currentUser, {
           displayName: name
         })
       }
+      toast('Account created successfully', {
+        description: `Welcome to Movie Calendar, ${name}!`,
+      })
       navigate('/timeline')
     } catch (error) {
       if (error instanceof FirebaseError) {
@@ -71,7 +71,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           })
         } else {
           console.log('Error signing up with email:', error)
-          toast.error('Error signing up with email')
+          toast.error('Error signing up with email, try again later')
         }
       }
     } finally {

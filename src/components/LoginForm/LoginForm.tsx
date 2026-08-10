@@ -9,7 +9,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { loginSchema } from '@/schemas/zotSchemas'
 import type { LoginFormData } from '@/Types/types'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, type FieldError } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import FieldErrorMessage from '../ui/field-error-message'
 
 
