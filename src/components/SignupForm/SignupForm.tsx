@@ -23,6 +23,7 @@ import { signupSchema } from "@/schemas/zotSchemas"
 import { toast } from "sonner"
 import { FirebaseError } from "firebase/app"
 import { useState } from "react"
+import FieldErrorMessage from "../ui/field-error-message"
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const navigate = useNavigate()
@@ -83,12 +84,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     createUserWithEmail(email, password, name)
   }
 
-  const ErrorMessage = ({ fieldError }: { fieldError: FieldError | undefined }) => {
-    if (!fieldError?.message) return null
-    return (
-      <FieldDescription>{fieldError.message}</FieldDescription>
-    )
-  }
 
   return (
     <Card {...props}>
@@ -109,7 +104,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 type="text"
                 placeholder="John Doe"
               />
-              <ErrorMessage fieldError={errors.name} />
+              <FieldErrorMessage fieldError={errors.name} />
             </Field>
             <Field data-invalid={!!errors.email?.message}>
               <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -119,7 +114,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 type="email"
                 placeholder="m@example.com"
               />
-              <ErrorMessage fieldError={errors.email} />
+              <FieldErrorMessage fieldError={errors.email} />
             </Field>
             <Field data-invalid={!!errors.password?.message}>
               <FieldLabel htmlFor="password">Password</FieldLabel>
@@ -128,7 +123,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 id="password"
                 type="password"
               />
-              <ErrorMessage fieldError={errors.password} />
+              <FieldErrorMessage fieldError={errors.password} />
             </Field>
             <Field data-invalid={!!errors.confirmPassword?.message}>
               <FieldLabel htmlFor="confirm-password">
@@ -139,7 +134,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 id="confirm-password"
                 type="password"
               />
-              <ErrorMessage fieldError={errors.confirmPassword} />
+              <FieldErrorMessage fieldError={errors.confirmPassword} />
             </Field>
             <FieldGroup>
               <Field>

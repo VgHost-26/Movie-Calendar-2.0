@@ -37,6 +37,9 @@ const SettingsPage = () => {
         </TabsContent>
         <TabsContent id="settings">
           <div className="text-lg font-semibold">Settings</div>
+          <div>
+            <p>Coming soon...</p>
+          </div>
         </TabsContent>
       </Tabs>
       <footer>version: {pkg.version}</footer>

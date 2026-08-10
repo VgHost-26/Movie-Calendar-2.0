@@ -10,6 +10,7 @@ import { loginSchema } from '@/schemas/zotSchemas'
 import type { LoginFormData } from '@/Types/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, type FieldError } from 'react-hook-form'
+import FieldErrorMessage from '../ui/field-error-message'
 
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
@@ -42,12 +43,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
     loginWithEmail(email, password)
   }
 
-  const ErrorMessage = ({ fieldError }: { fieldError: FieldError | undefined }) => {
-    if (!fieldError?.message) return null
-    return (
-      <FieldDescription>{fieldError.message}</FieldDescription>
-    )
-  }
+
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
@@ -62,7 +58,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
               <Field data-invalid={!!errors.email?.message}>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input id="email" type="email" {...register('email')} placeholder="m@example.com" />
-                <ErrorMessage fieldError={errors.email} />
+                <FieldErrorMessage fieldError={errors.email} />
               </Field>
               <Field data-invalid={!!errors.password?.message}>
                 <FieldLabel htmlFor="password">Password</FieldLabel>
@@ -76,7 +72,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                     Forgot your password?
                   </Link>
                 </div>
-                <ErrorMessage fieldError={errors.password} />
+                <FieldErrorMessage fieldError={errors.password} />
               </Field>
               <Field>
                 <Button type="submit" >Login</Button>

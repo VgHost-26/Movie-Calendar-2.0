@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Input } from '../ui/input'
 import { AspectRatio } from '../ui/aspect-ratio'
 import imagePlaceholder from '@/assets/images/poster-placeholder.png'
+import FieldErrorMessage from '../ui/field-error-message'
 
 type Props = {
   date?: CalendarDate | null
@@ -25,14 +26,13 @@ type Props = {
 const AddMovieDialog = ({ date, isOpen, setIsOpen }: Props) => {
   const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(date ?? null)
 
-  const { addMovie, isLoading, error } = useAddMovie()
+  const { addMovie } = useAddMovie()
 
   const {
     reset,
     register,
     handleSubmit,
     watch,
-    setValue,
     formState: { errors },
     control,
   } = useForm<MovieFormData>({
@@ -94,13 +94,6 @@ const AddMovieDialog = ({ date, isOpen, setIsOpen }: Props) => {
   //     setValue('poster', posterUrl)
   //   }
   // }
-
-  const FieldErrorMessage = ({ fieldError }: { fieldError: FieldError | undefined }) => {
-    if (!fieldError?.message) return null
-    return (
-      <FieldDescription>{fieldError.message}</FieldDescription>
-    )
-  }
 
   return (
     <Dialog isOpen={isOpen} onOpenChange={handleOpenChange}>

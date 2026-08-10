@@ -1,4 +1,4 @@
-import { PLATFORMS } from '@/global/globals'
+import { LANGUAGES, PLATFORMS } from '@/global/globals'
 import type { loginSchema, movieSchema, signupSchema } from '@/schemas/zotSchemas'
 import type z from 'zod'
 
@@ -10,6 +10,7 @@ export const ScrollDirection = {
 export type ScrollDirection = (typeof ScrollDirection)[keyof typeof ScrollDirection]
 
 export type Platform = (typeof PLATFORMS)[number]
+export type Language = (typeof LANGUAGES)[number]
 export interface Movie {
   id: string
   date: string
@@ -22,7 +23,6 @@ export interface Movie {
   YoutubeId?: string
 }
 
-export type MovieFormData = z.infer<typeof movieSchema>
 
 export interface CalendarDay {
   date: Date
@@ -32,6 +32,14 @@ export interface CalendarDay {
   isWeekend: boolean
   movies?: Movie[]
 }
+export interface UserSettings {
+  platforms: Platform[]
+  languageId: Language['id']
+  isPosterText: boolean
+  isPremiumUser?: boolean
+}
 
+
+export type MovieFormData = z.infer<typeof movieSchema>
 export type LoginFormData = z.infer<typeof loginSchema>
 export type SignupFormData = z.infer<typeof signupSchema>

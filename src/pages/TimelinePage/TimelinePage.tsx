@@ -13,6 +13,7 @@ import useAuth from '@/hooks/useAuth'
 import AddMovieDialog from '@/components/calendar/AddMovieDialog'
 import { useTimelineStore } from '@/store/store'
 import TimelineNoMovies from '@/components/timeline/TimelineNoMovies'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const currentDate = new Date()
 const TimelinePage = () => (
@@ -28,17 +29,14 @@ const TimelinePageContent = () => {
   const userId = user?.uid ?? ''
 
   const focusedCardId = useTimelineStore((state) => state.focusedCardId)
-  const { data, isLoading } = useGetMovies(userId)
+  const { data, isLoading, isPending } = useGetMovies(userId)
 
   const movies = useMemo(() => {
-    if (isLoading) {
-      return []
-    }
     if (!data) {
       return []
     }
     return data
-  }, [data, isLoading])
+  }, [data])
 
   const firstUnreleasedMovieIndex = useMemo(
     () => movies.findIndex((m) => !isReleased(m.date)),
@@ -90,10 +88,19 @@ const TimelinePageContent = () => {
         options={{ orientation: 'horizontal', gestureOrientation: 'vertical', smoothWheel: true }}
         ref={registerLenisRef}
       >
-        {movies.length === 0 ? <TimelineNoMovies handleOpenAddMovieDialog={() => setIsAddMovieDialogOpen(true)} /> :
-          <TimelineContent movies={movies} firstUnreleasedMovieIndex={firstUnreleasedMovieIndex} />
+        {isPending ? (
+          <Skeleton className='h-full w-timeline-card ml-4' />
+
+          /* <div className="flex h-full items-center justify-center">
+             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+            </div> */
+
+        ) : (
+          movies.length === 0 && !isLoading ? <TimelineNoMovies handleOpenAddMovieDialog={() => setIsAddMovieDialogOpen(true)} /> :
+            <TimelineContent movies={movies} firstUnreleasedMovieIndex={firstUnreleasedMovieIndex} />
+        )
         }
-      </ReactLenis>
+      </ReactLenis >
       <footer className="flex gap-6 p-window">
         <div className="flex gap-2">
           <Button size={'icon'} variant={'default'} onPress={handleScrollToFirstMovie}>
@@ -129,7 +136,7 @@ const TimelinePageContent = () => {
           </p>
         </div>
       </footer>
-    </div>
+    </div >
   )
 }
 export default TimelinePage

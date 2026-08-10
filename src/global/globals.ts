@@ -8,6 +8,7 @@ import youtube from '../assets/icons/platforms/youtube.svg'
 import peacock from '../assets/icons/platforms/peacock-light.svg'
 import paramount from '../assets/icons/platforms/paramount-plus.svg'
 import cinema from '../assets/icons/platforms/popcorn.svg'
+import type { UserSettings } from '@/Types/types'
 
 export const PLATFORMS = [
   'Netflix',
@@ -76,3 +77,15 @@ export const MONTHS_SHORT = [
   'Nov',
   'Dec',
 ] as const
+
+export const LANGUAGES = [
+  { id: 'en-US', name: 'English (US)', flag: '' },
+  { id: 'en-GB', name: 'English (UK)', flag: '' },
+  { id: 'pl-PL', name: 'Polish (Poland)', flag: '' },
+]
+export const DEFAULT_SETTINGS: UserSettings = {
+  languageId: 'en-US',
+  platforms: [...PLATFORMS],
+  isPosterText: true,
+  isPremiumUser: false
+}
