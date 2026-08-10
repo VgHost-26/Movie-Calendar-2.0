@@ -1,5 +1,5 @@
 import { PLATFORMS } from '@/global/globals'
-import type { movieSchema } from '@/schemas/zotSchemas'
+import type { loginSchema, movieSchema, signupSchema } from '@/schemas/zotSchemas'
 import type z from 'zod'
 
 export const ScrollDirection = {
@@ -32,3 +32,6 @@ export interface CalendarDay {
   isWeekend: boolean
   movies?: Movie[]
 }
+
+export type LoginFormData = z.infer<typeof loginSchema>
+export type SignupFormData = z.infer<typeof signupSchema>

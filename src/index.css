@@ -3,11 +3,10 @@
 @import 'shadcn/tailwind.css';
 @import 'lenis/dist/lenis.css';
 
-@import '@fontsource/space-grotesk';
-@import '@fontsource/space: grotesk/400.css';
-@import '@fontsource/space: grotesk/500.css';
-@import '@fontsource/space: grotesk/600.css';
-@import '@fontsource/space: grotesk/700.css';
+@import '@fontsource/space-grotesk/400.css';
+@import '@fontsource/space-grotesk/500.css';
+@import '@fontsource/space-grotesk/600.css';
+@import '@fontsource/space-grotesk/700.css';
 @import '@fontsource-variable/noto-sans';
 @import '@fontsource-variable/playfair-display';
 
@@ -291,6 +290,6 @@
   }
 }
 
-.timeline-lenis > div {
+.timeline-lenis>div {
   height: 100%;
 }

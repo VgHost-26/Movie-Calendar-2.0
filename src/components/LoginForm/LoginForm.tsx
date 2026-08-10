@@ -3,12 +3,21 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { Link, useNavigate } from 'react-router-dom'
+import { loginSchema } from '@/schemas/zotSchemas'
+import type { LoginFormData } from '@/Types/types'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm, type FieldError } from 'react-hook-form'
+
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
   const navigate = useNavigate()
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  })
+
   const handleLoginWithGoogle = async () => {
     const provider = new GoogleAuthProvider()
     try {
@@ -19,6 +28,27 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
     }
   }
 
+  const loginWithEmail = async (email: string, password: string) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password)
+      navigate('/timeline')
+    } catch (error) {
+      console.error('Error signing in with email:', error)
+    }
+  }
+
+  const onSubmit = (data: LoginFormData) => {
+    const { email, password } = data
+    loginWithEmail(email, password)
+  }
+
+  const ErrorMessage = ({ fieldError }: { fieldError: FieldError | undefined }) => {
+    if (!fieldError?.message) return null
+    return (
+      <FieldDescription>{fieldError.message}</FieldDescription>
+    )
+  }
+
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
@@ -27,26 +57,29 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
           <CardDescription>Enter your email below to login to your account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
-              <Field>
+              <Field data-invalid={!!errors.email?.message}>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input id="email" type="email" placeholder="m@example.com" required />
+                <Input id="email" type="email" {...register('email')} placeholder="m@example.com" />
+                <ErrorMessage fieldError={errors.email} />
               </Field>
-              <Field>
+              <Field data-invalid={!!errors.password?.message}>
+                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <Input id="password" type="password" {...register('password')} />
                 <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
                   <Link
                     to="/forgot-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                    className="ml-auto block text-sm underline-offset-4 hover:underline"
+
                   >
                     Forgot your password?
                   </Link>
                 </div>
-                <Input id="password" type="password" required />
+                <ErrorMessage fieldError={errors.password} />
               </Field>
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit" >Login</Button>
                 <Button variant="outline" type="button" onClick={handleLoginWithGoogle}>
                   Login with Google
                 </Button>
