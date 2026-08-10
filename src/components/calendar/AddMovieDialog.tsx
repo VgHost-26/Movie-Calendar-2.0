@@ -7,7 +7,7 @@ import type { CalendarDate } from '@internationalized/date'
 import { Button } from '../ui/button'
 import { toast } from 'sonner'
 import { useAddMovie } from '@/api/apiFirebase'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, type FieldError } from 'react-hook-form'
 import type { MovieFormData } from '@/Types/types'
 import { movieSchema } from '@/schemas/zotSchemas'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -18,10 +18,11 @@ import imagePlaceholder from '@/assets/images/poster-placeholder.png'
 
 type Props = {
   date?: CalendarDate | null
-  handleOpenChange: (open: boolean) => void
+  isOpen: boolean
+  setIsOpen: (open: boolean) => void
 }
 
-const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
+const AddMovieDialog = ({ date, isOpen, setIsOpen }: Props) => {
   const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(date ?? null)
 
   const { addMovie, isLoading, error } = useAddMovie()
@@ -67,6 +68,20 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
     }
   }
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      reset()
+    }
+    setIsOpen(open)
+  }
+
+  const handleCancel = () => {
+    reset()
+    setIsOpen(false)
+  }
+
+
+
   // const handleTitleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
   //   const title = e.target.value
   //   const movieList = await fetchMovie(title)
@@ -80,25 +95,32 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
   //   }
   // }
 
+  const FieldErrorMessage = ({ fieldError }: { fieldError: FieldError | undefined }) => {
+    if (!fieldError?.message) return null
+    return (
+      <FieldDescription>{fieldError.message}</FieldDescription>
+    )
+  }
+
   return (
-    <Dialog>
+    <Dialog isOpen={isOpen} onOpenChange={handleOpenChange}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FieldSet>
           <FieldLegend>Add Movie</FieldLegend>
-          <Field>
+          <Field data-invalid={!!errors.title?.message}>
             <FieldLabel htmlFor="title">Title</FieldLabel>
-            <input
+            <Input
               {...register('title')}
               type="text"
               id="title"
               name="title"
-              required
               placeholder="Movie title"
               className="px-2 py-1"
             />
+            <FieldErrorMessage fieldError={errors.title} />
           </Field>
           <div className="flex gap-8">
-            <Field>
+            <Field data-invalid={!!errors.date?.message}>
               <FieldLabel htmlFor="date">Date</FieldLabel>
               <Controller
                 name="date"
@@ -113,8 +135,9 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
                   />
                 )}
               />
+              <FieldErrorMessage fieldError={errors.date} />
             </Field>
-            <Field>
+            <Field data-invalid={!!errors.platform?.message}>
               <FieldLabel htmlFor="platform">Platform</FieldLabel>
               <Controller
                 name="platform"
@@ -139,9 +162,10 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
                   </Select>
                 )}
               />
+              <FieldErrorMessage fieldError={errors.platform} />
             </Field>
           </div>
-          <Field>
+          <Field >
             <FieldLabel htmlFor="poster">Poster</FieldLabel>
             <div className="flex">
               <Input type="text" placeholder="Poster (optional)" {...register('poster')} />{' '}
@@ -159,7 +183,7 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
             </AspectRatio>
           </Field>
           <div className="flex justify-end gap-4">
-            <Button type="button" variant="secondary" onPress={() => handleOpenChange(false)}>
+            <Button type="button" variant="secondary" onPress={handleCancel}>
               Cancel
             </Button>
             <Button type="submit" variant="default">
@@ -168,7 +192,7 @@ const AddMovieDialog = ({ date, handleOpenChange }: Props) => {
           </div>
         </FieldSet>
       </form>
-    </Dialog>
+    </Dialog >
   )
 }
 

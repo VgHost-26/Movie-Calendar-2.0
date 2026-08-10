@@ -11,8 +11,8 @@ import { isReleased } from '@/utils/movieFunctions'
 import { useGetMovies } from '@/api/apiFirebase'
 import useAuth from '@/hooks/useAuth'
 import AddMovieDialog from '@/components/calendar/AddMovieDialog'
-import { DialogTrigger } from '@/components/ui/dialog'
 import { useTimelineStore } from '@/store/store'
+import TimelineNoMovies from '@/components/timeline/TimelineNoMovies'
 
 const currentDate = new Date()
 const TimelinePage = () => (
@@ -90,33 +90,38 @@ const TimelinePageContent = () => {
         options={{ orientation: 'horizontal', gestureOrientation: 'vertical', smoothWheel: true }}
         ref={registerLenisRef}
       >
-        <TimelineContent movies={movies} firstUnreleasedMovieIndex={firstUnreleasedMovieIndex} />
+        {movies.length === 0 ? <TimelineNoMovies handleOpenAddMovieDialog={() => setIsAddMovieDialogOpen(true)} /> :
+          <TimelineContent movies={movies} firstUnreleasedMovieIndex={firstUnreleasedMovieIndex} />
+        }
       </ReactLenis>
       <footer className="flex gap-6 p-window">
         <div className="flex gap-2">
           <Button size={'icon'} variant={'default'} onPress={handleScrollToFirstMovie}>
             <ChevronRightIcon className="text-primary-foreground" />
           </Button>
-          <DialogTrigger isOpen={isAddMovieDialogOpen} onOpenChange={setIsAddMovieDialogOpen}>
-            <Button size={'icon'} variant={'default'}>
-              <PlusIcon className="text-primary-foreground" />
-            </Button>
-            <AddMovieDialog handleOpenChange={setIsAddMovieDialogOpen} />
-          </DialogTrigger>
+          <Button size={'icon'} variant={'default'} onPress={() => setIsAddMovieDialogOpen(true)}>
+            <PlusIcon className="text-primary-foreground" />
+          </Button>
+          <AddMovieDialog isOpen={isAddMovieDialogOpen} setIsOpen={setIsAddMovieDialogOpen} />
         </div>
         <div className="flex items-end text-muted-foreground">
           <p>
             Next release:{' '}
-            <span className="text-primary hover:underline hover:cursor-pointer" onClick={handleScrollToFirstMovie}>
-              {movies[firstUnreleasedMovieIndex]?.title || 'No upcoming releases'}
-            </span>{' '}
+            {movies[firstUnreleasedMovieIndex]?.title &&
+
+              <span className="text-primary hover:underline hover:cursor-pointer" onClick={handleScrollToFirstMovie}>
+                {movies[firstUnreleasedMovieIndex]?.title}
+              </span>
+
+            }
+            {' '}
             {movies[firstUnreleasedMovieIndex]?.date && (
               <span>
                 [
                 {`in 
                 ${differenceInDays(new Date(movies[firstUnreleasedMovieIndex].date), currentDate)
-                  .toString()
-                  .padStart(2, '0')}
+                    .toString()
+                    .padStart(2, '0')}
                 days`}
                 ]
               </span>
