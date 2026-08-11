@@ -84,7 +84,7 @@ const TimelineContent = ({ movies, isPending = false, isLoading = false, firstUn
             ref={(el) => {
               itemRefs.current[i] = el
             }}
-            key={`${movie.id}`}
+            key={movie.id}
             className="flex h-full items-center"
           >
             <TimelineMovieCard

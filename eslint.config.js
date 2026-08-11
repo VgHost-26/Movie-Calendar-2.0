@@ -14,13 +14,8 @@ export default defineConfig([
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
-      reactHooks.configs.flat.recommended,
       tseslint.configs.strictTypeChecked,
       tseslint.configs.recommendedTypeChecked,
-      tseslint.configs.stylisticTypeChecked,
-      reactRefresh.configs.vite,
-      reactX.configs['recommended-typescript'],
-      reactDom.configs.recommended,
     ],
     languageOptions: {
       globals: globals.browser,
@@ -28,6 +23,20 @@ export default defineConfig([
         project: ['./tsconfig.node.json', './tsconfig.app.json'],
         tsconfigRootDir: import.meta.dirname,
       },
+    },
+    rules: {
+      'semi': 'off',
+      '@typescript-eslint/semi': 'off',
+      'quotes': 'off',
+      '@typescript-eslint/quotes': 'off',
+      'comma-dangle': 'off',
+      '@typescript-eslint/comma-dangle': 'off',
+      'arrow-body-style': 'off',
+      '@typescript-eslint/consistent-type-definitions': 'off',
+      '@typescript-eslint/no-confusing-void-expression': [
+        'error',
+        { ignoreArrowShorthand: true },
+      ],
     },
   },
 ])

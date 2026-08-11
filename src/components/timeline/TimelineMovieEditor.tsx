@@ -229,7 +229,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                           size="icon"
                           onPress={handleShowMorePosters}
                         >
-                          <ChevronDownIcon className={`${morePostersOpen ? 'rotate-180' : ''}`} />
+                          <ChevronDownIcon className={morePostersOpen ? 'rotate-180' : ''} />
                         </Button>
                         <Tooltip placement="top end">
                           <p>Show More Posters</p>
