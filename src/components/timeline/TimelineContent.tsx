@@ -5,19 +5,20 @@ import { useLenis } from 'lenis/react'
 import { useRef, useState, useEffect } from 'react'
 import { Skeleton } from '../ui/skeleton'
 import TimelineNoMovies from './TimelineNoMovies'
+import { useTimelineStore } from '@/stores/timelineStore'
 
 type Props = {
   movies: Movie[]
   isPending?: boolean
   isLoading?: boolean
   firstUnreleasedMovieIndex: number
-  setIsOpen: (open: boolean) => void
 }
 
-const TimelineContent = ({ movies, isPending = false, isLoading = false, firstUnreleasedMovieIndex, setIsOpen }: Props) => {
+const TimelineContent = ({ movies, isPending = false, isLoading = false, firstUnreleasedMovieIndex }: Props) => {
   const { setActiveCardIndex, setScrollDirection } = useTimeline()
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
+  const setIsAddMovieDialogOpen = useTimelineStore((state) => state.setIsAddMovieDialogOpen)
 
   const [containerHeight, setContainerHeight] = useState(() =>
     typeof window !== 'undefined' ? Math.max(400, window.innerHeight - 350) : 600,
@@ -76,7 +77,7 @@ const TimelineContent = ({ movies, isPending = false, isLoading = false, firstUn
           <Skeleton className="h-full w-timeline-card" />
         </>
       ) : movies.length === 0 && !isPending ? (
-        <TimelineNoMovies handleOpenAddMovieDialog={() => setIsOpen(true)} />
+        <TimelineNoMovies />
       ) : (
         movies.map((movie, i) => (
           <div

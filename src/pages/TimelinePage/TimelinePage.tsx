@@ -11,9 +11,7 @@ import { isReleased } from '@/utils/movieFunctions'
 import { useGetMovies } from '@/api/apiFirebase'
 import useAuth from '@/hooks/useAuth'
 import AddMovieDialog from '@/components/calendar/AddMovieDialog'
-import { useTimelineStore } from '@/store/store'
-import TimelineNoMovies from '@/components/timeline/TimelineNoMovies'
-import { Skeleton } from '@/components/ui/skeleton'
+import { useTimelineStore } from '@/stores/timelineStore'
 
 const currentDate = new Date()
 const TimelinePage = () => (
@@ -23,12 +21,12 @@ const TimelinePage = () => (
 )
 const TimelinePageContent = () => {
   const { scrollToCard, activeCardIndex, registerLenisRef, scrollDirection } = useTimeline()
-  const [isAddMovieDialogOpen, setIsAddMovieDialogOpen] = useState(false)
-
   const { user } = useAuth()
   const userId = user?.uid ?? ''
 
   const focusedCardId = useTimelineStore((state) => state.focusedCardId)
+  const isAddMovieDialogOpen = useTimelineStore((state) => state.isAddMovieDialogOpen)
+  const setIsAddMovieDialogOpen = useTimelineStore((state) => state.setIsAddMovieDialogOpen)
   const { data, isLoading, isPending } = useGetMovies(userId)
 
   const movies = useMemo(() => {
@@ -94,7 +92,7 @@ const TimelinePageContent = () => {
         options={{ orientation: 'horizontal', gestureOrientation: 'vertical', smoothWheel: true }}
         ref={registerLenisRef}
       >
-        <TimelineContent setIsOpen={setIsAddMovieDialogOpen} movies={movies} isPending={isPending} isLoading={isLoading} firstUnreleasedMovieIndex={firstUnreleasedMovieIndex} />
+        <TimelineContent movies={movies} isPending={isPending} isLoading={isLoading} firstUnreleasedMovieIndex={firstUnreleasedMovieIndex} />
 
 
       </ReactLenis >

@@ -19,7 +19,7 @@ import type { TMDBMovie, TMDBMulti } from '@/Types/tmdbTypes'
 import { AspectRatio } from '../ui/aspect-ratio'
 import ReactLenis from 'lenis/react'
 import { Tooltip, TooltipTrigger } from '../ui/tooltip'
-import { useTimelineStore } from '@/store/store'
+import { useTimelineStore } from '@/stores/timelineStore'
 
 type Props = {
   isOpen: boolean

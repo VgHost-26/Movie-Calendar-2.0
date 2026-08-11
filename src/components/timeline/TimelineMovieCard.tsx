@@ -7,7 +7,7 @@ import TimelineMovieEditor from './TimelineMovieEditor'
 import { useMemo, useState } from 'react'
 import { useTimeline } from '@/hooks/useTimeline'
 import { PLATFORMS_ICONS } from '@/global/globals'
-import { useTimelineStore } from '@/store/store'
+import { useTimelineStore } from '@/stores/timelineStore'
 
 type Props = {
   movie: Movie
