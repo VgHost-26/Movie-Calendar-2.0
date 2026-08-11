@@ -1,8 +1,9 @@
-import { AppSidebar } from '@/components/AppSidebar/AppSidebar'
-import { SidebarProvider } from '@/components/ui/sidebar'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Outlet } from 'react-router-dom'
 import { Toaster } from 'sonner'
+
+import { AppSidebar } from '@/components/AppSidebar/AppSidebar'
+import { SidebarProvider } from '@/components/ui/sidebar'
 
 const MainLayout = () => {
   const queryClient = new QueryClient()

@@ -1,14 +1,15 @@
-import netflix from '../assets/icons/platforms/netflix.svg'
-import disney from '../assets/icons/platforms/disney-plus.svg'
-import amazon from '../assets/icons/platforms/amazon-prime-video.svg'
-import hulu from '../assets/icons/platforms/hulu.svg'
-import apple from '../assets/icons/platforms/apple-tv-light.svg'
-import hbo from '../assets/icons/platforms/hbo-max-light.svg'
-import youtube from '../assets/icons/platforms/youtube.svg'
-import peacock from '../assets/icons/platforms/peacock-light.svg'
-import paramount from '../assets/icons/platforms/paramount-plus.svg'
-import cinema from '../assets/icons/platforms/popcorn.svg'
 import type { UserSettings } from '@/Types/types'
+
+import amazon from '../assets/icons/platforms/amazon-prime-video.svg'
+import apple from '../assets/icons/platforms/apple-tv-light.svg'
+import disney from '../assets/icons/platforms/disney-plus.svg'
+import hbo from '../assets/icons/platforms/hbo-max-light.svg'
+import hulu from '../assets/icons/platforms/hulu.svg'
+import netflix from '../assets/icons/platforms/netflix.svg'
+import paramount from '../assets/icons/platforms/paramount-plus.svg'
+import peacock from '../assets/icons/platforms/peacock-light.svg'
+import cinema from '../assets/icons/platforms/popcorn.svg'
+import youtube from '../assets/icons/platforms/youtube.svg'
 
 export const PLATFORMS = [
   'Netflix',

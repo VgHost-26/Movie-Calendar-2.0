@@ -1,11 +1,13 @@
-import { useTimeline } from '@/hooks/useTimeline'
-import TimelineMovieCard from './TimelineMovieCard'
-import type { Movie } from '@/Types/types'
 import { useLenis } from 'lenis/react'
 import { useRef, useState, useEffect } from 'react'
+
+import type { Movie } from '@/Types/types'
+
+import { useTimeline } from '@/hooks/useTimeline'
+
 import { Skeleton } from '../ui/skeleton'
+import TimelineMovieCard from './TimelineMovieCard'
 import TimelineNoMovies from './TimelineNoMovies'
-import { useTimelineStore } from '@/stores/timelineStore'
 
 type Props = {
   movies: Movie[]
@@ -14,11 +16,15 @@ type Props = {
   firstUnreleasedMovieIndex: number
 }
 
-const TimelineContent = ({ movies, isPending = false, isLoading = false, firstUnreleasedMovieIndex }: Props) => {
+const TimelineContent = ({
+  movies,
+  isPending = false,
+  isLoading = false,
+  firstUnreleasedMovieIndex,
+}: Props) => {
   const { setActiveCardIndex, setScrollDirection } = useTimeline()
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
-  const setIsAddMovieDialogOpen = useTimelineStore((state) => state.setIsAddMovieDialogOpen)
 
   const [containerHeight, setContainerHeight] = useState(() =>
     typeof window !== 'undefined' ? Math.max(400, window.innerHeight - 350) : 600,
@@ -27,7 +33,7 @@ const TimelineContent = ({ movies, isPending = false, isLoading = false, firstUn
   useEffect(() => {
     if (!containerRef.current) return
 
-    const resizeObserver = new ResizeObserver((entries) => {
+    const resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
         setContainerHeight(entry.contentRect.height)
       }
@@ -81,7 +87,7 @@ const TimelineContent = ({ movies, isPending = false, isLoading = false, firstUn
       ) : (
         movies.map((movie, i) => (
           <div
-            ref={(el) => {
+            ref={el => {
               itemRefs.current[i] = el
             }}
             key={movie.id}
@@ -97,7 +103,9 @@ const TimelineContent = ({ movies, isPending = false, isLoading = false, firstUn
       )}
       {/* Spacer to allow scrolling the last card to the target alignment point */}
       <div
-        style={{ width: `calc(100vw - ${cardWidth}px - 80px - var(--sidebar-width-icon) - var(--padding-window) * 1.5)` }}
+        style={{
+          width: `calc(100vw - ${cardWidth}px - 80px - var(--sidebar-width-icon) - var(--padding-window) * 1.5)`,
+        }}
         className="shrink-0"
       ></div>
     </div>

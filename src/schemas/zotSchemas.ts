@@ -1,5 +1,6 @@
-import { PLATFORMS } from '@/global/globals'
 import { z } from 'zod'
+
+import { PLATFORMS } from '@/global/globals'
 
 export const movieSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { message: 'Date is required' }),

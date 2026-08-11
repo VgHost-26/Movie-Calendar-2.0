@@ -1,5 +1,6 @@
 "use client"
 
+import { XIcon } from "lucide-react"
 import * as React from "react"
 import {
   Dialog as DialogPrimitive,
@@ -12,9 +13,8 @@ import {
   type ModalOverlayProps as ModalOverlayPrimitiveProps,
 } from "react-aria-components"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { XIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 function DialogTrigger({ ...props }: DialogTriggerPrimitiveProps) {
   return <DialogTriggerPrimitive data-slot="dialog-trigger" {...props} />

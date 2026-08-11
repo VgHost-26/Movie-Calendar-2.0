@@ -1,3 +1,13 @@
+import { zodResolver } from "@hookform/resolvers/zod"
+import { FirebaseError } from "firebase/app"
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { Link, useNavigate } from "react-router-dom"
+import { toast } from "sonner"
+
+import type { SignupFormData } from "@/Types/types"
+
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -13,16 +23,9 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Link, useNavigate } from "react-router-dom"
 import { auth } from "@/lib/firebase"
-import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth"
-import { useForm } from "react-hook-form"
-import type { SignupFormData } from "@/Types/types"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { signupSchema } from "@/schemas/zotSchemas"
-import { toast } from "sonner"
-import { FirebaseError } from "firebase/app"
-import { useState } from "react"
+
 import FieldErrorMessage from "../ui/field-error-message"
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {

@@ -1,15 +1,18 @@
-import { cn } from '@/lib/utils'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
+import { useForm } from 'react-hook-form'
+import { Link, useNavigate } from 'react-router-dom'
+
+import type { LoginFormData } from '@/Types/types'
+
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
-import { Link, useNavigate } from 'react-router-dom'
+import { cn } from '@/lib/utils'
 import { loginSchema } from '@/schemas/zotSchemas'
-import type { LoginFormData } from '@/Types/types'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+
 import FieldErrorMessage from '../ui/field-error-message'
 
 

@@ -1,17 +1,18 @@
-import { Button } from '@/components/ui/button'
-import { ChevronRightIcon, PlusIcon } from 'lucide-react'
-import { ReactLenis } from 'lenis/react'
-import { useTimeline } from '@/hooks/useTimeline'
-import { TimelineContextProvider } from '@/components/providers/TimelineContext'
-import { useMemo, useState } from 'react'
 import { differenceInDays, format } from 'date-fns'
-import TimelineContent from '@/components/timeline/TimelineContent'
-import TextTransition from '@/components/ui/TextTransition'
-import { isReleased } from '@/utils/movieFunctions'
+import { ReactLenis } from 'lenis/react'
+import { ChevronRightIcon, PlusIcon } from 'lucide-react'
+import { useMemo } from 'react'
+
 import { useGetMovies } from '@/api/apiFirebase'
-import useAuth from '@/hooks/useAuth'
 import AddMovieDialog from '@/components/calendar/AddMovieDialog'
+import { TimelineContextProvider } from '@/components/providers/TimelineContext'
+import TimelineContent from '@/components/timeline/TimelineContent'
+import { Button } from '@/components/ui/button'
+import TextTransition from '@/components/ui/TextTransition'
+import useAuth from '@/hooks/useAuth'
+import { useTimeline } from '@/hooks/useTimeline'
 import { useTimelineStore } from '@/stores/timelineStore'
+import { isReleased } from '@/utils/movieFunctions'
 
 const currentDate = new Date()
 const TimelinePage = () => (
@@ -24,9 +25,9 @@ const TimelinePageContent = () => {
   const { user } = useAuth()
   const userId = user?.uid ?? ''
 
-  const focusedCardId = useTimelineStore((state) => state.focusedCardId)
-  const isAddMovieDialogOpen = useTimelineStore((state) => state.isAddMovieDialogOpen)
-  const setIsAddMovieDialogOpen = useTimelineStore((state) => state.setIsAddMovieDialogOpen)
+  const focusedCardId = useTimelineStore(state => state.focusedCardId)
+  const isAddMovieDialogOpen = useTimelineStore(state => state.isAddMovieDialogOpen)
+  const setIsAddMovieDialogOpen = useTimelineStore(state => state.setIsAddMovieDialogOpen)
   const { data, isLoading, isPending } = useGetMovies(userId)
 
   const movies = useMemo(() => {
@@ -37,7 +38,7 @@ const TimelinePageContent = () => {
   }, [data])
 
   const firstUnreleasedMovieIndex = useMemo(
-    () => movies.findIndex((m) => !isReleased(m.date)),
+    () => movies.findIndex(m => !isReleased(m.date)),
     [movies],
   )
 
@@ -48,18 +49,18 @@ const TimelinePageContent = () => {
   }
 
   const activeCardMonth = useMemo(() => {
-    const focusedMovie = movies.find((m) => m.id === focusedCardId)
+    const focusedMovie = movies.find(m => m.id === focusedCardId)
     if (focusedMovie) {
       return format(focusedMovie.date, 'MMMM')
     }
     const activeMovie = movies[activeCardIndex]
     if (!activeMovie) return 'Timeline'
     return format(activeMovie.date, 'MMMM')
-  }, [activeCardIndex, focusedCardId])
+  }, [activeCardIndex, focusedCardId, movies])
 
   const focusedCardDate = useMemo(() => {
     if (!focusedCardId) return ' '
-    const focusedMovie = movies.find((m) => m.id === focusedCardId)
+    const focusedMovie = movies.find(m => m.id === focusedCardId)
     if (!focusedMovie) return ' '
     const date = new Date(focusedMovie.date)
     const [day, ending] = format(date, 'do').split(/(\d+)/).filter(Boolean)
@@ -70,7 +71,6 @@ const TimelinePageContent = () => {
       </>
     )
   }, [focusedCardId, movies])
-
 
   // Alternative laoder
   /* <div className="flex h-full items-center justify-center">
@@ -92,10 +92,13 @@ const TimelinePageContent = () => {
         options={{ orientation: 'horizontal', gestureOrientation: 'vertical', smoothWheel: true }}
         ref={registerLenisRef}
       >
-        <TimelineContent movies={movies} isPending={isPending} isLoading={isLoading} firstUnreleasedMovieIndex={firstUnreleasedMovieIndex} />
-
-
-      </ReactLenis >
+        <TimelineContent
+          movies={movies}
+          isPending={isPending}
+          isLoading={isLoading}
+          firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
+        />
+      </ReactLenis>
       <footer className="flex gap-6 p-window">
         <div className="flex gap-2">
           <Button size={'icon'} variant={'default'} onPress={handleScrollToFirstMovie}>
@@ -109,21 +112,21 @@ const TimelinePageContent = () => {
         <div className="flex items-end text-muted-foreground">
           <p>
             Next release:{' '}
-            {movies[firstUnreleasedMovieIndex]?.title &&
-
-              <span className="text-primary hover:underline hover:cursor-pointer" onClick={handleScrollToFirstMovie}>
+            {movies[firstUnreleasedMovieIndex]?.title && (
+              <span
+                className="text-primary hover:cursor-pointer hover:underline"
+                onClick={handleScrollToFirstMovie}
+              >
                 {movies[firstUnreleasedMovieIndex]?.title}
               </span>
-
-            }
-            {' '}
+            )}{' '}
             {movies[firstUnreleasedMovieIndex]?.date && (
               <span>
                 [
                 {`in 
                 ${differenceInDays(new Date(movies[firstUnreleasedMovieIndex].date), currentDate)
-                    .toString()
-                    .padStart(2, '0')}
+                  .toString()
+                  .padStart(2, '0')}
                 days`}
                 ]
               </span>
@@ -131,7 +134,7 @@ const TimelinePageContent = () => {
           </p>
         </div>
       </footer>
-    </div >
+    </div>
   )
 }
 export default TimelinePage

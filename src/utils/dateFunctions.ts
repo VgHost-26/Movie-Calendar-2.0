@@ -1,4 +1,3 @@
-import type { CalendarDay } from '@/Types/types'
 import {
   startOfMonth,
   endOfMonth,
@@ -9,6 +8,8 @@ import {
   isToday,
   type DateArg,
 } from 'date-fns'
+
+import type { CalendarDay } from '@/Types/types'
 
 export function getCalendarGrid(date: DateArg<Date>): CalendarDay[] {
   const monthStart = startOfMonth(date)

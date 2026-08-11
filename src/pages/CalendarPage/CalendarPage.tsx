@@ -1,3 +1,9 @@
+import { addMonths, subMonths, format, isSameMonth } from 'date-fns'
+import { ChevronLeftIcon, ChevronRightIcon, TimerResetIcon } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+
+import type { Movie, ScrollDirection } from '@/Types/types'
+
 import { useGetMovies } from '@/api/apiFirebase'
 import CalendarCard from '@/components/calendar/CalendarCard'
 import { Button } from '@/components/ui/button'
@@ -5,11 +11,7 @@ import { Card } from '@/components/ui/card'
 import TextTransition from '@/components/ui/TextTransition'
 import { WEEKDAYS } from '@/global/globals'
 import useAuth from '@/hooks/useAuth'
-import type { Movie, ScrollDirection } from '@/Types/types'
 import { getCalendarGrid } from '@/utils/dateFunctions'
-import { addMonths, subMonths, format, isSameMonth } from 'date-fns'
-import { ChevronLeftIcon, ChevronRightIcon, TimerResetIcon } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
 
 const currentDate = new Date()
 const CalendarPage = () => {

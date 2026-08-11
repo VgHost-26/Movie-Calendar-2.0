@@ -1,16 +1,15 @@
+import {
+  useMutation,
+  type UseMutationResult,
+} from '@tanstack/react-query'
+import { toast } from 'sonner'
+
 import type {
   TMDBMovie,
   TMDBMulti,
   TMDBMultiSearchResponse,
   TMDBSearchResponse,
 } from '@/Types/tmdbTypes'
-import {
-  useMutation,
-  useQuery,
-  type UseMutationResult,
-  type UseQueryResult,
-} from '@tanstack/react-query'
-import { toast } from 'sonner'
 
 const options = {
   method: 'GET',

@@ -1,21 +1,25 @@
-import { Dialog } from '../ui/dialog'
-import { useState } from 'react'
-import { Field, FieldDescription, FieldLabel, FieldLegend, FieldSet } from '../ui/field'
-import { PLATFORMS } from '@/global/globals'
-import DatePicker from '../ui/date-picker'
 import type { CalendarDate } from '@internationalized/date'
-import { Button } from '../ui/button'
-import { toast } from 'sonner'
-import { useAddMovie } from '@/api/apiFirebase'
-import { Controller, useForm } from 'react-hook-form'
-import type { MovieFormData } from '@/Types/types'
-import { movieSchema } from '@/schemas/zotSchemas'
+
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
-import { Input } from '../ui/input'
-import { AspectRatio } from '../ui/aspect-ratio'
+import { useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+
+import type { MovieFormData } from '@/Types/types'
+
+import { useAddMovie } from '@/api/apiFirebase'
 import imagePlaceholder from '@/assets/images/poster-placeholder.png'
+import { PLATFORMS } from '@/global/globals'
+import { movieSchema } from '@/schemas/zotSchemas'
+
+import { AspectRatio } from '../ui/aspect-ratio'
+import { Button } from '../ui/button'
+import DatePicker from '../ui/date-picker'
+import { Dialog } from '../ui/dialog'
+import { Field, FieldDescription, FieldLabel, FieldLegend, FieldSet } from '../ui/field'
 import FieldErrorMessage from '../ui/field-error-message'
+import { Input } from '../ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 
 type Props = {
   date?: CalendarDate | null

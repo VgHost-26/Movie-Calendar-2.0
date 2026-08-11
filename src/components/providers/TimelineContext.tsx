@@ -1,6 +1,8 @@
-import type { LenisRef } from 'lenis/react'
-import React, { useCallback, useRef, useState } from 'react'
 import type { LenisOptions } from 'lenis'
+import type { LenisRef } from 'lenis/react'
+
+import React, { useCallback, useRef, useState } from 'react'
+
 import { TimelineContext } from '@/hooks/useTimeline'
 import { ScrollDirection } from '@/Types/types'
 

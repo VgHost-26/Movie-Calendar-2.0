@@ -1,5 +1,6 @@
-import { useMemo, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useMemo, type ReactNode } from 'react'
+
 import { ScrollDirection } from '@/Types/types'
 
 type Props = {

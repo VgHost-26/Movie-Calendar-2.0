@@ -1,13 +1,15 @@
-import { type Movie } from '@/Types/types'
-import { AspectRatio } from '../ui/aspect-ratio'
 import { differenceInDays } from 'date-fns'
-import { isReleased } from '@/utils/movieFunctions'
-import posterPlaceholder from '@/assets/images/poster-placeholder.png'
-import TimelineMovieEditor from './TimelineMovieEditor'
 import { useMemo, useState } from 'react'
-import { useTimeline } from '@/hooks/useTimeline'
+
+import posterPlaceholder from '@/assets/images/poster-placeholder.png'
 import { PLATFORMS_ICONS } from '@/global/globals'
+import { useTimeline } from '@/hooks/useTimeline'
 import { useTimelineStore } from '@/stores/timelineStore'
+import { type Movie } from '@/Types/types'
+import { isReleased } from '@/utils/movieFunctions'
+
+import { AspectRatio } from '../ui/aspect-ratio'
+import TimelineMovieEditor from './TimelineMovieEditor'
 
 type Props = {
   movie: Movie

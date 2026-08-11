@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
+
 import {
   Sidebar,
   SidebarContent,
@@ -9,9 +10,10 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
-import { MAIN_PAGES, FOOTER_PAGES, type PageItem } from '@/pages/pages'
-import NavIcon from '../NavIcon/NavIcon'
 import useAuth from '@/hooks/useAuth'
+import { MAIN_PAGES, FOOTER_PAGES, type PageItem } from '@/pages/pages'
+
+import NavIcon from '../NavIcon/NavIcon'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 // TODO: do ogarnięcia
