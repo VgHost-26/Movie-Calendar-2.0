@@ -94,13 +94,9 @@ const TimelinePageContent = () => {
         options={{ orientation: 'horizontal', gestureOrientation: 'vertical', smoothWheel: true }}
         ref={registerLenisRef}
       >
-        {isPending ? (
-          <Skeleton className='h-full w-timeline-card ml-4' />
-        ) : (
-          movies.length === 0 && !isLoading ? <TimelineNoMovies handleOpenAddMovieDialog={() => setIsAddMovieDialogOpen(true)} /> :
-            <TimelineContent movies={movies} firstUnreleasedMovieIndex={firstUnreleasedMovieIndex} />
-        )
-        }
+        <TimelineContent setIsOpen={setIsAddMovieDialogOpen} movies={movies} isPending={isPending} isLoading={isLoading} firstUnreleasedMovieIndex={firstUnreleasedMovieIndex} />
+
+
       </ReactLenis >
       <footer className="flex gap-6 p-window">
         <div className="flex gap-2">

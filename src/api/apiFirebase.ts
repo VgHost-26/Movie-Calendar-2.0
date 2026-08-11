@@ -11,7 +11,7 @@ import {
   serverTimestamp,
   setDoc,
 } from 'firebase/firestore'
-import { useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
+import { keepPreviousData, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
 import useAuth from '@/hooks/useAuth'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -32,8 +32,9 @@ export function useGetMovies(userId: string): UseQueryResult<Movie[], Error> {
   return useQuery({
     queryKey: ['movies', userId],
     queryFn: () => fetchMovies(userId),
-    // staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes
     enabled: !!userId,
+    placeholderData: keepPreviousData,
   })
 }
 

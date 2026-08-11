@@ -3,19 +3,22 @@ import TimelineMovieCard from './TimelineMovieCard'
 import type { Movie } from '@/Types/types'
 import { useLenis } from 'lenis/react'
 import { useRef, useState, useEffect } from 'react'
+import { Skeleton } from '../ui/skeleton'
+import TimelineNoMovies from './TimelineNoMovies'
 
 type Props = {
   movies: Movie[]
   isPending?: boolean
+  isLoading?: boolean
   firstUnreleasedMovieIndex: number
+  setIsOpen: (open: boolean) => void
 }
 
-const TimelineContent = ({ movies, isPending=false, firstUnreleasedMovieIndex }: Props) => {
+const TimelineContent = ({ movies, isPending = false, isLoading = false, firstUnreleasedMovieIndex, setIsOpen }: Props) => {
   const { setActiveCardIndex, setScrollDirection } = useTimeline()
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Calculate a reasonable initial height estimate to prevent layout shifts on mount
   const [containerHeight, setContainerHeight] = useState(() =>
     typeof window !== 'undefined' ? Math.max(400, window.innerHeight - 350) : 600,
   )
@@ -66,21 +69,31 @@ const TimelineContent = ({ movies, isPending=false, firstUnreleasedMovieIndex }:
       }
       className="flex h-full w-max items-stretch gap-20 pl-4"
     >
-      {movies.map((movie, i) => (
-        <div
-          ref={(el) => {
-            itemRefs.current[i] = el
-          }}
-          key={`${movie.id}`}
-          className="flex h-full items-center"
-        >
-          <TimelineMovieCard
-            movie={movie}
-            firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
-            index={i}
-          />
-        </div>
-      ))}
+      {isLoading && movies.length === 0 ? (
+        <>
+          <Skeleton className="h-full w-timeline-card" />
+          <Skeleton className="h-full w-timeline-card" />
+          <Skeleton className="h-full w-timeline-card" />
+        </>
+      ) : movies.length === 0 && !isPending ? (
+        <TimelineNoMovies handleOpenAddMovieDialog={() => setIsOpen(true)} />
+      ) : (
+        movies.map((movie, i) => (
+          <div
+            ref={(el) => {
+              itemRefs.current[i] = el
+            }}
+            key={`${movie.id}`}
+            className="flex h-full items-center"
+          >
+            <TimelineMovieCard
+              movie={movie}
+              firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
+              index={i}
+            />
+          </div>
+        ))
+      )}
       {/* Spacer to allow scrolling the last card to the target alignment point */}
       <div
         style={{ width: `calc(100vw - ${cardWidth}px - 80px - var(--sidebar-width-icon) - var(--padding-window) * 1.5)` }}
