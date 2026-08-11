@@ -1,10 +1,12 @@
-import type { CalendarDay, Movie } from '@/Types/types'
-import { Card, CardFooter, CardHeader, CardTitle } from '../ui/card'
-import { format } from 'date-fns'
-import { Badge } from '../ui/badge'
-import { useState } from 'react'
-import AddMovieDialog from './AddMovieDialog'
 import { CalendarDate } from '@internationalized/date'
+import { format } from 'date-fns'
+import { useState } from 'react'
+
+import type { CalendarDay, Movie } from '@/Types/types'
+
+import { Badge } from '../ui/badge'
+import { Card, CardFooter, CardHeader, CardTitle } from '../ui/card'
+import AddMovieDialog from './AddMovieDialog'
 
 type Props = {
   movies: Movie[]

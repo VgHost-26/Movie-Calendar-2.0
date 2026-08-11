@@ -7,13 +7,12 @@ import {
   Heading,
   ModalOverlay as ModalOverlayPrimitive,
   Modal as ModalPrimitive,
-  type DialogProps as AlertDialogPrimitiveProps,
   type DialogTriggerProps as AlertDialogTriggerPrimitiveProps,
   type ModalOverlayProps as ModalOverlayPrimitiveProps,
 } from "react-aria-components"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 function AlertDialogTrigger({ ...props }: AlertDialogTriggerPrimitiveProps) {
   return (

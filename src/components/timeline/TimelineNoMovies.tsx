@@ -1,6 +1,8 @@
-import { Button } from "../ui/button"
 import { PlusIcon } from "lucide-react"
+
 import { useTimelineStore } from "@/stores/timelineStore"
+
+import { Button } from "../ui/button"
 
 const TimelineNoMovies = () => {
     const setIsAddMovieDialogOpen = useTimelineStore((state) => state.setIsAddMovieDialogOpen)

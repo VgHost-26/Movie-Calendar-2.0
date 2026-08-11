@@ -1,6 +1,6 @@
+import Lenis from 'lenis'
 // components/SmoothHorizontalScroll.tsx
 import { useEffect, useRef } from 'react'
-import Lenis from 'lenis'
 
 interface Props {
   children: React.ReactNode

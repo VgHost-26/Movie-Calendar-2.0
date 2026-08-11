@@ -1,16 +1,18 @@
+import { onAuthStateChanged } from 'firebase/auth'
 import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+
 import './index.css'
+import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { redirect } from 'react-router-dom'
+
 import MainLayout from './layouts/MainLayout/MainLayout.tsx'
-import TimelinePage from './pages/TimelinePage/TimelinePage.tsx'
+import { auth } from './lib/firebase.ts'
 import CalendarPage from './pages/CalendarPage/CalendarPage.tsx'
 import LoginPage from './pages/LoginPage/LoginPage.tsx'
-import SignupPage from './pages/SignupPage/SignupPage.tsx'
 import SettingsPage from './pages/SettingsPage/SettingsPage.tsx'
-import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from './lib/firebase.ts'
-import { redirect } from 'react-router-dom'
+import SignupPage from './pages/SignupPage/SignupPage.tsx'
+import TimelinePage from './pages/TimelinePage/TimelinePage.tsx'
 
 function getCurrentUser(): Promise<typeof auth.currentUser> {
   return new Promise((resolve) => {

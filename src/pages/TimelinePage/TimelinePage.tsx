@@ -1,17 +1,18 @@
-import { Button } from '@/components/ui/button'
-import { ChevronRightIcon, PlusIcon } from 'lucide-react'
-import { ReactLenis } from 'lenis/react'
-import { useTimeline } from '@/hooks/useTimeline'
-import { TimelineContextProvider } from '@/components/providers/TimelineContext'
-import { useMemo, useState } from 'react'
 import { differenceInDays, format } from 'date-fns'
-import TimelineContent from '@/components/timeline/TimelineContent'
-import TextTransition from '@/components/ui/TextTransition'
-import { isReleased } from '@/utils/movieFunctions'
+import { ReactLenis } from 'lenis/react'
+import { ChevronRightIcon, PlusIcon } from 'lucide-react'
+import { useMemo } from 'react'
+
 import { useGetMovies } from '@/api/apiFirebase'
-import useAuth from '@/hooks/useAuth'
 import AddMovieDialog from '@/components/calendar/AddMovieDialog'
+import { TimelineContextProvider } from '@/components/providers/TimelineContext'
+import TimelineContent from '@/components/timeline/TimelineContent'
+import { Button } from '@/components/ui/button'
+import TextTransition from '@/components/ui/TextTransition'
+import useAuth from '@/hooks/useAuth'
+import { useTimeline } from '@/hooks/useTimeline'
 import { useTimelineStore } from '@/stores/timelineStore'
+import { isReleased } from '@/utils/movieFunctions'
 
 const currentDate = new Date()
 const TimelinePage = () => (

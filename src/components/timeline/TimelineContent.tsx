@@ -1,11 +1,14 @@
-import { useTimeline } from '@/hooks/useTimeline'
-import TimelineMovieCard from './TimelineMovieCard'
-import type { Movie } from '@/Types/types'
 import { useLenis } from 'lenis/react'
 import { useRef, useState, useEffect } from 'react'
-import { Skeleton } from '../ui/skeleton'
-import TimelineNoMovies from './TimelineNoMovies'
+
+import type { Movie } from '@/Types/types'
+
+import { useTimeline } from '@/hooks/useTimeline'
 import { useTimelineStore } from '@/stores/timelineStore'
+
+import { Skeleton } from '../ui/skeleton'
+import TimelineMovieCard from './TimelineMovieCard'
+import TimelineNoMovies from './TimelineNoMovies'
 
 type Props = {
   movies: Movie[]

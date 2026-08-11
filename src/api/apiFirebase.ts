@@ -1,5 +1,4 @@
-import { db } from '@/lib/firebase'
-import type { Movie, MovieFormData } from '@/Types/types'
+import { keepPreviousData, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
 import {
   addDoc,
   collection,
@@ -11,10 +10,13 @@ import {
   serverTimestamp,
   setDoc,
 } from 'firebase/firestore'
-import { keepPreviousData, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
-import useAuth from '@/hooks/useAuth'
 import { useState } from 'react'
 import { toast } from 'sonner'
+
+import type { Movie, MovieFormData } from '@/Types/types'
+
+import useAuth from '@/hooks/useAuth'
+import { db } from '@/lib/firebase'
 
 const fetchMovies = async (userId: string) => {
   const q = query(collection(db, 'users', userId, 'movies'), orderBy('date', 'asc'))

@@ -1,5 +1,6 @@
-import type { TimelineContextProps } from '@/components/providers/TimelineContext'
 import { createContext, useContext } from 'react'
+
+import type { TimelineContextProps } from '@/components/providers/TimelineContext'
 
 export const TimelineContext = createContext<TimelineContextProps | null>(null)
 

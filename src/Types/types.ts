@@ -1,6 +1,8 @@
-import { LANGUAGES, PLATFORMS } from '@/global/globals'
-import type { loginSchema, movieSchema, signupSchema } from '@/schemas/zotSchemas'
 import type z from 'zod'
+
+import type { loginSchema, movieSchema, signupSchema } from '@/schemas/zotSchemas'
+
+import { LANGUAGES, PLATFORMS } from '@/global/globals'
 
 export const ScrollDirection = {
   BACKWARD: -1,

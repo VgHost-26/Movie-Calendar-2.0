@@ -1,9 +1,11 @@
-import useAuth from '@/hooks/useAuth'
-import { signOut } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
-import { Button } from '@/components/ui/button'
 import { useQueryClient } from '@tanstack/react-query'
+import { signOut } from 'firebase/auth'
+
+import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import useAuth from '@/hooks/useAuth'
+import { auth } from '@/lib/firebase'
+
 import pkg from '../../../package.json'
 
 const SettingsPage = () => {

@@ -1,3 +1,4 @@
+import { ChevronDownIcon, SearchIcon, CheckIcon } from "lucide-react"
 import * as React from "react"
 import {
   Button as ButtonPrimitive,
@@ -18,13 +19,12 @@ import {
   type SelectValueProps,
 } from "react-aria-components"
 
-import { cn } from "@/lib/utils"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group"
-import { ChevronDownIcon, SearchIcon, CheckIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 function Select<T extends object, M extends "single" | "multiple" = "single">({
   className,
