@@ -25,7 +25,7 @@ export const TimelineContextProvider = ({ children }: { children: React.ReactNod
 
 
   const scrollToCard = useCallback((index: number) => {
-    if (lenisRef.current && lenisRef.current.lenis) {
+    if (lenisRef.current?.lenis) {
       const selector = `[data-movie-index="${index}"]`
       // const el = document.querySelector(selector)
       // const parent = el?.parentElement

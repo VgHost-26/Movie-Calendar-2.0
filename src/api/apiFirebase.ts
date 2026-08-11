@@ -28,7 +28,7 @@ const fetchMovies = async (userId: string) => {
 }
 
 // TODO: add listener
-export function useGetMovies(userId: string): UseQueryResult<Movie[], Error> {
+export function useGetMovies(userId: string): UseQueryResult<Movie[]> {
   return useQuery({
     queryKey: ['movies', userId],
     queryFn: () => fetchMovies(userId),
