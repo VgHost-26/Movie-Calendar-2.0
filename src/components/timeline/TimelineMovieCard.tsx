@@ -85,7 +85,7 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
               title={movie.platform}
               src={PLATFORMS_ICONS[movie.platform]}
               alt={movie.platform}
-              className="h-10 bg-accent p-1.5"
+              className="h-10 w-10 bg-accent p-1.5"
             />
           </div>
           <div className="flex flex-1 items-end justify-between ">

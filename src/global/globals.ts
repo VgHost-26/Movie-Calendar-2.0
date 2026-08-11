@@ -8,6 +8,7 @@ import hulu from '../assets/icons/platforms/hulu.svg'
 import netflix from '../assets/icons/platforms/netflix.svg'
 import paramount from '../assets/icons/platforms/paramount-plus.svg'
 import peacock from '../assets/icons/platforms/peacock-light.svg'
+import player from '../assets/icons/platforms/player.svg'
 import cinema from '../assets/icons/platforms/popcorn.svg'
 import youtube from '../assets/icons/platforms/youtube.svg'
 
@@ -21,6 +22,7 @@ export const PLATFORMS = [
   'Peacock',
   'Paramount+',
   'YouTube',
+  'Player',
   'Cinema',
 ] as const
 
@@ -34,6 +36,7 @@ export const PLATFORMS_ICONS = {
   Peacock: peacock,
   'Paramount+': paramount,
   YouTube: youtube,
+  Player: player,
   Cinema: cinema,
 } as const
 
