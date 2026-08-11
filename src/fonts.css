@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'IMD Grotesk';
+    src: url('../public/fonts/imd-grotesk/IMDGrotesk-Bold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'IMD Grotesk';
+    src: url('../public/fonts/imd-grotesk/IMDGrotesk-ExtraBold.woff2') format('woff2');
+    font-weight: extra-bold;
+    font-style: normal;
+}

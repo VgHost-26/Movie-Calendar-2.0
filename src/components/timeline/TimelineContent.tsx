@@ -6,10 +6,11 @@ import { useRef, useState, useEffect } from 'react'
 
 type Props = {
   movies: Movie[]
+  isPending?: boolean
   firstUnreleasedMovieIndex: number
 }
 
-const TimelineContent = ({ movies, firstUnreleasedMovieIndex }: Props) => {
+const TimelineContent = ({ movies, isPending=false, firstUnreleasedMovieIndex }: Props) => {
   const { setActiveCardIndex, setScrollDirection } = useTimeline()
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const containerRef = useRef<HTMLDivElement>(null)

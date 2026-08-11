@@ -73,6 +73,12 @@ const TimelinePageContent = () => {
     )
   }, [focusedCardId, movies])
 
+
+  // Alternative laoder
+  /* <div className="flex h-full items-center justify-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+           </div> */
+
   return (
     <div className="flex h-screen flex-col overflow-hidden">
       <div className="flex items-end p-window">
@@ -90,11 +96,6 @@ const TimelinePageContent = () => {
       >
         {isPending ? (
           <Skeleton className='h-full w-timeline-card ml-4' />
-
-          /* <div className="flex h-full items-center justify-center">
-             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-            </div> */
-
         ) : (
           movies.length === 0 && !isLoading ? <TimelineNoMovies handleOpenAddMovieDialog={() => setIsAddMovieDialogOpen(true)} /> :
             <TimelineContent movies={movies} firstUnreleasedMovieIndex={firstUnreleasedMovieIndex} />

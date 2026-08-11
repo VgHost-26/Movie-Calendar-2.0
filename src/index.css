@@ -9,6 +9,7 @@
 @import '@fontsource/space-grotesk/700.css';
 @import '@fontsource-variable/noto-sans';
 @import '@fontsource-variable/playfair-display';
+@import './fonts.css';
 
 
 @custom-variant dark (&:is(.dark *));
@@ -184,7 +185,7 @@
   --color-foreground: var(--foreground);
   --color-background: var(--background); */
 
-  --font-heading: "Space Grotesk", sans-serif;
+  --font-heading: "IMD Grotesk", "Space Grotesk", sans-serif;
 
   --leading-tight: 1.6ex;
 
