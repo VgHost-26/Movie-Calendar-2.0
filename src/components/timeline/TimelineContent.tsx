@@ -7,6 +7,7 @@ import { useTimeline } from '@/hooks/useTimeline'
 
 import { Skeleton } from '../ui/skeleton'
 import TimelineMovieCard from './TimelineMovieCard'
+import TimelineMovieCard from './TimelineMovieCard'
 import TimelineNoMovies from './TimelineNoMovies'
 
 type Props = {
