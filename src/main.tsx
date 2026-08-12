@@ -30,8 +30,11 @@ const authLoader = async () => {
   }
   return null
 }
-const accountLoader = async () => {
+const accountLoader = async (noAccount: boolean = false) => {
   const user = await getCurrentUser();
+  if (!user && noAccount) {
+    return redirect('/login?missingAccount=true')
+  }
   if (!user) {
     return redirect('/login')
   }
@@ -47,15 +50,17 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <CalendarPage />,
-        // loader: <></>
+        loader: () => accountLoader(true)
       },
       {
         path: 'timeline',
         element: <TimelinePage />,
+        loader: () => accountLoader(true)
       },
       {
         path: 'calendar',
         element: <CalendarPage />,
+        loader: () => accountLoader(true)
       },
       {
         path: 'login',
@@ -73,7 +78,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'account',
-        loader: accountLoader,
+        loader: () => accountLoader(false),
         // element: <AccountPage />,
       }
     ],

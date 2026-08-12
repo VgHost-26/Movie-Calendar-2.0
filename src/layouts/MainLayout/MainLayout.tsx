@@ -4,9 +4,11 @@ import { Toaster } from 'sonner'
 
 import { AppSidebar } from '@/components/AppSidebar/AppSidebar'
 import { SidebarProvider } from '@/components/ui/sidebar'
+import useAuth from '@/hooks/useAuth'
 
+const queryClient = new QueryClient()
 const MainLayout = () => {
-  const queryClient = new QueryClient()
+  const { user } = useAuth()
   return (
     <QueryClientProvider client={queryClient}>
       <SidebarProvider defaultOpen={false}>

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import type { LoginFormData } from '@/Types/types'
 
@@ -18,6 +18,10 @@ import FieldErrorMessage from '../ui/field-error-message'
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
   const navigate = useNavigate()
+  const location = useLocation()
+  const queryParameters = new URLSearchParams(location.search)
+  const missingAccount = queryParameters.get('missingAccount') === 'true'
+
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   })
@@ -52,8 +56,10 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>Enter your email below to login to your account</CardDescription>
+          {!missingAccount && <CardTitle>Login to your account</CardTitle>}
+          {missingAccount && <CardTitle>Please login before accessing the page</CardTitle>}
+          {!missingAccount && <CardDescription>Enter your email below to login to your account</CardDescription>}
+          {missingAccount && <CardDescription>Local account is not yet supported</CardDescription>}
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
