@@ -15,6 +15,9 @@ import { MAIN_PAGES, FOOTER_PAGES, type PageItem } from '@/pages/pages'
 
 import NavIcon from '../NavIcon/NavIcon'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { Popover, PopoverHeader, PopoverTrigger } from '../ui/popover'
+import { Button } from '../ui/button'
+import ProfileIcon from '../ProfileIcon/ProfileIcon'
 
 // TODO: do ogarnięcia
 export function AppSidebar() {
@@ -63,11 +66,10 @@ export function AppSidebar() {
                     isActive={active}
                     tooltip={page.title}
                     onPress={() => navigate(page.link)}
-                    className={`transition-colors duration-150 ${
-                      active
-                        ? 'text-primary [&_svg]:text-primary'
-                        : 'text-muted-foreground hover:bg-[#161619] hover:text-white [&_svg]:text-[#737373] hover:[&_svg]:text-white'
-                    } group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0!`}
+                    className={`transition-colors duration-150 ${active
+                      ? 'text-primary [&_svg]:text-primary'
+                      : 'text-muted-foreground hover:bg-[#161619] hover:text-white [&_svg]:text-[#737373] hover:[&_svg]:text-white'
+                      } group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0!`}
                   >
                     <NavIcon
                       name={page.icon}
@@ -91,24 +93,15 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     isActive={active}
                     tooltip={page.title}
-                    onPress={() => navigate(page.link)}
-                    className={`h-11 rounded-lg px-3.5 transition-colors duration-150 ${
-                      active
-                        ? 'text-primary [&_svg]:text-primary'
-                        : 'text-muted-foreground hover:bg-[#161619] hover:text-white [&_svg]:text-[#737373] hover:[&_svg]:text-white'
-                    } group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0!`}
+                    // onPress={() => navigate(page.link)}
+                    className={`h-11 rounded-lg px-3.5 transition-colors duration-150 ${active
+                      ? 'text-primary [&_svg]:text-primary'
+                      : 'text-muted-foreground hover:bg-[#161619] hover:text-white [&_svg]:text-[#737373] hover:[&_svg]:text-white'
+                      } group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0!`}
                   >
                     {page.icon === 'account' ? (
                       user?.photoURL ? (
-                        <div>
-                          <Avatar size="sm">
-                            <AvatarImage
-                              src={user?.photoURL}
-                              alt="Profile"
-                            />
-                            <AvatarFallback>{user?.displayName?.charAt(0)}</AvatarFallback>
-                          </Avatar>
-                        </div>
+                        <></>
                       ) : (
                         <div>
                           <NavIcon name={page.icon} />
@@ -125,8 +118,12 @@ export function AppSidebar() {
                     </span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+
               )
             })}
+            <SidebarMenuItem>
+              <ProfileIcon />
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
