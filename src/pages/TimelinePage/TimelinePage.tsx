@@ -5,6 +5,7 @@ import { useMemo } from 'react'
 
 import { useGetMovies } from '@/api/apiFirebase'
 import AddMovieDialog from '@/components/calendar/AddMovieDialog'
+import ProfileIcon from '@/components/ProfileIcon/ProfileIcon'
 import { TimelineContextProvider } from '@/components/providers/TimelineContext'
 import TimelineContent from '@/components/timeline/TimelineContent'
 import { Button } from '@/components/ui/button'
@@ -14,7 +15,6 @@ import { useIsMobile } from '@/hooks/useMobile'
 import { useTimeline } from '@/hooks/useTimeline'
 import { useTimelineStore } from '@/stores/timelineStore'
 import { isReleased } from '@/utils/movieFunctions'
-import ProfileIcon from '@/components/ProfileIcon/ProfileIcon'
 
 const currentDate = new Date()
 const TimelinePage = () => (
