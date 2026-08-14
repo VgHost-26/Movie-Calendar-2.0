@@ -3,6 +3,7 @@ import type { LenisRef } from 'lenis/react'
 
 import React, { useCallback, useRef, useState } from 'react'
 
+import { useIsMobile } from '@/hooks/useMobile'
 import { TimelineContext } from '@/hooks/useTimeline'
 import { ScrollDirection } from '@/Types/types'
 
@@ -21,10 +22,11 @@ export const TimelineContextProvider = ({ children }: { children: React.ReactNod
   const [scrollDirection, setScrollDirection] = useState<ScrollDirection>(0)
   const lenisRef = useRef<LenisRef | null>(null)
 
+  const isMobile = useIsMobile()
+
   const registerLenisRef = useCallback((ref: LenisRef) => {
     lenisRef.current = ref
   }, [])
-
 
   const scrollToCard = useCallback((index: number) => {
     if (lenisRef.current?.lenis) {
@@ -37,15 +39,19 @@ export const TimelineContextProvider = ({ children }: { children: React.ReactNod
       // TODO: fix this
       // const marginLeft = parseFloat(getComputedStyle(parent).paddingLeft)
       // console.log(marginLeft)
-      const marginLeft = -16
+      const marginLeft = isMobile ? 0 : -16
       offset = marginLeft
       // }
 
-      lenisRef.current.lenis.scrollTo(selector, { offset, duration: 1.5, userData: { source: 'scrollToCard' } })
+      lenisRef.current.lenis.scrollTo(selector, {
+        offset,
+        duration: 1.5,
+        userData: { source: 'scrollToCard' },
+      })
     } else {
       console.warn('Lenis ref is not registered yet.')
     }
-  }, [])
+  }, [isMobile])
 
   return (
     <TimelineContext.Provider

@@ -87,8 +87,8 @@ const TimelineContent = ({
       setActiveCardIndex(closestIndex)
     }
   })
-  console.log(window.innerWidth)
   const cardWidth = isMobile ? window.innerWidth - 2 * 4 : containerHeight * (2 / 3)
+  const cardHeight = cardWidth * 1.5
 
   return (
     <div
@@ -133,6 +133,15 @@ const TimelineContent = ({
         }}
         className="hidden shrink-0 md:block"
       ></div>
+      <div
+        style={{
+          height: `${containerHeight - cardHeight - 40}px`,
+          width: '100%',
+        }}
+        className="block shrink-0 md:hidden"
+      >
+        
+      </div>
     </div>
   )
 }
