@@ -62,8 +62,8 @@ const TimelineContent = ({
     })
     setActiveCardIndex(closestIndex)
   })
-
-  const cardWidth = containerHeight * (2 / 3)
+  console.log(window.innerWidth)
+  const cardWidth = isMobile ? window.innerWidth - 2 * 4 : containerHeight * (2 / 3)
 
   return (
     <div
@@ -106,7 +106,7 @@ const TimelineContent = ({
         style={{
           width: `calc(100vw - ${cardWidth}px - 80px - var(--sidebar-width-icon) - var(--padding-window) * 1.5)`,
         }}
-        className="shrink-0"
+        className="hidden shrink-0 md:block"
       ></div>
     </div>
   )

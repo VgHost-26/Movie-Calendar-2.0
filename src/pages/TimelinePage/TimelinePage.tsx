@@ -10,6 +10,7 @@ import TimelineContent from '@/components/timeline/TimelineContent'
 import { Button } from '@/components/ui/button'
 import TextTransition from '@/components/ui/TextTransition'
 import useAuth from '@/hooks/useAuth'
+import { useIsMobile } from '@/hooks/useMobile'
 import { useTimeline } from '@/hooks/useTimeline'
 import { useTimelineStore } from '@/stores/timelineStore'
 import { isReleased } from '@/utils/movieFunctions'
@@ -23,6 +24,7 @@ const TimelinePage = () => (
 const TimelinePageContent = () => {
   const { scrollToCard, activeCardIndex, registerLenisRef, scrollDirection } = useTimeline()
   const { user } = useAuth()
+  const isMobile = useIsMobile()
   const userId = user?.uid ?? ''
 
   const focusedCardId = useTimelineStore(state => state.focusedCardId)
@@ -88,8 +90,12 @@ const TimelinePageContent = () => {
         </h1>
       </div>
       <ReactLenis
-        className="timeline-lenis flex-1 overflow-hidden"
-        options={{ orientation: 'horizontal', gestureOrientation: 'vertical', smoothWheel: true }}
+        className="timeline-lenis overflow-hidde flex-1"
+        options={{
+          orientation: isMobile ? 'vertical' : 'horizontal',
+          gestureOrientation: 'vertical',
+          smoothWheel: true,
+        }}
         ref={registerLenisRef}
       >
         <TimelineContent

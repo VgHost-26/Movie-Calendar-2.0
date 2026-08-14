@@ -294,3 +294,22 @@
 .timeline-lenis>div {
   height: 100%;
 }
+
+
+@media screen and (width < 768px) {
+
+  :root {
+    font-size: .7rem;
+  }
+
+  .timeline-lenis {
+    overflow-x: auto;
+  }
+}
+
+@media screen and (width >= 768px) {
+
+  .timeline-lenis {
+    overflow-y: auto;
+  }
+}
