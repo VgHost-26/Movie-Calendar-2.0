@@ -93,20 +93,14 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     isActive={active}
                     tooltip={page.title}
-                    // onPress={() => navigate(page.link)}
+                    onPress={() => navigate(page.link)}
                     className={`h-11 rounded-lg px-3.5 transition-colors duration-150 ${active
                       ? 'text-primary [&_svg]:text-primary'
                       : 'text-muted-foreground hover:bg-[#161619] hover:text-white [&_svg]:text-[#737373] hover:[&_svg]:text-white'
                       } group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0!`}
                   >
-                    {page.icon === 'account' ? (
-                      user?.photoURL ? (
-                        <></>
-                      ) : (
-                        <div>
-                          <NavIcon name={page.icon} />
-                        </div>
-                      )
+                    {page.title === 'Account' ? (
+                      <ProfileIcon />
                     ) : (
                       <NavIcon
                         name={page.icon}
@@ -121,9 +115,6 @@ export function AppSidebar() {
 
               )
             })}
-            <SidebarMenuItem>
-              <ProfileIcon />
-            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

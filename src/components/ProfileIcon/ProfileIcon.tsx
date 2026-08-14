@@ -31,7 +31,7 @@ const ProfileIcon = () => {
                         />
                         <AvatarFallback>{user?.displayName?.charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
-                    : <CircleUserIcon size={24} />}
+                    : <UserIcon size={24} />}
             </Button>
             {user ?
                 <Popover>

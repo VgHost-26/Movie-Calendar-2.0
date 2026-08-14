@@ -25,7 +25,7 @@ export const FOOTER_PAGES: PageItem[] = [
   },
   {
     title: 'Account',
-    link: '/account',
+    link: '//',
     icon: 'account',
   },
 ]
