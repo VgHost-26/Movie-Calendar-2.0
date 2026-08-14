@@ -49,7 +49,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <CalendarPage />,
+        element: <TimelinePage />,
         loader: () => accountLoader(true)
       },
       {

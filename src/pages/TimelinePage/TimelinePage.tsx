@@ -122,10 +122,10 @@ const TimelinePageContent = () => {
       </ReactLenis>
       <footer className="flex justify-between gap-6 p-window ">
         <div className="flex gap-2">
-          <Button size={'icon'} className='h-14 md:h-auto w-14 md:w-auto ' variant={'default'} onPress={handleScrollToFirstMovie}>
+          <Button size={'icon'} className='' variant={'default'} onPress={handleScrollToFirstMovie}>
             <ChevronRightIcon className="text-primary-foreground" />
           </Button>
-          <Button size={'icon'} className='h-14 md:h-auto w-14 md:w-auto' variant={'default'} onPress={() => setIsAddMovieDialogOpen(true)}>
+          <Button size={'icon'} className='' variant={'default'} onPress={() => setIsAddMovieDialogOpen(true)}>
             <PlusIcon className="text-primary-foreground" />
           </Button>
           <AddMovieDialog isOpen={isAddMovieDialogOpen} setIsOpen={setIsAddMovieDialogOpen} />
