@@ -1,5 +1,4 @@
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
 import { useLenis } from 'lenis/react'
 import { useRef, useState, useEffect } from 'react'
 
@@ -19,14 +18,13 @@ type Props = {
   firstUnreleasedMovieIndex: number
 }
 
-gsap.registerPlugin(ScrollTrigger)
 const TimelineContent = ({
   movies,
   isPending = false,
   isLoading = false,
   firstUnreleasedMovieIndex,
 }: Props) => {
-  const { setActiveCardIndex, setScrollDirection, lenisRef } = useTimeline()
+  const { setActiveCardIndex, setScrollDirection } = useTimeline()
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
 
