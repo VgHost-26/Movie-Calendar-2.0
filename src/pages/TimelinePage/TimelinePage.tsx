@@ -90,7 +90,7 @@ const TimelinePageContent = () => {
         </h1>
       </div>
       <ReactLenis
-        className="timeline-lenis overflow-hidde flex-1"
+        className="timeline-lenis overflow-hidden flex-1"
         options={{
           orientation: isMobile ? 'vertical' : 'horizontal',
           gestureOrientation: 'vertical',

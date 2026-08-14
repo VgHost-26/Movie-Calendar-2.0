@@ -14,9 +14,6 @@ import useAuth from '@/hooks/useAuth'
 import { MAIN_PAGES, FOOTER_PAGES, type PageItem } from '@/pages/pages'
 
 import NavIcon from '../NavIcon/NavIcon'
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { Popover, PopoverHeader, PopoverTrigger } from '../ui/popover'
-import { Button } from '../ui/button'
 import ProfileIcon from '../ProfileIcon/ProfileIcon'
 
 // TODO: do ogarnięcia

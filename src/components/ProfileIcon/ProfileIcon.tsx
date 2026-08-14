@@ -1,12 +1,14 @@
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import useAuth from '@/hooks/useAuth'
-import { Popover, PopoverHeader, PopoverTrigger } from '../ui/popover'
-import { Button } from '../ui/button'
-import { signOut } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
 import { useQueryClient } from '@tanstack/react-query'
+import { signOut } from 'firebase/auth'
+import {  UserIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { CircleUserIcon, UserIcon } from 'lucide-react'
+
+import useAuth from '@/hooks/useAuth'
+import { auth } from '@/lib/firebase'
+
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { Button } from '../ui/button'
+import { Popover, PopoverHeader, PopoverTrigger } from '../ui/popover'
 
 const ProfileIcon = () => {
     const { user } = useAuth()

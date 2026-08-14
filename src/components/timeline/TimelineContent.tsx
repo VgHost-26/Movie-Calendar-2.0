@@ -1,8 +1,11 @@
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useLenis } from 'lenis/react'
 import { useRef, useState, useEffect } from 'react'
 
 import type { Movie } from '@/Types/types'
 
+import { useIsMobile } from '@/hooks/useMobile'
 import { useTimeline } from '@/hooks/useTimeline'
 
 import { Skeleton } from '../ui/skeleton'
@@ -16,15 +19,18 @@ type Props = {
   firstUnreleasedMovieIndex: number
 }
 
+gsap.registerPlugin(ScrollTrigger)
 const TimelineContent = ({
   movies,
   isPending = false,
   isLoading = false,
   firstUnreleasedMovieIndex,
 }: Props) => {
-  const { setActiveCardIndex, setScrollDirection } = useTimeline()
+  const { setActiveCardIndex, setScrollDirection, lenisRef } = useTimeline()
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
+
+  const isMobile = useIsMobile()
 
   const [containerHeight, setContainerHeight] = useState(() =>
     typeof window !== 'undefined' ? Math.max(400, window.innerHeight - 350) : 600,
@@ -45,22 +51,41 @@ const TimelineContent = ({
 
   useLenis(({ scroll, direction }) => {
     setScrollDirection(direction)
-    const leftQuarter = scroll + window.innerWidth / 4
 
-    let closestIndex = 0
-    let minDist = Infinity
+    if (isMobile) {
+      const topOfTheScreen = scroll
 
-    itemRefs.current.forEach((el, i) => {
-      if (el) {
-        const elCenterLeftEdge = el.offsetLeft
-        const dist = Math.abs(elCenterLeftEdge - leftQuarter)
-        if (dist < minDist) {
-          minDist = dist
-          closestIndex = i
+      let closestIndex = 0
+      let minDist = Infinity
+      itemRefs.current.forEach((el, i) => {
+        if (el) {
+          const elCenterLeftEdge = el.offsetTop
+          const dist = Math.abs(elCenterLeftEdge - topOfTheScreen)
+          if (dist < minDist) {
+            minDist = dist
+            closestIndex = i
+          }
         }
-      }
-    })
-    setActiveCardIndex(closestIndex)
+      })
+      setActiveCardIndex(closestIndex)
+    } else {
+      const leftQuarter = scroll + window.innerWidth / 4
+
+      let closestIndex = 0
+      let minDist = Infinity
+
+      itemRefs.current.forEach((el, i) => {
+        if (el) {
+          const elCenterLeftEdge = el.offsetLeft
+          const dist = Math.abs(elCenterLeftEdge - leftQuarter)
+          if (dist < minDist) {
+            minDist = dist
+            closestIndex = i
+          }
+        }
+      })
+      setActiveCardIndex(closestIndex)
+    }
   })
   console.log(window.innerWidth)
   const cardWidth = isMobile ? window.innerWidth - 2 * 4 : containerHeight * (2 / 3)
@@ -74,7 +99,7 @@ const TimelineContent = ({
           '--max-width-timeline-card': `${cardWidth}px`,
         } as React.CSSProperties
       }
-      className="flex h-full w-max items-stretch gap-20 pl-4"
+      className="movie-card flex h-full w-full flex-col items-center gap-20 px-4 md:w-max md:flex-row md:items-stretch md:pl-4"
     >
       {isLoading && movies.length === 0 ? (
         <>

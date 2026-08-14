@@ -2,13 +2,13 @@ import { useQueryClient } from '@tanstack/react-query'
 import { signOut } from 'firebase/auth'
 
 import { Button } from '@/components/ui/button'
+import { Field, FieldDescription, FieldSet } from '@/components/ui/field'
+import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import useAuth from '@/hooks/useAuth'
 import { auth } from '@/lib/firebase'
 
 import pkg from '../../../package.json'
-import { Field, FieldDescription, FieldSet } from '@/components/ui/field'
-import { Label } from '@/components/ui/label'
 
 const SettingsPage = () => {
   const { user, loading, isAuthenticated } = useAuth()
