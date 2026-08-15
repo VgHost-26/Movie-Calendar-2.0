@@ -1,4 +1,3 @@
-
 import { useLenis } from 'lenis/react'
 import { useRef, useState, useEffect } from 'react'
 
@@ -94,6 +93,7 @@ const TimelineContent = ({
       style={
         {
           '--width-timeline-card': `${cardWidth}px`,
+          '--height-timeline-card': `${cardHeight}px`,
           '--max-width-timeline-card': `${cardWidth}px`,
         } as React.CSSProperties
       }
@@ -101,9 +101,9 @@ const TimelineContent = ({
     >
       {isLoading && movies.length === 0 ? (
         <>
-          <Skeleton className="h-full w-timeline-card" />
-          <Skeleton className="h-full w-timeline-card" />
-          <Skeleton className="h-full w-timeline-card" />
+          <Skeleton className="h-timeline-card w-timeline-card" />
+          <Skeleton className="h-timeline-card w-timeline-card" />
+          <Skeleton className="h-timeline-card w-timeline-card" />
         </>
       ) : movies.length === 0 && !isPending ? (
         <TimelineNoMovies />
@@ -137,9 +137,7 @@ const TimelineContent = ({
           width: '100%',
         }}
         className="block shrink-0 md:hidden"
-      >
-        
-      </div>
+      ></div>
     </div>
   )
 }

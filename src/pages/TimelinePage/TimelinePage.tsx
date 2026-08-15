@@ -93,7 +93,7 @@ const TimelinePageContent = () => {
            </div> */
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
+    <div className="flex h-dvh flex-col overflow-hidden">
       <div className="flex items-end p-window">
         <h1 className="flex w-full gap-10 text-8xl font-bold uppercase md:ml-[-0.05em] md:text-9xl">
           <TextTransition direction={scrollDirection}>{activeCardMonth}</TextTransition>
@@ -110,6 +110,9 @@ const TimelinePageContent = () => {
           orientation: isMobile ? 'vertical' : 'horizontal',
           gestureOrientation: 'vertical',
           smoothWheel: true,
+          syncTouch:true,
+          touchMultiplier: 1,
+          lerp: 0.1,
         }}
         ref={registerLenisRef}
       >
@@ -120,7 +123,7 @@ const TimelinePageContent = () => {
           firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
         />
       </ReactLenis>
-      <footer className="flex justify-between gap-6 p-window ">
+      <footer className="flex justify-between gap-6 p-window sticky">
         <div className="flex gap-2">
           <Button size={'icon'} className='' variant={'default'} onPress={handleScrollToFirstMovie}>
             <ChevronRightIcon className="text-primary-foreground" />

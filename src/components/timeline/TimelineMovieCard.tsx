@@ -64,6 +64,7 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
   useEffect(() => {
     if (!isMobile) return
     scrollToCard(activeCardIndex)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeCardIndex, debouncedScroll, isMobile])
 
   // useEffect(() => {
