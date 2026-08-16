@@ -5,6 +5,7 @@ import type { Movie } from '@/Types/types'
 
 import { useIsMobile } from '@/hooks/useMobile'
 import { useTimeline } from '@/hooks/useTimeline'
+import { useTimelineStore } from '@/stores/timelineStore'
 
 import { Skeleton } from '../ui/skeleton'
 import TimelineMovieCard from './TimelineMovieCard'
@@ -27,6 +28,8 @@ const TimelineContent = ({
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
 
+  const setFocusedCardId = useTimelineStore(state => state.setFocusedCardId)
+  const setCardWidth = useTimelineStore(state => state.setCardWidth)
   const isMobile = useIsMobile()
 
   const [containerHeight, setContainerHeight] = useState(() =>
@@ -46,8 +49,12 @@ const TimelineContent = ({
     return () => resizeObserver.disconnect()
   }, [])
 
-  useLenis(({ scroll, direction }) => {
+  useLenis(({ scroll, direction, userData, lastVelocity }) => {
     setScrollDirection(direction)
+
+    if (userData?.source !== 'scrollToCard' && (lastVelocity > 0.05 || lastVelocity < -0.05)) {
+      setFocusedCardId(null)
+    }
 
     if (isMobile) {
       const topOfTheScreen = scroll
@@ -66,6 +73,7 @@ const TimelineContent = ({
       })
       setActiveCardIndex(closestIndex)
     } else {
+      // Desktop
       const leftQuarter = scroll + window.innerWidth / 4
 
       let closestIndex = 0
@@ -86,6 +94,7 @@ const TimelineContent = ({
   })
   const cardWidth = isMobile ? window.innerWidth - 2 * 4 : containerHeight * (2 / 3)
   const cardHeight = cardWidth * 1.5
+  setCardWidth(cardWidth)
 
   return (
     <div

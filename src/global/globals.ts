@@ -16,7 +16,7 @@ export const PLATFORMS = [
   'Netflix',
   'HBO Max',
   'Disney+',
-  'Amazon Prime Video',
+  'Prime Video',
   'Apple TV+',
   'Hulu',
   'Peacock',
@@ -30,12 +30,13 @@ export const PLATFORMS_ICONS = {
   Netflix: netflix,
   'HBO Max': hbo,
   'Disney+': disney,
-  'Amazon Prime Video': amazon,
+  'Prime Video': amazon,
   'Apple TV+': apple,
   Hulu: hulu,
   Peacock: peacock,
   'Paramount+': paramount,
   YouTube: youtube,
+  // TODO: Optimise player icon
   Player: player,
   Cinema: cinema,
 } as const
@@ -93,3 +94,4 @@ export const DEFAULT_SETTINGS: UserSettings = {
   isPosterText: true,
   isPremiumUser: false
 }
+

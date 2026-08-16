@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from 'react'
 
 import posterPlaceholder from '@/assets/images/poster-placeholder.png'
 import { PLATFORMS_ICONS } from '@/global/globals'
-import useDebounce from '@/hooks/useDebounce'
 import { useIsMobile } from '@/hooks/useMobile'
 import { useTimeline } from '@/hooks/useTimeline'
 import { useTimelineStore } from '@/stores/timelineStore'
@@ -23,35 +22,28 @@ const currentDate = new Date()
 const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) => {
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [posterPreview, setPosterPreview] = useState(movie.poster || posterPlaceholder)
-  const [scroll, setScroll] = useState(0)
+  // const [scroll, setScroll] = useState(0)
 
   const isMobile = useIsMobile()
-  const debouncedScroll = useDebounce(scroll, 150)
+  // const debouncedScroll = useDebounce(scroll, 150)
 
-  const { scrollToCard, lenisRef, activeCardIndex } = useTimeline()
+  const { scrollToCard } = useTimeline()
   const setFocusedCardId = useTimelineStore(state => state.setFocusedCardId)
+  const focusedCardId = useTimelineStore(state => state.focusedCardId)
 
   const handleCardClick = () => {
     // TODO: Close other open editors
     if (isEditOpen) {
+      console.log('editor is open -> closing')
       setIsEditOpen(false)
       setFocusedCardId(null)
     } else {
+      console.log('editor is closed -> opening')
       setFocusedCardId(movie.id)
       scrollToCard(index)
       setIsEditOpen(true)
     }
   }
-
-  // close on scroll
-  // TODO: Should i off() this?
-  lenisRef?.current?.lenis?.on('scroll', e => {
-    if (e.userData && e.userData.source !== 'scrollToCard') {
-      setScroll(e.scroll)
-      setIsEditOpen(false)
-      setFocusedCardId(null)
-    }
-  })
 
   const posterToDisplay = useMemo(() => {
     if (isEditOpen) {
@@ -62,10 +54,18 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
   }, [isEditOpen, posterPreview, movie.poster])
 
   useEffect(() => {
-    if (!isMobile) return
-    scrollToCard(activeCardIndex)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeCardIndex, debouncedScroll, isMobile])
+    if (!isEditOpen) return
+    console.log('trigger card id:', focusedCardId, movie.id)
+    if (focusedCardId !== movie.id) {
+      setIsEditOpen(false)
+    }
+  }, [focusedCardId, isEditOpen, movie.id])
+
+  // useEffect(() => {
+  //   if (!isMobile) return
+  //   scrollToCard(activeCardIndex)
+  // // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [activeCardIndex, isMobile])
 
   // useEffect(() => {
   //   // TODO: fix thiss so it will not scroll too far when both are oppen and one will close and move the scroll position
@@ -102,7 +102,7 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
               className="h-10 w-10 bg-accent p-1.5"
             />
           </div>
-          <div className="flex flex-1 items-end justify-between">
+          <div className="flex items-end justify-between gap-10">
             <div>
               {isReleased(movie.date) ? (
                 <h1 className="text-5xl font-semibold text-white">Released</h1>
@@ -122,7 +122,9 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
                 </div>
               )}
             </div>
-            <h2 className="text-4xl leading-tight font-semibold text-white">{movie.title}</h2>
+            <h2 className="text-right text-4xl leading-tight font-semibold text-white">
+              {movie.title}
+            </h2>
           </div>
         </div>
       </AspectRatio>

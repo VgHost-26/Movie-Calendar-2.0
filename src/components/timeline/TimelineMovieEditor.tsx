@@ -42,19 +42,12 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
   const [morePostersOpen, setMorePostersOpen] = useState(false)
   const [morePosters, setMorePosters] = useState<TMDBMulti[]>([])
   const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(calendarDate)
-  const clearFocusedCardId = useTimelineStore((state) => state.clearFocusedCardId)
+  const clearFocusedCardId = useTimelineStore(state => state.clearFocusedCardId)
 
   const { deleteMovie } = useDeleteMovie()
   const { updateMovie } = useUpdateMovie()
-  const { mutateAsync } = useSearchMultiMutation()
-  const {
-    reset,
-    setValue,
-    register,
-    handleSubmit,
-    control,
-    watch,
-  } = useForm<MovieFormData>({
+  const { mutateAsync: searchMulti } = useSearchMultiMutation()
+  const { reset, setValue, register, handleSubmit, control, watch } = useForm<MovieFormData>({
     resolver: zodResolver(movieSchema),
     defaultValues: {
       title,
@@ -85,11 +78,12 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
     toast.success('Movie deleted successfully!')
   }
 
+  // TODO: mut this to api or something
   const handleSearchPoster = async () => {
     const title = watch('title').trim()
 
     try {
-      const response = await mutateAsync({ query: title })
+      const response = await searchMulti({ query: title })
       if (response && response.results.length > 0) {
         if (response.results.length > 1) {
           setMorePosters(response.results)
@@ -112,7 +106,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
   }
 
   const handleShowMorePosters = () => {
-    setMorePostersOpen((prev) => !prev)
+    setMorePostersOpen(prev => !prev)
   }
 
   const handleSwitchPoster = (movie: TMDBMulti | TMDBMovie) => {
@@ -135,12 +129,9 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
           exit={{ translateX: '-100%', marginRight: 'calc(var(--width-timeline-card) * -1)' }}
           transition={{ duration: 0.4, ease: 'easeInOut' }}
 
-          className={`z-10 w-timeline-card h-full overflow-y-auto scrollbar-hide bg-background max-w-window-no-sidebar-icon-no-card-with-padding`}
+          className={`scrollbar-hide z-10 h-full w-timeline-card max-w-window-no-sidebar-icon-no-card-with-padding overflow-y-auto bg-background`}
         >
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="flex w-full flex-col gap-4 p-4"
-          >
+          <form onSubmit={handleSubmit(onSubmit)} className="flex w-full flex-col gap-4 p-4">
             <FieldSet>
               <FieldLegend className="flex items-center gap-2">
                 <Button size="icon-xs" type="button" variant="secondary" onPress={handleCancel}>
@@ -169,7 +160,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                     render={({ field }) => (
                       <DatePicker
                         selectedDate={selectedDate}
-                        onDateChange={(date) => {
+                        onDateChange={date => {
                           setSelectedDate(date)
                           field.onChange(date ? date.toString() : '')
                         }}
@@ -193,7 +184,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {PLATFORMS.map((platform) => (
+                          {PLATFORMS.map(platform => (
                             <SelectItem id={platform} key={platform} value={platform}>
                               <img
                                 src={PLATFORMS_ICONS[platform]}
@@ -261,7 +252,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                       className="overflow-hidden"
                     >
                       <div className="flex gap-2">
-                        {morePosters.map((movie) => {
+                        {morePosters.map(movie => {
                           const posterUrl = getPosterUrl(movie)
                           const tooltipTitle = `${movie.title} ${movie.release_date ? `(${movie.release_date.split('-')[0]})` : ''}`
 
