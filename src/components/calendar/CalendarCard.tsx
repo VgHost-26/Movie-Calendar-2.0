@@ -1,4 +1,3 @@
-import { CalendarDate } from '@internationalized/date'
 import { format } from 'date-fns'
 import { useState } from 'react'
 
@@ -49,7 +48,7 @@ const CalendarCard = ({ movies, calendarDate }: Props) => {
       <AddMovieDialog
         isOpen={isDialogOpen}
         setIsOpen={setIsDialogOpen}
-        date={new CalendarDate(date.getFullYear(), date.getMonth() + 1, date.getDate())} />
+        date={format(date, 'yyyy-MM-dd')} />
     </>
   )
 }

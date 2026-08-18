@@ -104,7 +104,9 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
           </div>
           <div className="flex items-end justify-between gap-10">
             <div>
-              {isReleased(movie.date) ? (
+              {movie.date === '' ? (
+                <h1 className="text-4xl font-semibold text-white">Coming&nbsp;Soon</h1>
+              ) : isReleased(movie.date) ? (
                 <h1 className="text-5xl font-semibold text-white">Released</h1>
               ) : (
                 <div className="flex items-stretch gap-0.5">

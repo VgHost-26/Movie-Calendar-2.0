@@ -1,7 +1,7 @@
 import { differenceInDays, format } from 'date-fns'
 import { ReactLenis } from 'lenis/react'
 import { ChevronRightIcon, PlusIcon } from 'lucide-react'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { useGetMovies } from '@/api/apiFirebase'
 import AddMovieDialog from '@/components/calendar/AddMovieDialog'
@@ -37,7 +37,13 @@ const TimelinePageContent = () => {
     if (!data) {
       return []
     }
-    return data
+    return data.sort((a, b) =>
+      a.date === ''
+        ? 1
+        : b.date === ''
+          ? -1
+          : new Date(a.date).getTime() - new Date(b.date).getTime(),
+    )
   }, [data])
 
   const firstUnreleasedMovieIndex = useMemo(
@@ -55,6 +61,8 @@ const TimelinePageContent = () => {
     if (isMobile) {
       const activeMovie = movies[activeCardIndex]
       if (!activeMovie) return 'Timeline'
+      if (activeMovie.date === '') return 'Coming Soon'
+
       const [month, day, ending] = format(activeMovie.date, 'MMM do').split(/(\d+)/).filter(Boolean)
       return (
         <>
@@ -65,10 +73,12 @@ const TimelinePageContent = () => {
     } else {
       const focusedMovie = movies.find(m => m.id === focusedCardId)
       if (focusedMovie) {
+        if (focusedMovie.date === '') return 'Coming Soon'
         return format(focusedMovie.date, 'MMMM')
       }
       const activeMovie = movies[activeCardIndex]
       if (!activeMovie) return 'Timeline'
+      if (activeMovie.date === '') return 'Coming Soon'
       return format(activeMovie.date, 'MMMM')
     }
   }, [activeCardIndex, focusedCardId, isMobile, movies])
@@ -77,6 +87,7 @@ const TimelinePageContent = () => {
     if (!focusedCardId) return ' '
     const focusedMovie = movies.find(m => m.id === focusedCardId)
     if (!focusedMovie) return ' '
+    if (focusedMovie.date === '') return ' '
     const date = new Date(focusedMovie.date)
     const [day, ending] = format(date, 'do').split(/(\d+)/).filter(Boolean)
     return (
@@ -92,10 +103,17 @@ const TimelinePageContent = () => {
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
            </div> */
 
+  useEffect(() => {
+    console.log('trigger')
+    if (!data) return
+    console.log('trigger passed')
+    scrollToCard(firstUnreleasedMovieIndex)
+  }, [data, firstUnreleasedMovieIndex, scrollToCard])
+
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
-      <div className="flex items-end p-window">
-        <h1 className="flex w-full gap-10 text-8xl font-bold uppercase md:ml-[-0.05em] md:text-9xl">
+      <div className="flex items-end p-window pb-1">
+        <h1 className="flex w-full gap-10 text-8xl font-bold uppercase md:text-9xl">
           <TextTransition direction={scrollDirection}>{activeCardMonth}</TextTransition>
           {!isMobile && (
             <TextTransition direction={-1} exitDirection="opposite" className="w-[4ch]">
@@ -110,9 +128,12 @@ const TimelinePageContent = () => {
           orientation: isMobile ? 'vertical' : 'horizontal',
           gestureOrientation: 'vertical',
           smoothWheel: true,
-          syncTouch:true,
+          syncTouch: true,
           touchMultiplier: 1,
           lerp: 0.1,
+          
+           
+          
         }}
         ref={registerLenisRef}
       >
@@ -123,12 +144,17 @@ const TimelinePageContent = () => {
           firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
         />
       </ReactLenis>
-      <footer className="flex justify-between gap-6 p-window sticky">
+      <footer className="flex justify-between gap-6 p-window">
         <div className="flex gap-2">
-          <Button size={'icon'} className='' variant={'default'} onPress={handleScrollToFirstMovie}>
+          <Button size={'icon'} className="" variant={'default'} onPress={handleScrollToFirstMovie}>
             <ChevronRightIcon className="text-primary-foreground" />
           </Button>
-          <Button size={'icon'} className='' variant={'default'} onPress={() => setIsAddMovieDialogOpen(true)}>
+          <Button
+            size={'icon'}
+            className=""
+            variant={'default'}
+            onPress={() => setIsAddMovieDialogOpen(true)}
+          >
             <PlusIcon className="text-primary-foreground" />
           </Button>
           <AddMovieDialog isOpen={isAddMovieDialogOpen} setIsOpen={setIsAddMovieDialogOpen} />
@@ -157,7 +183,7 @@ const TimelinePageContent = () => {
             )}
           </p>
         </div>
-        <div className="flex items-center md:hidden justify-center">
+        <div className="flex items-center justify-center md:hidden">
           <ProfileIcon />
         </div>
       </footer>

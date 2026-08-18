@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { PLATFORMS } from '@/global/globals'
 
 export const movieSchema = z.object({
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, { message: 'Date is required' }),
+  date: z.union([z.string().regex(/^\d{4}-\d{2}-\d{2}$/), z.literal('')]),
   title: z
     .string()
     .min(1, { message: 'Title is required' })

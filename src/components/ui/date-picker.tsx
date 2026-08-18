@@ -1,35 +1,108 @@
-import { getLocalTimeZone, type CalendarDate } from '@internationalized/date'
+import { CalendarDate, getLocalTimeZone } from '@internationalized/date'
 import { ChevronDownIcon } from 'lucide-react'
+import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { Popover, PopoverTrigger } from '@/components/ui/popover'
+import { Popover, PopoverHeader, PopoverTrigger } from '@/components/ui/popover'
 
 import { Calendar } from './calendar'
+import { format } from 'date-fns'
 
 type Props = {
-  selectedDate: CalendarDate | null
-  onDateChange: (date: CalendarDate | null) => void
+  selectedDate: string
+  onDateChange: (date: string) => void
+}
+type Mode = 'day' | 'month' | 'year'
+
+const calendarDateToString = (date: CalendarDate | null, mode: Mode) => {
+  if (!date) return ''
+
+  switch (mode) {
+    case 'day':
+      return `${date.year}-${date.month}-${date.day}`
+    case 'month':
+      return `${date.year}-${date.month}-00`
+    case 'year':
+      return `${date.year}-00-00`
+    default:
+      return ''
+  }
+}
+
+const displayDate = (date: CalendarDate | null, mode: Mode) => {
+  if (!date) return <span>Coming Soon</span>
+  const dateObj = date.toDate(getLocalTimeZone())
+  switch (mode) {
+    case 'day':
+      return format(dateObj, 'dd MMMMyyyy')
+    case 'month':
+      return format(dateObj, 'MMMM yyyy')
+    case 'year':
+      return `${date.year}`
+    default:
+      return ''
+  }
 }
 
 export default function DatePicker({ selectedDate, onDateChange }: Props) {
+  const date = selectedDate
+    ? new CalendarDate(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate())
+    : null
+  const [activeMode, setActiveMode] = useState<Mode>('day')
+  const [selectedDateState, setSelectedDateState] = useState<CalendarDate | null>(date)
+  const [isOpen, setIsOpen] = useState(false)
+
+  const handleComingSoonButton = () => {
+    setSelectedDateState(null)
+    onDateChange('')
+    setActiveMode('day')
+    setIsOpen(false)
+  }
+  const handleDateChange = (date: CalendarDate | null) => {
+    setSelectedDateState(date)
+    onDateChange(calendarDateToString(date, activeMode))
+    setIsOpen(false)
+  }
   return (
-    <PopoverTrigger>
+    <PopoverTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
       <Button
         variant={'outline'}
         data-empty={!selectedDate}
         className="w-[212px] justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
       >
-        {selectedDate ? (
-          selectedDate
-            .toDate(getLocalTimeZone())
-            .toLocaleDateString(undefined, { dateStyle: 'long' })
-        ) : (
-          <span>Pick a date</span>
-        )}
+        {displayDate(selectedDateState, activeMode)}
         <ChevronDownIcon data-icon="inline-end" />
       </Button>
       <Popover className="w-auto p-0" placement="bottom start">
-        <Calendar value={selectedDate} onChange={onDateChange} />
+        <PopoverHeader className="grid grid-cols-3">
+          <Button
+            variant={activeMode === 'day' ? 'default' : 'ghost'}
+            onPress={() => setActiveMode('day')}
+          >
+            Day
+          </Button>
+          <Button
+            variant={activeMode === 'month' ? 'default' : 'ghost'}
+            onPress={() => setActiveMode('month')}
+          >
+            Month
+          </Button>
+          <Button
+            variant={activeMode === 'year' ? 'default' : 'ghost'}
+            onPress={() => setActiveMode('year')}
+          >
+            Year
+          </Button>
+          <Button variant="outline" className="col-span-3" onPress={handleComingSoonButton}>
+            Comign soon
+          </Button>
+        </PopoverHeader>
+        <Calendar
+          captionLayout="dropdown"
+          value={selectedDateState}
+          onChange={handleDateChange}
+          className={'w-full'}
+        />
       </Popover>
     </PopoverTrigger>
   )

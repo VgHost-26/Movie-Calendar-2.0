@@ -24,7 +24,7 @@ const TimelineContent = ({
   isLoading = false,
   firstUnreleasedMovieIndex,
 }: Props) => {
-  const { setActiveCardIndex, setScrollDirection } = useTimeline()
+  const { setActiveCardIndex, setScrollDirection, scrollToCard } = useTimeline()
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -96,6 +96,7 @@ const TimelineContent = ({
   const cardHeight = cardWidth * 1.5
   setCardWidth(cardWidth)
 
+
   return (
     <div
       ref={containerRef}
@@ -123,7 +124,7 @@ const TimelineContent = ({
               itemRefs.current[i] = el
             }}
             key={movie.id}
-            className="flex h-full items-center"
+            className="flex h-full items-center overflow-clip"
           >
             <TimelineMovieCard
               movie={movie}

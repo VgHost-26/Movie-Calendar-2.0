@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CalendarDate } from '@internationalized/date'
 import { AnimatePresence, motion } from 'framer-motion'
 import ReactLenis from 'lenis/react'
 import { ChevronDownIcon, ChevronLeftIcon } from 'lucide-react'
@@ -32,16 +31,10 @@ type Props = {
 }
 const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview }: Props) => {
   const { title, platform, poster, date, trailerURL } = movieData
-  const dateObj = new Date(date)
-  const calendarDate = new CalendarDate(
-    dateObj.getFullYear(),
-    dateObj.getMonth() + 1,
-    dateObj.getDate(),
-  )
 
   const [morePostersOpen, setMorePostersOpen] = useState(false)
   const [morePosters, setMorePosters] = useState<TMDBMulti[]>([])
-  const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(calendarDate)
+  const [selectedDate, setSelectedDate] = useState(date)
   const clearFocusedCardId = useTimelineStore(state => state.clearFocusedCardId)
 
   const { deleteMovie } = useDeleteMovie()
@@ -90,7 +83,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
         }
         const firstResult = response.results[0]
         if (!firstResult) {
-          console.log('No results found for the movie:', title, 'year:', dateObj.getFullYear())
+          toast.error('No results found for the movie: ' + title)
           return
         }
         const posterUrl = getPosterUrl(firstResult)
@@ -162,7 +155,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                         selectedDate={selectedDate}
                         onDateChange={date => {
                           setSelectedDate(date)
-                          field.onChange(date ? date.toString() : '')
+                          field.onChange(date)
                         }}
                       />
                     )}

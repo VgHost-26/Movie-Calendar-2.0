@@ -1,5 +1,3 @@
-import type { CalendarDate } from '@internationalized/date'
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
 import ReactLenis from 'lenis/react'
@@ -28,7 +26,7 @@ import { Tooltip, TooltipTrigger } from '../ui/tooltip'
 import PlatformPicker from '../utils/PlatformPicker'
 
 type Props = {
-  date?: CalendarDate | null
+  date?: string | null
   isOpen: boolean
   setIsOpen: (open: boolean) => void
 }
@@ -36,7 +34,7 @@ type Props = {
 const AddMovieDialog = ({ date, isOpen, setIsOpen }: Props) => {
   const dateObj = new Date(date ? date.toString() : '')
 
-  const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(date ?? null)
+  const [selectedDate, setSelectedDate] = useState(date ?? '')
   const [morePostersOpen, setMorePostersOpen] = useState(false)
   const [morePosters, setMorePosters] = useState<TMDBMulti[]>([])
 
@@ -172,7 +170,7 @@ const AddMovieDialog = ({ date, isOpen, setIsOpen }: Props) => {
                           selectedDate={selectedDate}
                           onDateChange={date => {
                             setSelectedDate(date)
-                            field.onChange(date ? date.toString() : '')
+                            field.onChange(date)
                           }}
                         />
                       )}
