@@ -1,7 +1,7 @@
 import { differenceInDays, format } from 'date-fns'
 import { ReactLenis } from 'lenis/react'
 import { ChevronRightIcon, PlusIcon } from 'lucide-react'
-import { useEffect, useMemo } from 'react'
+import {  useMemo } from 'react'
 
 import { useGetMovies } from '@/api/apiFirebase'
 import AddMovieDialog from '@/components/calendar/AddMovieDialog'
@@ -103,12 +103,12 @@ const TimelinePageContent = () => {
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
            </div> */
 
-  useEffect(() => {
-    console.log('trigger')
-    if (!data) return
-    console.log('trigger passed')
-    scrollToCard(firstUnreleasedMovieIndex)
-  }, [data, firstUnreleasedMovieIndex, scrollToCard])
+  // useEffect(() => {
+  //   console.log('trigger')
+  //   if (!data) return
+  //   console.log('trigger passed')
+  //   scrollToCard(firstUnreleasedMovieIndex)
+  // }, [data, firstUnreleasedMovieIndex, scrollToCard])
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
