@@ -10,7 +10,6 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
-import useAuth from '@/hooks/useAuth'
 import { MAIN_PAGES, FOOTER_PAGES, type PageItem } from '@/pages/pages'
 
 import NavIcon from '../NavIcon/NavIcon'
@@ -20,12 +19,11 @@ import ProfileIcon from '../ProfileIcon/ProfileIcon'
 export function AppSidebar() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { user } = useAuth()
 
   const isItemActive = (item: PageItem) => {
     if (
-      item.link === '/calendar' &&
-      (location.pathname === '/' || location.pathname === '/calendar')
+      item.link === '/timeline' &&
+      (location.pathname === '/' || location.pathname === '/timeline')
     ) {
       return true
     }
@@ -55,7 +53,7 @@ export function AppSidebar() {
       <SidebarContent className="justify-between px-2 py-1">
         <SidebarGroup>
           <SidebarMenu className="gap-1.5">
-            {MAIN_PAGES.map((page) => {
+            {MAIN_PAGES.map(page => {
               const active = isItemActive(page)
               return (
                 <SidebarMenuItem key={page.title}>
@@ -63,10 +61,11 @@ export function AppSidebar() {
                     isActive={active}
                     tooltip={page.title}
                     onPress={() => navigate(page.link)}
-                    className={`transition-colors duration-150 ${active
-                      ? 'text-primary [&_svg]:text-primary'
-                      : 'text-muted-foreground hover:bg-[#161619] hover:text-white [&_svg]:text-[#737373] hover:[&_svg]:text-white'
-                      } group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0!`}
+                    className={`transition-colors duration-150 ${
+                      active
+                        ? 'text-primary [&_svg]:text-primary'
+                        : 'text-muted-foreground hover:bg-[#161619] hover:text-white [&_svg]:text-[#737373] hover:[&_svg]:text-white'
+                    } group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0!`}
                   >
                     <NavIcon
                       name={page.icon}
@@ -83,7 +82,7 @@ export function AppSidebar() {
         </SidebarGroup>
         <SidebarGroup>
           <SidebarMenu className="gap-1.5">
-            {FOOTER_PAGES.map((page) => {
+            {FOOTER_PAGES.map(page => {
               const active = isItemActive(page)
               return (
                 <SidebarMenuItem key={page.title}>
@@ -91,10 +90,11 @@ export function AppSidebar() {
                     isActive={active}
                     tooltip={page.title}
                     onPress={() => navigate(page.link)}
-                    className={`h-11 rounded-lg px-3.5 transition-colors duration-150 ${active
-                      ? 'text-primary [&_svg]:text-primary'
-                      : 'text-muted-foreground hover:bg-[#161619] hover:text-white [&_svg]:text-[#737373] hover:[&_svg]:text-white'
-                      } group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0!`}
+                    className={`h-11 rounded-lg px-3.5 transition-colors duration-150 ${
+                      active
+                        ? 'text-primary [&_svg]:text-primary'
+                        : 'text-muted-foreground hover:bg-[#161619] hover:text-white [&_svg]:text-[#737373] hover:[&_svg]:text-white'
+                    } group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0!`}
                   >
                     {page.title === 'Account' ? (
                       <ProfileIcon />
@@ -109,7 +109,6 @@ export function AppSidebar() {
                     </span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-
               )
             })}
           </SidebarMenu>
