@@ -1,7 +1,7 @@
 import { differenceInDays, format } from 'date-fns'
 import { ReactLenis } from 'lenis/react'
 import { ChevronRightIcon, PlusIcon } from 'lucide-react'
-import {  useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { useGetMovies } from '@/api/apiFirebase'
 import AddMovieDialog from '@/components/calendar/AddMovieDialog'
@@ -126,14 +126,11 @@ const TimelinePageContent = () => {
         className="timeline-lenis flex-1 overflow-hidden"
         options={{
           orientation: isMobile ? 'vertical' : 'horizontal',
-          gestureOrientation: 'vertical',
+          gestureOrientation: 'both',
           smoothWheel: true,
           syncTouch: true,
           touchMultiplier: 1,
           lerp: 0.1,
-          
-           
-          
         }}
         ref={registerLenisRef}
       >
@@ -144,7 +141,7 @@ const TimelinePageContent = () => {
           firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
         />
       </ReactLenis>
-      <footer className="flex justify-between gap-6 p-window">
+      <footer className="flex  gap-6 p-window">
         <div className="flex gap-2">
           <Button size={'icon'} className="" variant={'default'} onPress={handleScrollToFirstMovie}>
             <ChevronRightIcon className="text-primary-foreground" />
@@ -175,8 +172,8 @@ const TimelinePageContent = () => {
                 [
                 {`in 
                 ${differenceInDays(new Date(movies[firstUnreleasedMovieIndex].date), currentDate)
-                  .toString()
-                  .padStart(2, '0')}
+                    .toString()
+                    .padStart(2, '0')}
                 days`}
                 ]
               </span>
