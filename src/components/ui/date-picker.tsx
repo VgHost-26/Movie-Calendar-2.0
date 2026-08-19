@@ -44,11 +44,19 @@ const displayDate = (date: CalendarDate | null, mode: Mode) => {
   }
 }
 
+const modeFromDate = (date: string): Mode => {
+  if (!date) return 'day'
+  const [year, month, day] = date.split('-')
+  if (month === 'xx') return 'year'
+  if (day === 'xx') return 'month'
+  return 'day'
+}
+
 export default function DatePicker({ selectedDate, onDateChange }: Props) {
-  const date = selectedDate
-    ? new CalendarDate(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate())
-    : null
-  const [activeMode, setActiveMode] = useState<Mode>('day')
+  const date = selectedDate ? new CalendarDate(...(selectedDate.split('-').map(Number) as [number, number, number])) : null
+  const initialMode = modeFromDate(selectedDate)
+
+  const [activeMode, setActiveMode] = useState(initialMode)
   const [selectedDateState, setSelectedDateState] = useState<CalendarDate | null>(date)
   const [isOpen, setIsOpen] = useState(false)
 

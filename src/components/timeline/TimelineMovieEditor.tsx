@@ -154,7 +154,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                       <DatePicker
                         selectedDate={selectedDate}
                         onDateChange={date => {
-                          setSelectedDate(date)
+                          console.log(date)
                           field.onChange(date)
                         }}
                       />
@@ -194,7 +194,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                 </Field>
               </div>
               <Field>
-                <FieldLabel htmlFor="poster">Poster</FieldLabel>
+                <FieldLabel htmlFor="poster">Poster URL</FieldLabel>
                 <div className="flex gap-4">
                   <input
                     {...register('poster')}
