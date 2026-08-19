@@ -188,9 +188,9 @@ const AddMovieDialog = ({ date, isOpen, setIsOpen }: Props) => {
                   </Field>
                 </div>
                 <Field>
-                  <FieldLabel htmlFor="poster">Poster</FieldLabel>
+                  <FieldLabel htmlFor="poster">Poster URL</FieldLabel>
                   <div className="flex">
-                    <Input type="text" placeholder="Poster (optional)" {...register('poster')} />{' '}
+                    <Input type="text" placeholder="https://example.jpg" {...register('poster')} />{' '}
                     <Button type="button" variant="secondary" onPress={handleSearchPoster}>
                       Autodetect
                     </Button>

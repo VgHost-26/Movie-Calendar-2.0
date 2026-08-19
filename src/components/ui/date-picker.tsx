@@ -12,7 +12,7 @@ type Props = {
   selectedDate: string
   onDateChange: (date: string) => void
 }
-type Mode = 'day' | 'month' | 'year'
+type Mode = 'day' | 'month' | 'year' | 'undefined'
 
 const calendarDateToString = (date: CalendarDate | null, mode: Mode) => {
   if (!date) return ''
@@ -45,7 +45,7 @@ const displayDate = (date: CalendarDate | null, mode: Mode) => {
 }
 
 const modeFromDate = (date: string): Mode => {
-  if (!date) return 'day'
+  if (!date) return 'undefined'
   const [year, month, day] = date.split('-')
   if (month === 'xx') return 'year'
   if (day === 'xx') return 'month'
@@ -63,7 +63,7 @@ export default function DatePicker({ selectedDate, onDateChange }: Props) {
   const handleComingSoonButton = () => {
     setSelectedDateState(null)
     onDateChange('')
-    setActiveMode('day')
+    setActiveMode('undefined')
     setIsOpen(false)
   }
   const handleDateChange = (date: CalendarDate | null) => {
@@ -101,7 +101,11 @@ export default function DatePicker({ selectedDate, onDateChange }: Props) {
           >
             Year
           </Button>
-          <Button variant="outline" className="col-span-3" onPress={handleComingSoonButton}>
+          <Button
+            variant={activeMode === 'undefined' ? 'default' : 'ghost'}
+            className="col-span-3"
+            onPress={handleComingSoonButton}
+          >
             Comign soon
           </Button>
         </PopoverHeader>
