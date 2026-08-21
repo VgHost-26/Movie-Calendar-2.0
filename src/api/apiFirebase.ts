@@ -13,8 +13,9 @@ import {
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import type { Movie, MovieFormData } from '@/Types/types'
+import type { Movie, MovieFormData, UserSettings } from '@/Types/types'
 
+import { DEFAULT_SETTINGS } from '@/global/globals'
 import useAuth from '@/hooks/useAuth'
 import { db } from '@/lib/firebase'
 
@@ -123,4 +124,53 @@ export function useDeleteMovie() {
   }
 
   return { deleteMovie }
+}
+
+
+export function useGetUserSettings(){
+  const {user} = useAuth()
+
+  const fetchUserSettings = async () => {
+    if (!user) {
+      return DEFAULT_SETTINGS
+    }
+    const q = query(collection(db, 'users', user.uid, 'settings'))
+    const snapshot = await getDocs(q)
+    if(snapshot.empty){
+      return DEFAULT_SETTINGS
+    }
+    return { ...DEFAULT_SETTINGS, ...snapshot.docs[0]!.data() }
+  }
+
+ return useQuery({
+    queryKey: ['userSettings', user?.uid],
+    queryFn: fetchUserSettings,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: !!user,
+    placeholderData: keepPreviousData,
+  })
+
+  
+}
+
+
+export function useUpdateUserSettings(){
+  const {user} = useAuth()
+  const queryClient = useQueryClient()
+
+  const updateUserSettings = async (updatedSettings: Partial<UserSettings>) => {
+    if (!user) {
+      throw new Error('User not authenticated')
+    }
+    try {
+      await setDoc(doc(db, 'users', user.uid, 'settings', 'userSettingsDoc'), updatedSettings, { merge: true })
+      toast.success('Settings updated successfully!')
+      queryClient.invalidateQueries({ queryKey: ['userSettings', user.uid] })
+    } catch (err) {
+      console.error('Error updating settings:', err)
+      toast.error('Failed to update settings. Please try again.')
+      throw err
+    }
+  }
+  return { updateUserSettings }
 }

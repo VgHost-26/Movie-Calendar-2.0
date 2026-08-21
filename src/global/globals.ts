@@ -84,14 +84,18 @@ export const MONTHS_SHORT = [
 ] as const
 
 export const LANGUAGES = [
-  { id: 'en-US', name: 'English (US)', flag: '' },
-  { id: 'en-GB', name: 'English (UK)', flag: '' },
-  { id: 'pl-PL', name: 'Polish (Poland)', flag: '' },
+  { id: 'en-US', name: 'English', flag: '' },
+  { id: 'pl-PL', name: 'Polish', flag: '' },
+]
+export const POSTER_LANGUAGES = [
+  { id: 'original', name: 'Original', flag: '' },
+  { id: 'xx-XX', name: 'None', flag: '' },
+  ...LANGUAGES
 ]
 export const DEFAULT_SETTINGS: UserSettings = {
   languageId: 'en-US',
   platforms: [...PLATFORMS],
-  isPosterText: true,
+  preferedPosterLanguage: 'en-US',
   isPremiumUser: false
 }
 
