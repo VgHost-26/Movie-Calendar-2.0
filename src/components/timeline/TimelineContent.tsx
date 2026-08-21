@@ -42,7 +42,6 @@ const TimelineContent = ({
     const resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
         setContainerHeight(entry.contentRect.height)
-
       }
     })
 
