@@ -1,4 +1,3 @@
-import type { LenisOptions } from 'lenis'
 import type { LenisRef } from 'lenis/react'
 
 import React, { useCallback, useRef, useState } from 'react'
@@ -11,7 +10,7 @@ import { ScrollDirection } from '@/Types/types'
 export interface TimelineContextProps {
   activeCardIndex: number
   setActiveCardIndex: (index: number) => void
-  scrollToCard: (index: number, options?: LenisOptions) => void
+  scrollToCard: (index: number, options?: ScrollToOptions) => void
   registerLenisRef: (ref: LenisRef) => void
   scrollDirection: ScrollDirection
   setScrollDirection: (direction: ScrollDirection) => void
@@ -33,13 +32,13 @@ export const TimelineContextProvider = ({ children }: { children: React.ReactNod
   }, [])
 
   const scrollToCard = useCallback(
-    (index: number) => {
+    (index: number, options?: ScrollToOptions) => {
       if (lenisRef.current?.lenis) {
         const selector = `[data-movie-index="${index}"]`
         // const el = document.querySelector(selector)
         // const parent = el?.parentElement
         let offset = 0
-        const openEditorOffset = focusedCardId !== null ? (-cardWidth - 16) : 0
+        const openEditorOffset = focusedCardId !== null ? -cardWidth - 16 : 0
 
         // if (parent) {
         // TODO: fix this
@@ -53,6 +52,7 @@ export const TimelineContextProvider = ({ children }: { children: React.ReactNod
           offset,
           duration: 1.5,
           userData: { source: 'scrollToCard' },
+          ...options,
         })
       } else {
         console.warn('Lenis ref is not registered yet.')

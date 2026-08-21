@@ -24,7 +24,7 @@ const TimelineContent = ({
   isLoading = false,
   firstUnreleasedMovieIndex,
 }: Props) => {
-  const { setActiveCardIndex, setScrollDirection, scrollToCard } = useTimeline()
+  const { setActiveCardIndex, setScrollDirection } = useTimeline()
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -42,6 +42,7 @@ const TimelineContent = ({
     const resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
         setContainerHeight(entry.contentRect.height)
+
       }
     })
 
