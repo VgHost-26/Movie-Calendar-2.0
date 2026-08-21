@@ -105,10 +105,13 @@ const TimelinePageContent = () => {
 
   // useEffect(() => {
   //   console.log('trigger')
-  //   if (!data) return
+  //   if (!movies || firstUnreleasedMovieIndex === undefined) return
   //   console.log('trigger passed')
-  //   scrollToCard(firstUnreleasedMovieIndex)
-  // }, [data, firstUnreleasedMovieIndex, scrollToCard])
+  //   scrollToCard(movies.length - 1, { immediate: true })
+  //   // new Promise(resolve => setTimeout(resolve, 100)).then(() => {
+  //   // scrollToCard(firstUnreleasedMovieIndex)
+  //   // })
+  // }, [movies, firstUnreleasedMovieIndex])
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
@@ -141,7 +144,7 @@ const TimelinePageContent = () => {
           firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
         />
       </ReactLenis>
-      <footer className="flex  gap-6 p-window">
+      <footer className="flex gap-6 p-window">
         <div className="flex gap-2">
           <Button size={'icon'} className="" variant={'default'} onPress={handleScrollToFirstMovie}>
             <ChevronRightIcon className="text-primary-foreground" />
@@ -172,8 +175,8 @@ const TimelinePageContent = () => {
                 [
                 {`in 
                 ${differenceInDays(new Date(movies[firstUnreleasedMovieIndex].date), currentDate)
-                    .toString()
-                    .padStart(2, '0')}
+                  .toString()
+                  .padStart(2, '0')}
                 days`}
                 ]
               </span>
