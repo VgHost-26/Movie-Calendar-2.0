@@ -88,6 +88,7 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
         className="z-50 h-full cursor-pointer"
       >
         <img
+          loading='lazy'
           src={posterToDisplay}
           // alt={movie.title}
           className={`h-full w-full object-cover ${isReleased(movie.date) ? '' : 'grayscale'}`}
