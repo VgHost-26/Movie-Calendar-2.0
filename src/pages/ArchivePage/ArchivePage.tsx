@@ -1,53 +1,31 @@
-import { ReactLenis } from 'lenis/react'
 import { ArchiveIcon, ClapperboardIcon } from 'lucide-react'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useGetMovies } from '@/api/apiFirebase'
+import ArchiveGrid from '@/components/archive/ArchiveGrid'
 import ProfileIcon from '@/components/ProfileIcon/ProfileIcon'
-import { TimelineContextProvider } from '@/components/providers/TimelineContext'
-import TimelineContent from '@/components/timeline/TimelineContent'
 import { Button } from '@/components/ui/button'
 import useAuth from '@/hooks/useAuth'
-import { useIsMobile } from '@/hooks/useMobile'
-import { useTimeline } from '@/hooks/useTimeline'
-import { isReleased } from '@/utils/movieFunctions'
 import TextTransition from '@/components/ui/TextTransition'
+import { toSortableTime } from '@/utils/movieDate'
 
-const ArchivePage = () => (
-  <TimelineContextProvider>
-    <ArchivePageContent />
-  </TimelineContextProvider>
-)
-
-const ArchivePageContent = () => {
-  const { registerLenisRef } = useTimeline()
+const ArchivePage = () => {
   const { user } = useAuth()
-  const isMobile = useIsMobile()
   const navigate = useNavigate()
   const userId = user?.uid ?? ''
 
   const { data, isLoading, isPending } = useGetMovies(userId)
 
+  // Oldest release first; undated entries last.
   const movies = useMemo(() => {
     if (!data) {
       return []
     }
     return data
       .filter(m => m.watched)
-      .sort((a, b) =>
-        a.date === ''
-          ? 1
-          : b.date === ''
-            ? -1
-            : new Date(a.date).getTime() - new Date(b.date).getTime(),
-      )
+      .sort((a, b) => toSortableTime(a.date) - toSortableTime(b.date))
   }, [data])
-
-  const firstUnreleasedMovieIndex = useMemo(
-    () => movies.findIndex(m => !isReleased(m.date)),
-    [movies],
-  )
 
   const isEmpty = !isLoading && !isPending && movies.length === 0
 
@@ -55,7 +33,7 @@ const ArchivePageContent = () => {
     <div className="flex h-dvh flex-col overflow-hidden">
       <div className="flex items-end p-window pb-1">
         <h1 className="flex w-full items-end gap-6 text-8xl font-bold uppercase md:text-9xl">
-           <TextTransition>Archive</TextTransition>
+          <TextTransition>Archive</TextTransition>
           <span className="pb-3 text-2xl font-medium text-muted-foreground normal-case">
             {movies.length > 0 &&
               `${movies.length} watched ${movies.length === 1 ? 'movie' : 'movies'}`}
@@ -75,25 +53,9 @@ const ArchivePageContent = () => {
           </Button>
         </div>
       ) : (
-        <ReactLenis
-          className="timeline-lenis flex-1 overflow-hidden"
-          options={{
-            orientation: isMobile ? 'vertical' : 'horizontal',
-            gestureOrientation: 'both',
-            smoothWheel: true,
-            syncTouch: true,
-            touchMultiplier: 1,
-            lerp: 0.1,
-          }}
-          ref={registerLenisRef}
-        >
-          <TimelineContent
-            movies={movies}
-            isPending={isPending}
-            isLoading={isLoading}
-            firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
-          />
-        </ReactLenis>
+        <div className="flex min-h-0 flex-1 flex-col">
+          <ArchiveGrid movies={movies} isPending={isPending} isLoading={isLoading} />
+        </div>
       )}
       <footer className="flex gap-6 p-window">
         <div className="hidden items-end text-muted-foreground md:flex">
