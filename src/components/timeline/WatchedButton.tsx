@@ -1,4 +1,4 @@
-import { CheckIcon, EyeOffIcon } from 'lucide-react'
+import { CheckIcon, EyeIcon, EyeOffIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
 import type { Movie } from '@/Types/types'
@@ -9,6 +9,7 @@ import { useTimelineStore } from '@/stores/timelineStore'
 import { isReleased } from '@/utils/movieFunctions'
 
 import { Button } from '../ui/button'
+import { Tooltip, TooltipTrigger } from '../ui/tooltip'
 
 type Props = {
   movie: Movie
@@ -46,23 +47,28 @@ const WatchedButton = ({ movie, onToggled, className }: Props) => {
   }
 
   return (
-    <span
-      // Prevent the parent card click (open editor) when pressing the button.
-      onClick={e => e.stopPropagation()}
-      className={className}
-    >
-      <Button
-        size="xs"
-        variant="secondary"
-        onPress={handlePress}
-        isDisabled={isLoading || isLeaving}
-        aria-label={watched ? `Mark ${movie.title} as unwatched` : `Mark ${movie.title} as watched`}
-        className="bg-black/60 text-white backdrop-blur-sm hover:bg-black/80 hover:text-white"
+    <TooltipTrigger delay={300} closeDelay={0} key={movie.title}>
+      <Tooltip>{watched ? `Mark as unwatched` : `Mark as watched`}</Tooltip>
+      <span
+        // Prevent the parent card click (open editor) when pressing the button.
+        onClick={e => e.stopPropagation()}
+        className={className}
       >
-        {watched ? <EyeOffIcon data-icon="inline-start" /> : <CheckIcon data-icon="inline-start" />}
-        {watched ? 'Watched' : 'Watched?'}
-      </Button>
-    </span>
+        <Button
+          size="icon-sm"
+          variant="secondary"
+          onPress={handlePress}
+          isDisabled={isLoading || isLeaving}
+          aria-label={
+            watched ? `Mark ${movie.title} as unwatched` : `Mark ${movie.title} as watched`
+          }
+          className="bg-accent text-foreground hover:text-primary"
+        >
+          {watched ? <EyeOffIcon data-icon="inline-start" /> : <EyeIcon data-icon="inline-start" />}
+          {/* {watched ? 'Watched' : 'Watched?'} */}
+        </Button>
+      </span>
+    </TooltipTrigger>
   )
 }
 

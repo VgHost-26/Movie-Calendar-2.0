@@ -101,7 +101,7 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
         <div className="absolute inset-0 flex flex-1 flex-col justify-between bg-linear-0 from-black/80 from-0% to-transparent to-30% p-3">
           {/* Top badges row */}
           <div className="flex items-start justify-between">
-            <WatchedButton movie={movie} />
+            <WatchedButton movie={movie}/>
             <div className="ml-auto flex">
               <img
                 title={movie.platform}

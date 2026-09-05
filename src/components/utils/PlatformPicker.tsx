@@ -3,6 +3,7 @@ import type { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-f
 import { PLATFORMS, PLATFORMS_ICONS } from '@/global/globals'
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { useSettingsStore } from '@/stores/settingsStore'
 
 type Props<TFieldValues extends FieldValues, TFieldName extends FieldPath<TFieldValues>> = {
   field: ControllerRenderProps<TFieldValues, TFieldName>
@@ -14,6 +15,7 @@ const PlatformPicker = <
 >({
   field,
 }: Props<TFieldValues, TFieldName>) => {
+  const userPlatforms = useSettingsStore(state => state.settings).platforms
   return (
     <Select
       placeholder="Select platform"
@@ -26,7 +28,7 @@ const PlatformPicker = <
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {PLATFORMS.map(platform => (
+        {userPlatforms.map(platform => (
           <SelectItem id={platform} key={platform} value={platform}>
             <img src={PLATFORMS_ICONS[platform]} alt={`${platform} icon`} className="mr-2 size-4" />
             {platform}

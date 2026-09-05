@@ -24,6 +24,7 @@ import { AlertDeleteButton } from '../ui/delete-button'
 import { Field, FieldLabel, FieldLegend, FieldSet } from '../ui/field'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Tooltip, TooltipTrigger } from '../ui/tooltip'
+import PlatformPicker from '../utils/PlatformPicker'
 
 type Props = {
   isOpen: boolean
@@ -186,7 +187,9 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                   <Controller
                     name="platform"
                     control={control}
-                    render={({ field }) => (
+                    render={({ field }) =>
+                      <PlatformPicker field={field} />
+                      /*  (
                       <Select
                         placeholder="Select platform"
                         id="platform"
@@ -209,7 +212,8 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                           ))}
                         </SelectContent>
                       </Select>
-                    )}
+                    ) */
+                  }
                   />
                 </Field>
               </div>
