@@ -1,6 +1,6 @@
 import { differenceInDays, format } from 'date-fns'
 import { ReactLenis } from 'lenis/react'
-import { ChevronRightIcon, PlusIcon } from 'lucide-react'
+import { CalendarClockIcon, ChevronRightIcon, PlusIcon } from 'lucide-react'
 import { useMemo } from 'react'
 
 import { useGetMovies } from '@/api/apiFirebase'
@@ -156,7 +156,7 @@ const TimelinePageContent = () => {
       <footer className="flex gap-6 p-window">
         <div className="flex gap-2">
           <Button size={'icon'} className="" variant={'default'} onPress={handleScrollToFirstMovie}>
-            <ChevronRightIcon className="text-primary-foreground" />
+            <CalendarClockIcon className="text-primary-foreground" />
           </Button>
           <Button
             size={'icon'}
