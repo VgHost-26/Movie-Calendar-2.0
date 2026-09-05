@@ -37,13 +37,15 @@ const TimelinePageContent = () => {
     if (!data) {
       return []
     }
-    return data.sort((a, b) =>
-      a.date === ''
-        ? 1
-        : b.date === ''
-          ? -1
-          : new Date(a.date).getTime() - new Date(b.date).getTime(),
-    )
+    return data
+      .filter(m => !m.watched)
+      .sort((a, b) =>
+        a.date === ''
+          ? 1
+          : b.date === ''
+            ? -1
+            : new Date(a.date).getTime() - new Date(b.date).getTime(),
+      )
   }, [data])
 
   const firstUnreleasedMovieIndex = useMemo(

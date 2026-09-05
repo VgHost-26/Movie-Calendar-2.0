@@ -13,6 +13,7 @@ export const movieSchema = z.object({
   poster: z.string().optional(),
   TMDBId: z.number().optional(),
   YoutubeId: z.string().optional(),
+  watched: z.boolean().optional(),
 })
 
 

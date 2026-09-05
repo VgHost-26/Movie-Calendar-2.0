@@ -1,8 +1,10 @@
+import { motion } from 'framer-motion'
 import { useLenis } from 'lenis/react'
 import { useRef, useState, useEffect } from 'react'
 
 import type { Movie } from '@/Types/types'
 
+import { CARD_EXIT_DURATION_MS, useAnimatedCardRemoval } from '@/hooks/useAnimatedCardRemoval'
 import { useIsMobile } from '@/hooks/useMobile'
 import { useTimeline } from '@/hooks/useTimeline'
 import { useTimelineStore } from '@/stores/timelineStore'
@@ -24,12 +26,13 @@ const TimelineContent = ({
   isLoading = false,
   firstUnreleasedMovieIndex,
 }: Props) => {
-  const { setActiveCardIndex, setScrollDirection } = useTimeline()
+  const { activeCardIndex, setActiveCardIndex, setScrollDirection } = useTimeline()
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
 
   const setFocusedCardId = useTimelineStore(state => state.setFocusedCardId)
   const setCardWidth = useTimelineStore(state => state.setCardWidth)
+  const { leavingCardIds, removeLeavingCardId, clearLeavingCardIds } = useAnimatedCardRemoval()
   const isMobile = useIsMobile()
 
   const [containerHeight, setContainerHeight] = useState(() =>
@@ -96,6 +99,31 @@ const TimelineContent = ({
   const cardHeight = cardWidth * 1.5
   setCardWidth(cardWidth)
 
+  // The scroll tracker indexes into `movies` by position, so keep the active
+  // index valid when a card is removed without a page reload. Truncating the
+  // ref array is required too: otherwise the detached node of the removed card
+  // would still skew the closest-card calculation.
+  useEffect(() => {
+    itemRefs.current.length = movies.length
+    if (activeCardIndex > movies.length - 1) {
+      setActiveCardIndex(Math.max(0, movies.length - 1))
+    }
+  }, [movies.length, activeCardIndex, setActiveCardIndex])
+
+  // The exit marker outlives the DB commit (query refetch delay); drop it once
+  // the id is actually gone from this list.
+  useEffect(() => {
+    if (leavingCardIds.length === 0) return
+    const ids = new Set(movies.map(m => m.id))
+    leavingCardIds.filter(id => !ids.has(id)).forEach(removeLeavingCardId)
+  }, [movies, leavingCardIds, removeLeavingCardId])
+
+  // Markers live in the global store; don't leak them when leaving the page mid-flight.
+  useEffect(() => () => clearLeavingCardIds(), [clearLeavingCardIds])
+
+  // Slide-down distance: enough to carry the card out of the scroll viewport,
+  // which clips it (Lenis wrapper has overflow-hidden).
+  const exitDistance = containerHeight
 
   return (
     <div
@@ -118,21 +146,35 @@ const TimelineContent = ({
       ) : movies.length === 0 && !isPending ? (
         <TimelineNoMovies />
       ) : (
-        movies.map((movie, i) => (
-          <div
-            ref={el => {
-              itemRefs.current[i] = el
-            }}
-            key={movie.id}
-            className="flex h-full items-center overflow-clip"
-          >
-            <TimelineMovieCard
-              movie={movie}
-              firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
-              index={i}
-            />
-          </div>
-        ))
+        movies.map((movie, i) => {
+          const isLeaving = leavingCardIds.includes(movie.id)
+          return (
+            <motion.div
+              layout
+              transition={{ type: 'spring', stiffness: 320, damping: 34 }}
+              ref={el => {
+                itemRefs.current[i] = el
+              }}
+              key={movie.id}
+              className={`flex h-full items-center ${isLeaving ? 'overflow-visible' : 'overflow-clip'}`}
+            >
+              {/* Inner node carries the exit transform so it never fights the
+                  outer node's `layout` glide that fills the gap afterwards. */}
+              <motion.div
+                initial={false}
+                animate={isLeaving ? { y: exitDistance, opacity: 0 } : { y: 0, opacity: 1 }}
+                transition={{ duration: CARD_EXIT_DURATION_MS / 1000, ease: 'easeIn' }}
+                className="h-full"
+              >
+                <TimelineMovieCard
+                  movie={movie}
+                  firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
+                  index={i}
+                />
+              </motion.div>
+            </motion.div>
+          )
+        })
       )}
       {/* Spacer to allow scrolling the last card to the target alignment point */}
       <div

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
 import ReactLenis from 'lenis/react'
-import { ChevronDownIcon, ChevronLeftIcon } from 'lucide-react'
+import { CheckIcon, ChevronDownIcon, ChevronLeftIcon, EyeOffIcon } from 'lucide-react'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -12,8 +12,10 @@ import type { Movie, MovieFormData } from '@/Types/types'
 import { useDeleteMovie, useUpdateMovie } from '@/api/apiFirebase'
 import { getPosterUrl, useSearchMultiMutation } from '@/api/apiTMDB'
 import { PLATFORMS, PLATFORMS_ICONS } from '@/global/globals'
+import { useAnimatedCardRemoval } from '@/hooks/useAnimatedCardRemoval'
 import { movieSchema } from '@/schemas/zotSchemas'
 import { useTimelineStore } from '@/stores/timelineStore'
+import { isReleased } from '@/utils/movieFunctions'
 
 import { AspectRatio } from '../ui/aspect-ratio'
 import { Button } from '../ui/button'
@@ -38,7 +40,9 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
   const clearFocusedCardId = useTimelineStore(state => state.clearFocusedCardId)
 
   const { deleteMovie } = useDeleteMovie()
-  const { updateMovie } = useUpdateMovie()
+  const { updateMovie, isLoading: isUpdating } = useUpdateMovie()
+  const { leavingCardIds, removeWithExit } = useAnimatedCardRemoval()
+  const isLeaving = leavingCardIds.includes(movieData.id)
   const { mutateAsync: searchMulti } = useSearchMultiMutation()
   const { reset, setValue, register, handleSubmit, control, watch } = useForm<MovieFormData>({
     resolver: zodResolver(movieSchema),
@@ -65,10 +69,33 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
     updateMovie(movieData.id, data)
   }
 
-  const handleDelete = () => {
-    deleteMovie(movieData.id)
+  const handleDelete = async () => {
+    // Close the editor right away; the card slides down first and the DB
+    // delete (which drops it from the list) runs after the exit finishes.
     onOpenChange(false)
-    toast.success('Movie deleted successfully!')
+    clearFocusedCardId()
+    try {
+      await removeWithExit(movieData.id, () => deleteMovie(movieData.id))
+      toast.success('Movie deleted successfully!')
+    } catch {
+      // error toast is handled inside deleteMovie, card springs back into place
+    }
+  }
+
+  const isWatched = !!movieData.watched
+  const canToggleWatched = isWatched || isReleased(movieData.date)
+
+  const handleToggleWatched = async () => {
+    // The movie disappears from the current list (timeline/archive), so close
+    // the editor and let the card slide down before the DB write lands.
+    onOpenChange(false)
+    clearFocusedCardId()
+    try {
+      await removeWithExit(movieData.id, () => updateMovie(movieData.id, { watched: !isWatched }))
+      toast.success(!isWatched ? 'Marked as watched!' : 'Moved back to timeline!')
+    } catch {
+      // error toast is handled inside updateMovie
+    }
   }
 
   // TODO: mut this to api or something
@@ -286,7 +313,23 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                   className="px-2 py-1"
                 />
               </Field>
-              <div className="flex justify-end gap-4">
+              <div className="flex flex-wrap justify-end gap-4">
+                {canToggleWatched && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onPress={handleToggleWatched}
+                    isDisabled={isUpdating || isLeaving}
+                    className="mr-auto"
+                  >
+                    {isWatched ? (
+                      <EyeOffIcon data-icon="inline-start" />
+                    ) : (
+                      <CheckIcon data-icon="inline-start" />
+                    )}
+                    {isWatched ? 'Unwatch' : 'Watched'}
+                  </Button>
+                )}
                 <AlertDeleteButton
                   title="Delete Movie"
                   description="Are you sure you want to delete this movie?"

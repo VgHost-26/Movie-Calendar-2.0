@@ -59,6 +59,7 @@ export function useAddMovie() {
 
     try {
       const docRef = await addDoc(collection(db, 'users', user.uid, 'movies'), {
+        watched: false,
         ...movie,
         createdAt: serverTimestamp(),
       })

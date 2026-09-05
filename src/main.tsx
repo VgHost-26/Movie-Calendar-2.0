@@ -8,6 +8,7 @@ import { redirect } from 'react-router-dom'
 
 import MainLayout from './layouts/MainLayout/MainLayout.tsx'
 import { auth } from './lib/firebase.ts'
+import ArchivePage from './pages/ArchivePage/ArchivePage.tsx'
 import CalendarPage from './pages/CalendarPage/CalendarPage.tsx'
 import LoginPage from './pages/LoginPage/LoginPage.tsx'
 import SettingsPage from './pages/SettingsPage/SettingsPage.tsx'
@@ -61,6 +62,11 @@ const router = createBrowserRouter([
       {
         path: 'calendar',
         element: <CalendarPage />,
+        loader: () => accountLoader(true),
+      },
+      {
+        path: 'archive',
+        element: <ArchivePage />,
         loader: () => accountLoader(true),
       },
       {
