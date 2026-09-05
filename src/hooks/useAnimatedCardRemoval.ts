@@ -4,6 +4,8 @@ import { useTimelineStore } from '@/stores/timelineStore'
 
 // Duration of the slide-down exit before the item is removed from the list.
 export const CARD_EXIT_DURATION_MS = 250
+// Duration of the rise-in entrance for freshly added cards.
+export const CARD_ENTER_DURATION_MS = 650
 
 /**
  * Orchestrates the two-phase card removal used by the timeline:

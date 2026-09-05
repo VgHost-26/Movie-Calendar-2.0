@@ -36,7 +36,6 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
 
   const [morePostersOpen, setMorePostersOpen] = useState(false)
   const [morePosters, setMorePosters] = useState<TMDBMulti[]>([])
-  const [selectedDate, setSelectedDate] = useState(date)
   const clearFocusedCardId = useTimelineStore(state => state.clearFocusedCardId)
 
   const { deleteMovie } = useDeleteMovie()
@@ -178,13 +177,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                     name="date"
                     control={control}
                     render={({ field }) => (
-                      <DatePicker
-                        selectedDate={selectedDate}
-                        onDateChange={date => {
-                          console.log(date)
-                          field.onChange(date)
-                        }}
-                      />
+                      <DatePicker value={field.value ?? ''} onChange={field.onChange} />
                     )}
                   />
                 </Field>

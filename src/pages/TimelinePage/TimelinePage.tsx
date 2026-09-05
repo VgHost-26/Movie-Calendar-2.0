@@ -14,6 +14,12 @@ import useAuth from '@/hooks/useAuth'
 import { useIsMobile } from '@/hooks/useMobile'
 import { useTimeline } from '@/hooks/useTimeline'
 import { useTimelineStore } from '@/stores/timelineStore'
+import {
+  formatMovieDateLabel,
+  parseMovieDate,
+  toDisplayDate,
+  toSortableTime,
+} from '@/utils/movieDate'
 import { isReleased } from '@/utils/movieFunctions'
 
 const currentDate = new Date()
@@ -39,13 +45,7 @@ const TimelinePageContent = () => {
     }
     return data
       .filter(m => !m.watched)
-      .sort((a, b) =>
-        a.date === ''
-          ? 1
-          : b.date === ''
-            ? -1
-            : new Date(a.date).getTime() - new Date(b.date).getTime(),
-      )
+      .sort((a, b) => toSortableTime(a.date) - toSortableTime(b.date))
   }, [data])
 
   const firstUnreleasedMovieIndex = useMemo(
@@ -63,9 +63,14 @@ const TimelinePageContent = () => {
     if (isMobile) {
       const activeMovie = movies[activeCardIndex]
       if (!activeMovie) return 'Timeline'
-      if (activeMovie.date === '') return 'Coming Soon'
+      const precision = parseMovieDate(activeMovie.date)?.precision ?? 'none'
+      if (precision === 'none') return 'Coming Soon'
+      // Only day precision has a day-of-month to render; coarser dates show as-is.
+      if (precision !== 'day') return formatMovieDateLabel(activeMovie.date)
 
-      const [month, day, ending] = format(activeMovie.date, 'MMM do').split(/(\d+)/).filter(Boolean)
+      const [month, day, ending] = format(toDisplayDate(activeMovie.date)!, 'MMM do')
+        .split(/(\d+)/)
+        .filter(Boolean)
       return (
         <>
           {month} {day?.padStart(2, '0')}
@@ -75,13 +80,15 @@ const TimelinePageContent = () => {
     } else {
       const focusedMovie = movies.find(m => m.id === focusedCardId)
       if (focusedMovie) {
-        if (focusedMovie.date === '') return 'Coming Soon'
-        return format(focusedMovie.date, 'MMMM')
+        const focusedDate = toDisplayDate(focusedMovie.date)
+        if (!focusedDate) return 'Coming Soon'
+        return format(focusedDate, 'MMMM')
       }
       const activeMovie = movies[activeCardIndex]
       if (!activeMovie) return 'Timeline'
-      if (activeMovie.date === '') return 'Coming Soon'
-      return format(activeMovie.date, 'MMMM')
+      const activeDate = toDisplayDate(activeMovie.date)
+      if (!activeDate) return 'Coming Soon'
+      return format(activeDate, 'MMMM')
     }
   }, [activeCardIndex, focusedCardId, isMobile, movies])
 
@@ -89,8 +96,8 @@ const TimelinePageContent = () => {
     if (!focusedCardId) return ' '
     const focusedMovie = movies.find(m => m.id === focusedCardId)
     if (!focusedMovie) return ' '
-    if (focusedMovie.date === '') return ' '
-    const date = new Date(focusedMovie.date)
+    if (parseMovieDate(focusedMovie.date)?.precision !== 'day') return ' '
+    const date = toDisplayDate(focusedMovie.date)!
     const [day, ending] = format(date, 'do').split(/(\d+)/).filter(Boolean)
     return (
       <>
@@ -172,17 +179,26 @@ const TimelinePageContent = () => {
                 {movies[firstUnreleasedMovieIndex]?.title}
               </span>
             )}{' '}
-            {movies[firstUnreleasedMovieIndex]?.date && (
-              <span>
-                [
-                {`in 
-                ${differenceInDays(new Date(movies[firstUnreleasedMovieIndex].date), currentDate)
-                  .toString()
-                  .padStart(2, '0')}
+            {(() => {
+              const nextDate = movies[firstUnreleasedMovieIndex]?.date
+              const precision = parseMovieDate(nextDate)?.precision ?? 'none'
+              if (precision === 'day') {
+                const displayDate = toDisplayDate(nextDate)!
+                return (
+                  <span>
+                    [
+                    {`in 
+                ${differenceInDays(displayDate, currentDate).toString().padStart(2, '0')}
                 days`}
-                ]
-              </span>
-            )}
+                    ]
+                  </span>
+                )
+              }
+              if (precision === 'month' || precision === 'year') {
+                return <span>[{formatMovieDateLabel(nextDate)}]</span>
+              }
+              return null
+            })()}
           </p>
         </div>
         <div className="flex items-center justify-center md:hidden">

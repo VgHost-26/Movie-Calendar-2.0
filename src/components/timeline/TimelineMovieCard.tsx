@@ -7,6 +7,7 @@ import { useIsMobile } from '@/hooks/useMobile'
 import { useTimeline } from '@/hooks/useTimeline'
 import { useTimelineStore } from '@/stores/timelineStore'
 import { type Movie } from '@/Types/types'
+import { formatMovieDateLabel, parseMovieDate, toDisplayDate } from '@/utils/movieDate'
 import { isReleased } from '@/utils/movieFunctions'
 
 import { AspectRatio } from '../ui/aspect-ratio'
@@ -24,6 +25,9 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [posterPreview, setPosterPreview] = useState(movie.poster || posterPlaceholder)
   // const [scroll, setScroll] = useState(0)
+
+  const datePrecision = parseMovieDate(movie.date)?.precision ?? 'none'
+  const displayDate = toDisplayDate(movie.date)
 
   const isMobile = useIsMobile()
   // const debouncedScroll = useDebounce(scroll, 150)
@@ -89,7 +93,7 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
         className="z-50 h-full cursor-pointer"
       >
         <img
-          loading='lazy'
+          loading="lazy"
           src={posterToDisplay}
           // alt={movie.title}
           className={`h-full w-full object-cover ${isReleased(movie.date) ? '' : 'grayscale'}`}
@@ -109,16 +113,14 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
           </div>
           <div className="flex items-end justify-between gap-10">
             <div>
-              {movie.date === '' ? (
+              {datePrecision === 'none' ? (
                 <h1 className="text-4xl font-semibold text-white">Coming&nbsp;Soon</h1>
               ) : isReleased(movie.date) ? (
                 <h1 className="text-5xl font-semibold text-white">Released</h1>
-              ) : (
+              ) : datePrecision === 'day' && displayDate ? (
                 <div className="flex items-stretch gap-0.5">
                   <h1 className="number-trim flex items-center text-8xl font-bold text-white">
-                    {differenceInDays(new Date(movie.date), currentDate)
-                      .toString()
-                      .padStart(2, '0')}
+                    {differenceInDays(displayDate, currentDate).toString().padStart(2, '0')}
                   </h1>
 
                   <div className="flex items-center justify-center">
@@ -127,6 +129,10 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
                     </span>
                   </div>
                 </div>
+              ) : (
+                <h1 className="text-4xl font-semibold text-white">
+                  {formatMovieDateLabel(movie.date)}
+                </h1>
               )}
             </div>
             <h2 className="text-right text-4xl leading-tight font-semibold text-white">

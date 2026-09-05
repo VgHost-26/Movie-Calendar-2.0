@@ -12,6 +12,7 @@ import TextTransition from '@/components/ui/TextTransition'
 import { WEEKDAYS } from '@/global/globals'
 import useAuth from '@/hooks/useAuth'
 import { getCalendarGrid } from '@/utils/dateFunctions'
+import { parseMovieDate, toDisplayDate } from '@/utils/movieDate'
 
 const currentDate = new Date()
 const CalendarPage = () => {
@@ -27,11 +28,13 @@ const CalendarPage = () => {
 
   const monthDays = getCalendarGrid(viewingDate)
   const monthDaysWithMovies = useMemo(() => {
-    return monthDays.map((day) => {
+    return monthDays.map(day => {
       let moviesForDay: Movie[] = []
       if (movies) {
-        moviesForDay = movies.filter((movie) => {
-          const movieDate = new Date(movie.date)
+        moviesForDay = movies.filter(movie => {
+          // Only day-precision dates can sit on a calendar cell.
+          const movieDate = toDisplayDate(movie.date)
+          if (!movieDate || parseMovieDate(movie.date)?.precision !== 'day') return false
           return movieDate.toDateString() === day.date.toDateString()
         })
       }
@@ -40,11 +43,11 @@ const CalendarPage = () => {
   }, [movies, monthDays])
 
   const handlePreviousMonth = () => {
-    setViewingDate((prevDate) => subMonths(prevDate, 1))
+    setViewingDate(prevDate => subMonths(prevDate, 1))
   }
 
   const handleNextMonth = () => {
-    setViewingDate((prevDate) => addMonths(prevDate, 1))
+    setViewingDate(prevDate => addMonths(prevDate, 1))
   }
 
   useEffect(() => {
@@ -99,7 +102,7 @@ const CalendarPage = () => {
         </div>
       </div>
       <div className="grid h-full w-full grid-cols-7 grid-rows-[min-content]">
-        {WEEKDAYS.map((day) => (
+        {WEEKDAYS.map(day => (
           <Card
             size="sm"
             key={day}
@@ -108,7 +111,7 @@ const CalendarPage = () => {
             <p className="text-lg font-semibold">{day}</p>
           </Card>
         ))}
-        {monthDaysWithMovies.map((day) => (
+        {monthDaysWithMovies.map(day => (
           <CalendarCard key={day.date.toISOString()} calendarDate={day} movies={day.movies} />
         ))}
       </div>

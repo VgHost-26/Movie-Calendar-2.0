@@ -32,9 +32,6 @@ type Props = {
 }
 
 const AddMovieDialog = ({ date, isOpen, setIsOpen }: Props) => {
-  const dateObj = new Date(date ? date.toString() : '')
-
-  const [selectedDate, setSelectedDate] = useState(date ?? '')
   const [morePostersOpen, setMorePostersOpen] = useState(false)
   const [morePosters, setMorePosters] = useState<TMDBMulti[]>([])
 
@@ -53,7 +50,7 @@ const AddMovieDialog = ({ date, isOpen, setIsOpen }: Props) => {
     resolver: zodResolver(movieSchema),
     defaultValues: {
       title: '',
-      date: selectedDate ? selectedDate.toString() : '',
+      date: date ?? '',
       platform: PLATFORMS[0],
     },
   })
@@ -63,7 +60,7 @@ const AddMovieDialog = ({ date, isOpen, setIsOpen }: Props) => {
 
     const movieData = {
       title: data.title,
-      date: selectedDate ? selectedDate.toString() : '',
+      date: data.date,
       platform: data.platform,
       poster: data.poster || '',
     }
@@ -105,7 +102,7 @@ const AddMovieDialog = ({ date, isOpen, setIsOpen }: Props) => {
         }
         const firstResult = response.results[0]
         if (!firstResult) {
-          console.log('No results found for the movie:', title, 'year:', dateObj.getFullYear())
+          console.log('No results found for the movie:', title)
           return
         }
         const posterUrl = getPosterUrl(firstResult)
@@ -166,13 +163,7 @@ const AddMovieDialog = ({ date, isOpen, setIsOpen }: Props) => {
                       name="date"
                       control={control}
                       render={({ field }) => (
-                        <DatePicker
-                          selectedDate={selectedDate}
-                          onDateChange={date => {
-                            setSelectedDate(date)
-                            field.onChange(date)
-                          }}
-                        />
+                        <DatePicker value={field.value ?? ''} onChange={field.onChange} />
                       )}
                     />
                     <FieldErrorMessage fieldError={errors.date} />
