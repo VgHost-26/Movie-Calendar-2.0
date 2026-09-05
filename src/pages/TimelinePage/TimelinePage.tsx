@@ -1,7 +1,7 @@
 import { differenceInDays, format } from 'date-fns'
 import { ReactLenis } from 'lenis/react'
 import { CalendarClockIcon, ChevronRightIcon, PlusIcon } from 'lucide-react'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { useGetMovies } from '@/api/apiFirebase'
 import AddMovieDialog from '@/components/calendar/AddMovieDialog'
@@ -56,7 +56,7 @@ const TimelinePageContent = () => {
   // hold first element left offset (80px)
   // treat first unreleased as first one, or last released as first one
   const handleScrollToFirstMovie = () => {
-    scrollToCard(firstUnreleasedMovieIndex)
+    scrollToCard(firstUnreleasedMovieIndex === -1 ? movies.length - 1 : firstUnreleasedMovieIndex)
   }
 
   const activeCardMonth = useMemo(() => {
@@ -112,15 +112,41 @@ const TimelinePageContent = () => {
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
            </div> */
 
-  // useEffect(() => {
-  //   console.log('trigger')
-  //   if (!movies || firstUnreleasedMovieIndex === undefined) return
-  //   console.log('trigger passed')
-  //   scrollToCard(movies.length - 1, { immediate: true })
-  //   // new Promise(resolve => setTimeout(resolve, 100)).then(() => {
-  //   // scrollToCard(firstUnreleasedMovieIndex)
-  //   // })
-  // }, [movies, firstUnreleasedMovieIndex])
+  const hasInitialScrolled = useRef(false)
+
+  // Glide to the first unreleased movie once the list has loaded and laid out.
+  // Exactly once per mount: later list changes (watch, delete, add) must never
+  // yank the scroll position.
+  useEffect(() => {
+    if (hasInitialScrolled.current) return
+    if (isPending || isLoading || movies.length === 0) return
+    const targetIndex =
+      firstUnreleasedMovieIndex === -1 ? movies.length - 1 : firstUnreleasedMovieIndex
+    if (targetIndex <= 0) {
+      hasInitialScrolled.current = true
+      return
+    }
+    let raf = 0
+    let timer: ReturnType<typeof setTimeout> | undefined
+    let attempts = 0
+    const tryScroll = () => {
+      // Lenis registers and cards mount a few frames after the data lands.
+      if (document.querySelector(`[data-movie-index="${targetIndex}"]`)) {
+        hasInitialScrolled.current = true
+        timer = setTimeout(() => scrollToCard(targetIndex), 150)
+      } else if (attempts < 60) {
+        attempts += 1
+        raf = requestAnimationFrame(tryScroll)
+      } else {
+        hasInitialScrolled.current = true
+      }
+    }
+    raf = requestAnimationFrame(tryScroll)
+    return () => {
+      cancelAnimationFrame(raf)
+      clearTimeout(timer)
+    }
+  }, [isPending, isLoading, movies, firstUnreleasedMovieIndex, scrollToCard])
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
