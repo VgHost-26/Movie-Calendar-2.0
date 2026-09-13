@@ -31,19 +31,19 @@ const TimelineContent = ({
   firstUnreleasedMovieIndex,
 }: Props) => {
   const { activeCardIndex, setActiveCardIndex, setScrollDirection, scrollToCard } = useTimeline()
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([])
-  const containerRef = useRef<HTMLDivElement>(null)
-
+  const { leavingCardIds, removeLeavingCardId, clearLeavingCardIds } = useAnimatedCardRemoval()
   const setFocusedCardId = useTimelineStore(state => state.setFocusedCardId)
   const setCardWidth = useTimelineStore(state => state.setCardWidth)
-  const { leavingCardIds, removeLeavingCardId, clearLeavingCardIds } = useAnimatedCardRemoval()
   const isMobile = useIsMobile()
 
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([])
+  const knownIdsRef = useRef<Set<string> | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const [enteringCardIds, setEnteringCardIds] = useState<string[]>([])
   const [containerHeight, setContainerHeight] = useState(() =>
     typeof window !== 'undefined' ? Math.max(400, window.innerHeight - 350) : 600,
   )
-  const knownIdsRef = useRef<Set<string> | null>(null)
-  const [enteringCardIds, setEnteringCardIds] = useState<string[]>([])
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -65,6 +65,9 @@ const TimelineContent = ({
       setFocusedCardId(null)
     }
 
+
+    // for some reason it doesnt work when mobile and desktop are as one 
+    // TODO: investigate
     if (isMobile) {
       const topOfTheScreen = scroll
 
