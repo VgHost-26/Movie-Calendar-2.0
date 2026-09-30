@@ -13,6 +13,9 @@ import LoginPage from './pages/LoginPage/LoginPage.tsx'
 import SettingsPage from './pages/SettingsPage/SettingsPage.tsx'
 import SignupPage from './pages/SignupPage/SignupPage.tsx'
 import TimelinePage from './pages/TimelinePage/TimelinePage.tsx'
+import { useDemoStore } from './stores/demoStore.ts'
+
+const isDemoMode = () => useDemoStore.getState().isDemoMode
 
 function getCurrentUser(): Promise<typeof auth.currentUser> {
   return new Promise((resolve) => {
@@ -24,6 +27,9 @@ function getCurrentUser(): Promise<typeof auth.currentUser> {
 }
 
 const authLoader = async () => {
+  if (isDemoMode()) {
+    return redirect('/timeline')
+  }
   const user = await getCurrentUser();
   if (user) {
     return redirect('/timeline')
@@ -31,6 +37,9 @@ const authLoader = async () => {
   return null
 }
 const accountLoader = async (noAccount: boolean = false) => {
+  if (isDemoMode()) {
+    return null
+  }
   const user = await getCurrentUser();
   if (!user && noAccount) {
     return redirect('/login?missingAccount=true')

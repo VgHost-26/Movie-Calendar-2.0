@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import useAuth from '@/hooks/useAuth'
 import { auth } from '@/lib/firebase'
+import { useDemoStore } from '@/stores/demoStore'
 
 import pkg from '../../../package.json'
 
@@ -14,6 +15,11 @@ const SettingsPage = () => {
   const { user, loading, isAuthenticated } = useAuth()
   const queryClient = useQueryClient()
   const handleLogout = async () => {
+    if (useDemoStore.getState().isDemoMode) {
+      useDemoStore.getState().exitDemo()
+      queryClient.clear()
+      return
+    }
     await signOut(auth)
     queryClient.clear()
   }

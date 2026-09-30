@@ -9,7 +9,7 @@ import { toast } from 'sonner'
 import type { TMDBMovie, TMDBMulti } from '@/Types/tmdbTypes'
 import type { Movie, MovieFormData } from '@/Types/types'
 
-import { useDeleteMovie, useUpdateMovie } from '@/api/apiFirebase'
+import { useDeleteMovie, useUpdateMovie } from '@/api/apiMovies'
 import { getPosterUrl, useSearchMultiMutation } from '@/api/apiTMDB'
 import { PLATFORMS, PLATFORMS_ICONS } from '@/global/globals'
 import { movieSchema } from '@/schemas/zotSchemas'
@@ -94,7 +94,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
       }
     } catch (error) {
       console.error('Error searching for poster:', error)
-      toast.error('Failed to search for poster. Please try again.')
+      toast.error(error instanceof Error ? error.message : 'Failed to search for poster. Please try again.')
     }
   }
 

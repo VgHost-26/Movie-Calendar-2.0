@@ -9,7 +9,7 @@ import { toast } from 'sonner'
 import type { TMDBMovie, TMDBMulti } from '@/Types/tmdbTypes'
 import type { MovieFormData } from '@/Types/types'
 
-import { useAddMovie } from '@/api/apiFirebase'
+import { useAddMovie } from '@/api/apiMovies'
 import { getPosterUrl, useSearchMultiMutation } from '@/api/apiTMDB'
 import imagePlaceholder from '@/assets/images/poster-placeholder.png'
 import { PLATFORMS } from '@/global/globals'
@@ -115,7 +115,7 @@ const AddMovieDialog = ({ date, isOpen, setIsOpen }: Props) => {
       }
     } catch (error) {
       console.error('Error searching for poster:', error)
-      toast.error('Failed to search for poster. Please try again.')
+      toast.error(error instanceof Error ? error.message : 'Failed to search for poster. Please try again.')
     }
   }
   const handleShowMorePosters = () => {
