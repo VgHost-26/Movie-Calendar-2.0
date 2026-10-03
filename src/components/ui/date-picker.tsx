@@ -1,121 +1,218 @@
-import { CalendarDate, getLocalTimeZone } from '@internationalized/date'
-import { ChevronDownIcon } from 'lucide-react'
-import { useState } from 'react'
+import { CalendarDate } from '@internationalized/date'
+import { format } from 'date-fns'
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverHeader, PopoverTrigger } from '@/components/ui/popover'
+import { formatMovieDate, formatMovieDateLabel, parseMovieDate } from '@/utils/movieDate'
 
 import { Calendar } from './calendar'
-import { format } from 'date-fns'
 
 type Props = {
-  selectedDate: string
-  onDateChange: (date: string) => void
-}
-type Mode = 'day' | 'month' | 'year' | 'undefined'
-
-const calendarDateToString = (date: CalendarDate | null, mode: Mode) => {
-  if (!date) return ''
-
-  switch (mode) {
-    case 'day':
-      return `${date.year}-${date.month}-${date.day}`
-    case 'month':
-      return `${date.year}-${date.month}-00`
-    case 'year':
-      return `${date.year}-00-00`
-    default:
-      return ''
-  }
+  value: string
+  onChange: (date: string) => void
 }
 
-const displayDate = (date: CalendarDate | null, mode: Mode) => {
-  if (!date) return <span>Coming Soon</span>
-  const dateObj = date.toDate(getLocalTimeZone())
-  switch (mode) {
-    case 'day':
-      return format(dateObj, 'dd MMMMyyyy')
-    case 'month':
-      return format(dateObj, 'MMMM yyyy')
-    case 'year':
-      return `${date.year}`
-    default:
-      return ''
-  }
+type Tab = 'day' | 'month' | 'year'
+
+const seedTab = (value: string): Tab => {
+  const precision = parseMovieDate(value)?.precision ?? 'none'
+  return precision === 'none' ? 'day' : precision
 }
 
-const modeFromDate = (date: string): Mode => {
-  if (!date) return 'undefined'
-  const [year, month, day] = date.split('-')
-  if (month === 'xx') return 'year'
-  if (day === 'xx') return 'month'
-  return 'day'
+const seedYear = (value: string): number => {
+  const now = new Date()
+  return parseMovieDate(value)?.year ?? now.getFullYear()
 }
 
-export default function DatePicker({ selectedDate, onDateChange }: Props) {
-  const date = selectedDate ? new CalendarDate(...(selectedDate.split('-').map(Number) as [number, number, number])) : null
-  const initialMode = modeFromDate(selectedDate)
-
-  const [activeMode, setActiveMode] = useState(initialMode)
-  const [selectedDateState, setSelectedDateState] = useState<CalendarDate | null>(date)
+export default function DatePicker({ value, onChange }: Props) {
   const [isOpen, setIsOpen] = useState(false)
+  const [tab, setTab] = useState<Tab>(() => seedTab(value))
+  const [viewYear, setViewYear] = useState<number>(() => seedYear(value))
 
-  const handleComingSoonButton = () => {
-    setSelectedDateState(null)
-    onDateChange('')
-    setActiveMode('undefined')
+  const parsed = useMemo(() => parseMovieDate(value), [value])
+
+  const selectedDay = useMemo(
+    () =>
+      parsed?.precision === 'day'
+        ? new CalendarDate(parsed.year, parsed.month!, parsed.day!)
+        : null,
+    [parsed],
+  )
+
+  const focusSeed = useMemo(() => {
+    if (parsed?.precision === 'day') {
+      return new CalendarDate(parsed.year, parsed.month!, parsed.day!)
+    }
+    if (parsed) {
+      return new CalendarDate(parsed.year, parsed.month ?? 1, 1)
+    }
+    const now = new Date()
+    return new CalendarDate(now.getFullYear(), now.getMonth() + 1, now.getDate())
+  }, [parsed])
+
+  const handleOpenChange = (open: boolean) => {
+    if (open) {
+      setTab(seedTab(value))
+      setViewYear(seedYear(value))
+    }
+    setIsOpen(open)
+  }
+
+  const commit = (next: string) => {
+    onChange(next)
     setIsOpen(false)
   }
-  const handleDateChange = (date: CalendarDate | null) => {
-    setSelectedDateState(date)
-    onDateChange(calendarDateToString(date, activeMode))
-    setIsOpen(false)
+
+  const handleDayClick = (date: CalendarDate | null) => {
+    if (!date) return
+    commit(formatMovieDate(date.year, date.month, date.day))
   }
+
   return (
-    <PopoverTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
+    <PopoverTrigger isOpen={isOpen} onOpenChange={handleOpenChange}>
       <Button
         variant={'outline'}
-        data-empty={!selectedDate}
+        data-empty={!parsed}
         className="w-[212px] justify-between text-left font-normal data-[empty=true]:text-muted-foreground"
       >
-        {displayDate(selectedDateState, activeMode)}
+        {formatMovieDateLabel(value)}
         <ChevronDownIcon data-icon="inline-end" />
       </Button>
       <Popover className="w-auto p-0" placement="bottom start">
         <PopoverHeader className="grid grid-cols-3">
-          <Button
-            variant={activeMode === 'day' ? 'default' : 'ghost'}
-            onPress={() => setActiveMode('day')}
-          >
+          <Button variant={tab === 'day' ? 'default' : 'ghost'} onPress={() => setTab('day')}>
             Day
           </Button>
-          <Button
-            variant={activeMode === 'month' ? 'default' : 'ghost'}
-            onPress={() => setActiveMode('month')}
-          >
+          <Button variant={tab === 'month' ? 'default' : 'ghost'} onPress={() => setTab('month')}>
             Month
           </Button>
-          <Button
-            variant={activeMode === 'year' ? 'default' : 'ghost'}
-            onPress={() => setActiveMode('year')}
-          >
+          <Button variant={tab === 'year' ? 'default' : 'ghost'} onPress={() => setTab('year')}>
             Year
           </Button>
           <Button
-            variant={activeMode === 'undefined' ? 'default' : 'ghost'}
+            variant={!parsed ? 'default' : 'ghost'}
             className="col-span-3"
-            onPress={handleComingSoonButton}
+            onPress={() => commit('')}
           >
-            Comign soon
+            Coming soon
           </Button>
         </PopoverHeader>
-        <Calendar
-          captionLayout="dropdown"
-          value={selectedDateState}
-          onChange={handleDateChange}
-          className={'w-full'}
-        />
+        {tab === 'year' ? (
+          <YearGrid
+            selectedYear={parsed?.year ?? null}
+            onPick={year => commit(formatMovieDate(year))}
+          />
+        ) : tab === 'month' ? (
+          <MonthGrid
+            year={viewYear}
+            onYearChange={setViewYear}
+            selectedMonth={parsed?.year === viewYear ? (parsed.month ?? null) : null}
+            onPick={month => commit(formatMovieDate(viewYear, month))}
+          />
+        ) : (
+          <Calendar
+            captionLayout="dropdown"
+            value={selectedDay}
+            defaultFocusedValue={focusSeed}
+            onChange={handleDayClick}
+            className={'w-full'}
+          />
+        )}
       </Popover>
     </PopoverTrigger>
+  )
+}
+
+function MonthGrid({
+  year,
+  onYearChange,
+  selectedMonth,
+  onPick,
+}: {
+  year: number
+  onYearChange: (year: number) => void
+  selectedMonth: number | null
+  onPick: (month: number) => void
+}) {
+  const months = useMemo(() => Array.from({ length: 12 }, (_, i) => i + 1), [])
+
+  return (
+    <div className="flex flex-col gap-1 p-3 pt-0">
+      <div className="flex items-center justify-between">
+        <Button
+          size="icon-xs"
+          variant="ghost"
+          onPress={() => onYearChange(year - 1)}
+          aria-label="Previous year"
+        >
+          <ChevronLeftIcon />
+        </Button>
+        <span className="text-sm font-semibold">{year}</span>
+        <Button
+          size="icon-xs"
+          variant="ghost"
+          onPress={() => onYearChange(year + 1)}
+          aria-label="Next year"
+        >
+          <ChevronRightIcon />
+        </Button>
+      </div>
+      <div className="grid grid-cols-3 gap-1">
+        {months.map(month => (
+          <Button
+            key={month}
+            size="sm"
+            variant={month === selectedMonth ? 'default' : 'ghost'}
+            onPress={() => onPick(month)}
+          >
+            {format(new Date(year, month - 1, 1), 'MMM')}
+          </Button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function YearGrid({
+  selectedYear,
+  onPick,
+}: {
+  selectedYear: number | null
+  onPick: (year: number) => void
+}) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const currentYear = new Date().getFullYear()
+  const years = useMemo(() => {
+    const list: number[] = []
+    for (let y = currentYear - 100; y <= currentYear + 20; y++) list.push(y)
+    return list
+  }, [currentYear])
+
+  useEffect(() => {
+    containerRef.current
+      ?.querySelector('[data-selected="true"]')
+      ?.scrollIntoView({ block: 'nearest' })
+  }, [])
+
+  return (
+    <div
+      ref={containerRef}
+      data-lenis-prevent
+      className="grid max-h-64 grid-cols-4 gap-1 overflow-y-auto p-3"
+    >
+      {years.map(year => (
+        <Button
+          key={year}
+          size="sm"
+          variant={year === selectedYear ? 'default' : 'ghost'}
+          data-selected={year === selectedYear}
+          onPress={() => onPick(year)}
+        >
+          {year}
+        </Button>
+      ))}
+    </div>
   )
 }

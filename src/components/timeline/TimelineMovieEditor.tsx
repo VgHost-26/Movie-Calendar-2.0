@@ -152,8 +152,8 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                     control={control}
                     render={({ field }) => (
                       <DatePicker
-                        selectedDate={selectedDate}
-                        onDateChange={date => {
+                        value={selectedDate}
+                        onChangep={date => {
                           console.log(date)
                           field.onChange(date)
                         }}
