@@ -2,7 +2,7 @@ import type z from 'zod'
 
 import type { loginSchema, movieSchema, signupSchema } from '@/schemas/zotSchemas'
 
-import { LANGUAGES, PLATFORMS } from '@/global/globals'
+import { LANGUAGES, PLATFORMS, POSTER_LANGUAGES } from '@/global/globals'
 
 export const ScrollDirection = {
   BACKWARD: -1,
@@ -13,6 +13,7 @@ export type ScrollDirection = (typeof ScrollDirection)[keyof typeof ScrollDirect
 
 export type Platform = (typeof PLATFORMS)[number]
 export type Language = (typeof LANGUAGES)[number]
+export type PosterLanguage = (typeof POSTER_LANGUAGES)[number]
 export interface Movie {
   id: string
   date: string
@@ -23,6 +24,7 @@ export interface Movie {
   trailerURL?: string
   TMDBId?: number
   YoutubeId?: string
+  watched?: boolean
 }
 
 
@@ -37,8 +39,8 @@ export interface CalendarDay {
 export interface UserSettings {
   platforms: Platform[]
   languageId: Language['id']
-  isPosterText: boolean
   isPremiumUser?: boolean
+  preferedPosterLanguage: PosterLanguage['id']
 }
 
 

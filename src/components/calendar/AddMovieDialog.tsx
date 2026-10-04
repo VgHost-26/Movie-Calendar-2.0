@@ -167,8 +167,8 @@ const AddMovieDialog = ({ date, isOpen, setIsOpen }: Props) => {
                       control={control}
                       render={({ field }) => (
                         <DatePicker
-                          selectedDate={selectedDate}
-                          onDateChange={date => {
+                          value={selectedDate}
+                          onChange={date => {
                             setSelectedDate(date)
                             field.onChange(date)
                           }}

@@ -15,6 +15,11 @@ export const MAIN_PAGES: PageItem[] = [
     link: '/timeline',
     icon: 'film',
   },
+  {
+    title: 'Archive',
+    link: '/archive',
+    icon: 'archive',
+  },
 ]
 
 export const FOOTER_PAGES: PageItem[] = [

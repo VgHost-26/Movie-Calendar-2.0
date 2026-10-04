@@ -32,27 +32,16 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r border-[#1f1f23] bg-[#0a0a0a]">
-      {/* Brand Header */}
-      <SidebarHeader className="p-4 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:py-3">
-        <SidebarTrigger className="text-[#737373] hover:bg-[#1a1a1e] hover:text-white" />
-        {/* 
-        <div className="flex items-center justify-between group-data-[collapsible=icon]:justify-center">
-          <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-            <h2 className="font-heading text-[1.2rem] leading-none font-extrabold tracking-wider text-white uppercase">
-              MOVIE CALENDAR
-            </h2>
-            <span className="mt-1 text-[10px] font-medium tracking-[0.2em] text-[#737373] uppercase">
-              CINEMATIC CALENDAR
-            </span>
-          </div> 
-        </div>
-          */}
+      <SidebarHeader className="flex h-14 flex-row items-center px-4">
+        <SidebarTrigger className="size-8 shrink-0 text-[#737373] hover:bg-[#1a1a1e] hover:text-white [&_svg]:size-4!" />
       </SidebarHeader>
 
-      {/* Main Navigation */}
+      {/* Main Navigation - single compact geometry for both states, so icons can't move.
+          Icon x = outer px-2 + group p-2 + button px-2 in both states by construction.
+          Labels only fade (opacity), never unmount, so no layout recalc on toggle. */}
       <SidebarContent className="justify-between px-2 py-1">
         <SidebarGroup>
-          <SidebarMenu className="gap-1.5">
+          <SidebarMenu className="gap-2">
             {MAIN_PAGES.map(page => {
               const active = isItemActive(page)
               return (
@@ -61,17 +50,19 @@ export function AppSidebar() {
                     isActive={active}
                     tooltip={page.title}
                     onPress={() => navigate(page.link)}
-                    className={`transition-colors duration-150 ${
+                    className={`h-8 w-full justify-start gap-2 overflow-hidden rounded-lg px-2 whitespace-nowrap transition-[width,background-color,color] duration-200 ease-linear ${
                       active
                         ? 'text-primary [&_svg]:text-primary'
                         : 'text-muted-foreground hover:bg-[#161619] hover:text-white [&_svg]:text-[#737373] hover:[&_svg]:text-white'
-                    } group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0!`}
+                    }`}
                   >
-                    <NavIcon
-                      name={page.icon}
-                      className="size-5 shrink-0 transition-colors duration-150"
-                    />
-                    <span className="text-sm font-medium tracking-wide group-data-[collapsible=icon]:hidden">
+                    <span className="flex size-4 shrink-0 items-center justify-center">
+                      <NavIcon
+                        name={page.icon}
+                        className="size-4 shrink-0 transition-colors duration-150"
+                      />
+                    </span>
+                    <span className="min-w-0 flex-1 truncate text-left text-sm font-medium tracking-wide transition-opacity duration-200 group-data-[collapsible=icon]:pointer-events-none group-data-[collapsible=icon]:opacity-0">
                       {page.title}
                     </span>
                   </SidebarMenuButton>
@@ -90,21 +81,23 @@ export function AppSidebar() {
                     isActive={active}
                     tooltip={page.title}
                     onPress={() => navigate(page.link)}
-                    className={`h-11 rounded-lg px-3.5 transition-colors duration-150 ${
+                    className={`h-8 w-full justify-start gap-2 overflow-hidden rounded-lg px-2 whitespace-nowrap transition-[width,background-color,color] duration-200 ease-linear ${
                       active
                         ? 'text-primary [&_svg]:text-primary'
                         : 'text-muted-foreground hover:bg-[#161619] hover:text-white [&_svg]:text-[#737373] hover:[&_svg]:text-white'
-                    } group-data-[collapsible=icon]:size-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0!`}
+                    }`}
                   >
-                    {page.title === 'Account' ? (
-                      <ProfileIcon />
-                    ) : (
-                      <NavIcon
-                        name={page.icon}
-                        className="size-5 shrink-0 transition-all duration-150"
-                      />
-                    )}
-                    <span className="text-sm font-medium tracking-wide group-data-[collapsible=icon]:hidden">
+                    <span className="flex size-4 shrink-0 items-center justify-center">
+                      {page.title === 'Account' ? (
+                        <ProfileIcon />
+                      ) : (
+                        <NavIcon
+                          name={page.icon}
+                          className="size-4 shrink-0 transition-colors duration-150"
+                        />
+                      )}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate text-left text-sm font-medium tracking-wide transition-opacity duration-200 group-data-[collapsible=icon]:pointer-events-none group-data-[collapsible=icon]:opacity-0">
                       {page.title}
                     </span>
                   </SidebarMenuButton>

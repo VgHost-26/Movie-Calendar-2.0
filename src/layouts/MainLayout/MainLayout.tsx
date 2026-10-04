@@ -1,24 +1,40 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Toaster } from 'sonner'
 
+import { useGetUserSettings } from '@/api/apiFirebase'
 import { AppSidebar } from '@/components/AppSidebar/AppSidebar'
 import { SidebarProvider } from '@/components/ui/sidebar'
-import useAuth from '@/hooks/useAuth'
+import { useSettingsStore } from '@/stores/settingsStore'
 
-const queryClient = new QueryClient()
 const MainLayout = () => {
-  const { user } = useAuth()
+  const { data: userSettings } = useGetUserSettings()
+  const setSettings = useSettingsStore(state => state.setSettings)
+
+  // useEffect(() => {
+  //   if (user) {
+  //     queryClient.prefetchQuery({
+  //       // eslint-disable-next-line react-hooks/rules-of-hooks
+  //       ...useGetUserSettings(),
+  //       queryKey: ['userSettings'],
+  //     })
+  //   }
+  // }, [user])
+
+  useEffect(() => {
+    if (userSettings) {
+      setSettings(userSettings)
+    }
+  }, [userSettings, setSettings])
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <SidebarProvider defaultOpen={false}>
-        <AppSidebar />
-        <main className="flex h-screen w-[calc(100svw-var(--sidebar-width-icon))] flex-1">
-          <Outlet />
-          <Toaster />
-        </main>
-      </SidebarProvider>
-    </QueryClientProvider>
+    <SidebarProvider defaultOpen={false}>
+      <AppSidebar />
+      <main className="flex h-screen w-[calc(100svw-var(--sidebar-width-icon))] flex-1">
+        <Outlet />
+        <Toaster />
+      </main>
+    </SidebarProvider>
   )
 }
 

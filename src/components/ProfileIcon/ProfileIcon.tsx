@@ -4,7 +4,6 @@ import { UserIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 import useAuth from '@/hooks/useAuth'
-import { useIsMobile } from '@/hooks/useMobile'
 import { auth } from '@/lib/firebase'
 
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
@@ -13,7 +12,6 @@ import { Popover, PopoverHeader, PopoverTrigger } from '../ui/popover'
 
 const ProfileIcon = () => {
   const { user } = useAuth()
-  const isMobile = useIsMobile()
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
@@ -25,14 +23,19 @@ const ProfileIcon = () => {
 
   return (
     <PopoverTrigger>
-      <Button variant="ghost" size="icon">
+      <Button
+        variant="ghost"
+        size="icon"
+        aria-label="Account"
+        className="size-4 shrink-0 rounded-full p-0 hover:bg-transparent [&_svg]:size-4!"
+      >
         {user ? (
-          <Avatar size={isMobile ? 'lg' : 'sm'}>
+          <Avatar size="default" className="size-4">
             <AvatarImage src={user?.photoURL || ''} alt="Profile" />
             <AvatarFallback>{user?.displayName?.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
         ) : (
-          <UserIcon size={24} />
+          <UserIcon size={16} className="size-4 shrink-0" />
         )}
       </Button>
       {user ? (

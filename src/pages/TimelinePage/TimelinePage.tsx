@@ -1,6 +1,6 @@
 import { differenceInDays, format } from 'date-fns'
 import { ReactLenis } from 'lenis/react'
-import { ChevronRightIcon, PlusIcon } from 'lucide-react'
+import { CalendarClockIcon, PlusIcon } from 'lucide-react'
 import { useMemo } from 'react'
 
 import { useGetMovies } from '@/api/apiFirebase'
@@ -37,13 +37,15 @@ const TimelinePageContent = () => {
     if (!data) {
       return []
     }
-    return data.sort((a, b) =>
-      a.date === ''
-        ? 1
-        : b.date === ''
-          ? -1
-          : new Date(a.date).getTime() - new Date(b.date).getTime(),
-    )
+    return data
+      .filter(m => !m.watched)
+      .sort((a, b) =>
+        a.date === ''
+          ? 1
+          : b.date === ''
+            ? -1
+            : new Date(a.date).getTime() - new Date(b.date).getTime(),
+      )
   }, [data])
 
   const firstUnreleasedMovieIndex = useMemo(
@@ -105,10 +107,13 @@ const TimelinePageContent = () => {
 
   // useEffect(() => {
   //   console.log('trigger')
-  //   if (!data) return
+  //   if (!movies || firstUnreleasedMovieIndex === undefined) return
   //   console.log('trigger passed')
-  //   scrollToCard(firstUnreleasedMovieIndex)
-  // }, [data, firstUnreleasedMovieIndex, scrollToCard])
+  //   scrollToCard(movies.length - 1, { immediate: true })
+  //   // new Promise(resolve => setTimeout(resolve, 100)).then(() => {
+  //   // scrollToCard(firstUnreleasedMovieIndex)
+  //   // })
+  // }, [movies, firstUnreleasedMovieIndex])
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
@@ -141,10 +146,10 @@ const TimelinePageContent = () => {
           firstUnreleasedMovieIndex={firstUnreleasedMovieIndex}
         />
       </ReactLenis>
-      <footer className="flex  gap-6 p-window">
+      <footer className="flex gap-6 p-window">
         <div className="flex gap-2">
           <Button size={'icon'} className="" variant={'default'} onPress={handleScrollToFirstMovie}>
-            <ChevronRightIcon className="text-primary-foreground" />
+            <CalendarClockIcon className="text-primary-foreground" />
           </Button>
           <Button
             size={'icon'}
@@ -172,8 +177,8 @@ const TimelinePageContent = () => {
                 [
                 {`in 
                 ${differenceInDays(new Date(movies[firstUnreleasedMovieIndex].date), currentDate)
-                    .toString()
-                    .padStart(2, '0')}
+                  .toString()
+                  .padStart(2, '0')}
                 days`}
                 ]
               </span>

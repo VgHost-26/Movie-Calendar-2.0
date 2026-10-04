@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
 import ReactLenis from 'lenis/react'
-import { ChevronDownIcon, ChevronLeftIcon } from 'lucide-react'
+import { CheckIcon, ChevronDownIcon, ChevronLeftIcon, EyeOffIcon } from 'lucide-react'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -11,17 +11,18 @@ import type { Movie, MovieFormData } from '@/Types/types'
 
 import { useDeleteMovie, useUpdateMovie } from '@/api/apiFirebase'
 import { getPosterUrl, useSearchMultiMutation } from '@/api/apiTMDB'
-import { PLATFORMS, PLATFORMS_ICONS } from '@/global/globals'
+import { useAnimatedCardExit } from '@/hooks/useAnimatedCardExit'
 import { movieSchema } from '@/schemas/zotSchemas'
 import { useTimelineStore } from '@/stores/timelineStore'
+import { isReleased } from '@/utils/movieFunctions'
 
 import { AspectRatio } from '../ui/aspect-ratio'
 import { Button } from '../ui/button'
 import DatePicker from '../ui/date-picker'
 import { AlertDeleteButton } from '../ui/delete-button'
 import { Field, FieldLabel, FieldLegend, FieldSet } from '../ui/field'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Tooltip, TooltipTrigger } from '../ui/tooltip'
+import PlatformPicker from '../utils/PlatformPicker'
 
 type Props = {
   isOpen: boolean
@@ -34,11 +35,12 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
 
   const [morePostersOpen, setMorePostersOpen] = useState(false)
   const [morePosters, setMorePosters] = useState<TMDBMulti[]>([])
-  const [selectedDate, setSelectedDate] = useState(date)
   const clearFocusedCardId = useTimelineStore(state => state.clearFocusedCardId)
 
   const { deleteMovie } = useDeleteMovie()
-  const { updateMovie } = useUpdateMovie()
+  const { updateMovie, isLoading: isUpdating } = useUpdateMovie()
+  const { leavingCardIds, removeWithExit } = useAnimatedCardExit()
+  const isLeaving = leavingCardIds.includes(movieData.id)
   const { mutateAsync: searchMulti } = useSearchMultiMutation()
   const { reset, setValue, register, handleSubmit, control, watch } = useForm<MovieFormData>({
     resolver: zodResolver(movieSchema),
@@ -65,13 +67,30 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
     updateMovie(movieData.id, data)
   }
 
-  const handleDelete = () => {
-    deleteMovie(movieData.id)
-    onOpenChange(false)
-    toast.success('Movie deleted successfully!')
+  const handleDelete = async () => {
+    try {
+      await removeWithExit(movieData.id, () => deleteMovie(movieData.id))
+      toast.success('Movie deleted successfully!')
+    } catch {
+      //TODO error toast is handled inside deleteMovie, card springs back into place
+    }
   }
 
-  // TODO: mut this to api or something
+  const isWatched = !!movieData.watched
+  const canToggleWatched = isWatched || isReleased(movieData.date)
+
+  const handleToggleWatched = async () => {
+    onOpenChange(false)
+    clearFocusedCardId()
+    try {
+      await removeWithExit(movieData.id, () => updateMovie(movieData.id, { watched: !isWatched }))
+      toast.success(!isWatched ? 'Marked as watched!' : 'Moved back to timeline!')
+    } catch {
+      // error toast is handled inside updateMovie
+    }
+  }
+
+  // TODO: put this to api or something
   const handleSearchPoster = async () => {
     const title = watch('title').trim()
 
@@ -151,13 +170,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                     name="date"
                     control={control}
                     render={({ field }) => (
-                      <DatePicker
-                        selectedDate={selectedDate}
-                        onDateChange={date => {
-                          console.log(date)
-                          field.onChange(date)
-                        }}
-                      />
+                      <DatePicker value={field.value ?? ''} onChange={field.onChange} />
                     )}
                   />
                 </Field>
@@ -166,30 +179,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                   <Controller
                     name="platform"
                     control={control}
-                    render={({ field }) => (
-                      <Select
-                        placeholder="Select platform"
-                        id="platform"
-                        value={field.value}
-                        onChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {PLATFORMS.map(platform => (
-                            <SelectItem id={platform} key={platform} value={platform}>
-                              <img
-                                src={PLATFORMS_ICONS[platform]}
-                                alt={`${platform} icon`}
-                                className="mr-2 size-4"
-                              />
-                              {platform}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
+                    render={({ field }) => <PlatformPicker field={field} />}
                   />
                 </Field>
               </div>
@@ -286,7 +276,23 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                   className="px-2 py-1"
                 />
               </Field>
-              <div className="flex justify-end gap-4">
+              <div className="flex flex-wrap justify-end gap-4">
+                {canToggleWatched && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onPress={handleToggleWatched}
+                    isDisabled={isUpdating || isLeaving}
+                    className="mr-auto"
+                  >
+                    {isWatched ? (
+                      <EyeOffIcon data-icon="inline-start" />
+                    ) : (
+                      <CheckIcon data-icon="inline-start" />
+                    )}
+                    {isWatched ? 'Unwatch' : 'Watched'}
+                  </Button>
+                )}
                 <AlertDeleteButton
                   title="Delete Movie"
                   description="Are you sure you want to delete this movie?"

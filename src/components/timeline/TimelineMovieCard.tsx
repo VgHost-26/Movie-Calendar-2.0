@@ -11,6 +11,7 @@ import { isReleased } from '@/utils/movieFunctions'
 
 import { AspectRatio } from '../ui/aspect-ratio'
 import TimelineMovieEditor from './TimelineMovieEditor'
+import WatchedButton from './WatchedButton'
 
 type Props = {
   movie: Movie
@@ -88,6 +89,7 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
         className="z-50 h-full cursor-pointer"
       >
         <img
+          loading="lazy"
           src={posterToDisplay}
           // alt={movie.title}
           className={`h-full w-full object-cover ${isReleased(movie.date) ? '' : 'grayscale'}`}
@@ -95,12 +97,16 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
         <div className="absolute inset-0 flex flex-1 flex-col justify-between bg-linear-0 from-black/80 from-0% to-transparent to-30% p-3">
           {/* Platform badge */}
           <div className="ml-auto flex">
-            <img
-              title={movie.platform}
-              src={PLATFORMS_ICONS[movie.platform]}
-              alt={movie.platform}
-              className="h-10 w-10 bg-accent p-1.5"
-            />
+            <div className="flex flex-col gap-2">
+              <img
+                title={movie.platform}
+                src={PLATFORMS_ICONS[movie.platform]}
+                alt={movie.platform}
+                className="h-10 w-10 bg-accent p-1.5"
+              />
+              {/* TODO: fix that 1px inconsistent size */}
+              <WatchedButton className="h-10 w-10 grow" movie={movie} />
+            </div>
           </div>
           <div className="flex items-end justify-between gap-10">
             <div>

@@ -13,25 +13,27 @@ import LoginPage from './pages/LoginPage/LoginPage.tsx'
 import SettingsPage from './pages/SettingsPage/SettingsPage.tsx'
 import SignupPage from './pages/SignupPage/SignupPage.tsx'
 import TimelinePage from './pages/TimelinePage/TimelinePage.tsx'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import ArchivePage from './pages/ArchivePage/ArchivePage.tsx'
 
 function getCurrentUser(): Promise<typeof auth.currentUser> {
-  return new Promise((resolve) => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      unsubscribe();
-      resolve(user);
-    });
-  });
+  return new Promise(resolve => {
+    const unsubscribe = onAuthStateChanged(auth, user => {
+      unsubscribe()
+      resolve(user)
+    })
+  })
 }
 
 const authLoader = async () => {
-  const user = await getCurrentUser();
+  const user = await getCurrentUser()
   if (user) {
     return redirect('/timeline')
   }
   return null
 }
 const accountLoader = async (noAccount: boolean = false) => {
-  const user = await getCurrentUser();
+  const user = await getCurrentUser()
   if (!user && noAccount) {
     return redirect('/login?missingAccount=true')
   }
@@ -50,27 +52,32 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <TimelinePage />,
-        loader: () => accountLoader(true)
+        loader: () => accountLoader(true),
       },
       {
         path: 'timeline',
         element: <TimelinePage />,
-        loader: () => accountLoader(true)
+        loader: () => accountLoader(true),
       },
       {
         path: 'calendar',
         element: <CalendarPage />,
-        loader: () => accountLoader(true)
+        loader: () => accountLoader(true),
+      },
+      {
+        path: 'archive',
+        element: <ArchivePage />,
+        loader: () => accountLoader(true),
       },
       {
         path: 'login',
         loader: authLoader,
-        element: <LoginPage />
+        element: <LoginPage />,
       },
       {
         path: 'signup',
         loader: authLoader,
-        element: <SignupPage />
+        element: <SignupPage />,
       },
       {
         path: 'settings',
@@ -80,13 +87,16 @@ const router = createBrowserRouter([
         path: 'account',
         loader: () => accountLoader(false),
         // element: <AccountPage />,
-      }
+      },
     ],
   },
 ])
+const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   </StrictMode>,
 )
