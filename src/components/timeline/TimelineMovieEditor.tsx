@@ -37,6 +37,8 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
   const [morePosters, setMorePosters] = useState<TMDBMulti[]>([])
   const clearFocusedCardId = useTimelineStore(state => state.clearFocusedCardId)
 
+  const cardWidth = useTimelineStore(state => state.cardWidth)
+
   const { deleteMovie } = useDeleteMovie()
   const { updateMovie, isLoading: isUpdating } = useUpdateMovie()
   const { leavingCardIds, removeWithExit } = useAnimatedCardExit()
@@ -129,21 +131,26 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
     setPosterPreview(posterUrl)
     // setMorePostersOpen(false)
   }
+  console.log(cardWidth)
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ translateX: '-100%', marginRight: 'calc(var(--width-timeline-card) * -1)' }}
+          // TODO: after fixing sidebar there is something wrong heere (temporary fix with -50px offset)
+          initial={{ translateX: '-100%', marginRight: `${(cardWidth - 50) * -1}px` }}
 
           animate={{ translateX: 0, marginRight: '0' }}
 
-          exit={{ translateX: '-100%', marginRight: 'calc(var(--width-timeline-card) * -1)' }}
+          exit={{ translateX: '-100%', marginRight: `${(cardWidth - 50) * -1}px` }}
           transition={{ duration: 0.4, ease: 'easeInOut' }}
 
-          className={`scrollbar-hide z-10 h-full w-timeline-card max-w-window-no-sidebar-icon-no-card-with-padding overflow-y-auto bg-background`}
+          className={`scrollbar-hide z-10 h-full w-[${cardWidth}px] max-w-window-no-sidebar-icon-no-card-with-padding overflow-y-auto bg-background`}
         >
-          <form onSubmit={handleSubmit(onSubmit)} className="flex w-full flex-col gap-4 p-4">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex w-timeline-card max-w-window-no-sidebar-icon-no-card-with-padding shrink-0 flex-col gap-4 p-4"
+          >
             <FieldSet>
               <FieldLegend className="flex items-center gap-2">
                 <Button size="icon-xs" type="button" variant="secondary" onPress={handleCancel}>

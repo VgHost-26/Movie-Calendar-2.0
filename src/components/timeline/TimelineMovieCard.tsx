@@ -62,21 +62,6 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
     }
   }, [focusedCardId, isEditOpen, movie.id])
 
-  // useEffect(() => {
-  //   if (!isMobile) return
-  //   scrollToCard(activeCardIndex)
-  // // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [activeCardIndex, isMobile])
-
-  // useEffect(() => {
-  //   // TODO: fix thiss so it will not scroll too far when both are oppen and one will close and move the scroll position
-  //   // if (focusedCardId !== movie.id) {
-  //   //   setIsEditOpen(false)
-  //   // } else {
-  //   //   setIsEditOpen(true)
-  //   //   scrollToCard(index)
-  //   // }
-  // }, [focusedCardId, isEditOpen])
 
   return (
     <div className="flex h-full">
