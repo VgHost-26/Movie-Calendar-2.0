@@ -11,7 +11,6 @@ import type { Movie, MovieFormData } from '@/Types/types'
 
 import { useDeleteMovie, useUpdateMovie } from '@/api/apiFirebase'
 import { getPosterUrl, useSearchMultiMutation } from '@/api/apiTMDB'
-import { PLATFORMS, PLATFORMS_ICONS } from '@/global/globals'
 import { movieSchema } from '@/schemas/zotSchemas'
 import { useTimelineStore } from '@/stores/timelineStore'
 
@@ -20,8 +19,8 @@ import { Button } from '../ui/button'
 import DatePicker from '../ui/date-picker'
 import { AlertDeleteButton } from '../ui/delete-button'
 import { Field, FieldLabel, FieldLegend, FieldSet } from '../ui/field'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Tooltip, TooltipTrigger } from '../ui/tooltip'
+import PlatformPicker from '../utils/PlatformPicker'
 
 type Props = {
   isOpen: boolean
@@ -166,30 +165,7 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
                   <Controller
                     name="platform"
                     control={control}
-                    render={({ field }) => (
-                      <Select
-                        placeholder="Select platform"
-                        id="platform"
-                        value={field.value}
-                        onChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {PLATFORMS.map(platform => (
-                            <SelectItem id={platform} key={platform} value={platform}>
-                              <img
-                                src={PLATFORMS_ICONS[platform]}
-                                alt={`${platform} icon`}
-                                className="mr-2 size-4"
-                              />
-                              {platform}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
+                    render={({ field }) => <PlatformPicker field={field} />}
                   />
                 </Field>
               </div>
