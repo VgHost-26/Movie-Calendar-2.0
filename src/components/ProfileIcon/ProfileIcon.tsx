@@ -27,15 +27,15 @@ const ProfileIcon = () => {
         variant="ghost"
         size="icon"
         aria-label="Account"
-        className="size-5 shrink-0 rounded-full p-0 hover:bg-transparent [&_svg]:size-5!"
+        className="size-4 shrink-0 rounded-full p-0 hover:bg-transparent [&_svg]:size-4!"
       >
         {user ? (
-          <Avatar size="default" className="size-5">
+          <Avatar size="default" className="size-4">
             <AvatarImage src={user?.photoURL || ''} alt="Profile" />
             <AvatarFallback>{user?.displayName?.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
         ) : (
-          <UserIcon size={20} className="size-5 shrink-0" />
+          <UserIcon size={16} className="size-4 shrink-0" />
         )}
       </Button>
       {user ? (
