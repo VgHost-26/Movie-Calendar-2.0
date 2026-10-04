@@ -14,6 +14,7 @@ import SettingsPage from './pages/SettingsPage/SettingsPage.tsx'
 import SignupPage from './pages/SignupPage/SignupPage.tsx'
 import TimelinePage from './pages/TimelinePage/TimelinePage.tsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import ArchivePage from './pages/ArchivePage/ArchivePage.tsx'
 
 function getCurrentUser(): Promise<typeof auth.currentUser> {
   return new Promise(resolve => {
@@ -61,6 +62,11 @@ const router = createBrowserRouter([
       {
         path: 'calendar',
         element: <CalendarPage />,
+        loader: () => accountLoader(true),
+      },
+      {
+        path: 'archive',
+        element: <ArchivePage />,
         loader: () => accountLoader(true),
       },
       {

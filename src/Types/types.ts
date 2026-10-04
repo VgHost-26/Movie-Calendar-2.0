@@ -24,6 +24,7 @@ export interface Movie {
   trailerURL?: string
   TMDBId?: number
   YoutubeId?: string
+  watched?: boolean
 }
 
 
