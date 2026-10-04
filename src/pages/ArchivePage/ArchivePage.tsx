@@ -33,14 +33,10 @@ const ArchivePage = () => {
       <div className="flex items-end p-window pb-1">
         <h1 className="flex w-full items-end gap-6 text-8xl font-bold uppercase md:text-9xl">
           <TextTransition>Archive</TextTransition>
-          <span className="pb-3 text-2xl font-medium text-muted-foreground normal-case">
-            {movies.length > 0 &&
-              `${movies.length} watched ${movies.length === 1 ? 'movie' : 'movies'}`}
-          </span>
         </h1>
       </div>
       {isEmpty ? (
-        <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
+        <div className="flex w-dvw flex-1 flex-col items-center justify-center gap-4 text-center">
           <ArchiveIcon className="size-12 text-muted-foreground" />
           <h2 className="text-2xl font-bold">No watched movies yet</h2>
           <p className="max-w-md text-muted-foreground">
@@ -57,9 +53,9 @@ const ArchivePage = () => {
         </div>
       )}
       <footer className="flex gap-6 p-window">
-        <div className="hidden items-end text-muted-foreground md:flex">
+        {/* <div className="hidden items-end text-muted-foreground md:flex">
           <p>Watched movies are hidden from the timeline. Unwatch a movie to move it back.</p>
-        </div>
+        </div> */}
         <div className="flex items-center justify-center md:hidden">
           <ProfileIcon />
         </div>

@@ -11,20 +11,14 @@ import posterPlaceholder from '@/assets/images/poster-placeholder.png'
 import { Button } from '@/components/ui/button'
 import DatePicker from '@/components/ui/date-picker'
 import { Field, FieldLabel } from '@/components/ui/field'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { PLATFORMS, PLATFORMS_ICONS } from '@/global/globals'
+import { PLATFORMS_ICONS } from '@/global/globals'
 import { useAnimatedCardExit } from '@/hooks/useAnimatedCardExit'
 import { movieSchema } from '@/schemas/zotSchemas'
 import { formatMovieDateLabel, getReleaseYear, parseMovieDate } from '@/utils/movieDate'
 
 import WatchedButton from '../timeline/WatchedButton'
 import { AspectRatio } from '../ui/aspect-ratio'
+import PlatformPicker from '../utils/PlatformPicker'
 
 type Props = {
   movie: Movie
@@ -38,8 +32,10 @@ const ArchiveMovieCard = ({ movie }: Props) => {
   return (
     <AspectRatio
       ratio={2 / 3}
-      className={`group overflow-hidden bg-card ${isFlipped ? '' : 'cursor-pointer transition-transform duration-200 hover:scale-[1.03] hover:shadow-xl'}`}
-      onClick={isFlipped ? undefined : () => setIsFlipped(true)}
+      className={`group overflow-hidden bg-card`}
+      //   className={`group overflow-hidden bg-card ${isFlipped ? '' : 'cursor-pointer transition-transform duration-200 hover:scale-[1.03] hover:shadow-xl'}`}
+      //   onClick={isFlipped ? undefined : () => setIsFlipped(true)}
+      //   Disable for now, maybe I will bring it later
     >
       {isFlipped ? (
         <ArchiveMovieBack movie={movie} onClose={() => setIsFlipped(false)} />
@@ -53,23 +49,25 @@ const ArchiveMovieCard = ({ movie }: Props) => {
           />
           <div className="absolute inset-0 flex flex-1 flex-col justify-between bg-linear-0 from-black/80 from-0% to-transparent to-35% p-2">
             {/* Top badges row */}
-            <div className="flex items-start justify-between gap-1">
-              <WatchedButton movie={movie} />
-              <img
-                title={movie.platform}
-                src={PLATFORMS_ICONS[movie.platform]}
-                alt={movie.platform}
-                className="ml-auto size-6 shrink-0 bg-accent p-1"
-              />
+            <div className="flex items-center justify-end">
+              <div className="flex flex-col gap-1">
+                <img
+                  title={movie.platform}
+                  src={PLATFORMS_ICONS[movie.platform]}
+                  alt={movie.platform}
+                  className="size-6 shrink-0 bg-accent p-1"
+                />
+                <WatchedButton className="" movie={movie} />
+              </div>
             </div>
             <div className="flex flex-col gap-1">
               {/* Reserved slot for future use (e.g. scoring, "watched at" date).
                   Intentionally empty — keeps spacing stable once filled. */}
               <div data-archive-meta-reserved className="min-h-5" />
+              {releaseYear && <p className="text-xs font-medium text-white/70">{releaseYear}</p>}
               <h2 className="line-clamp-2 text-base leading-tight font-semibold text-white">
                 {movie.title}
               </h2>
-              {releaseYear && <p className="text-xs font-medium text-white/70">{releaseYear}</p>}
             </div>
           </div>
         </>
@@ -83,11 +81,6 @@ type BackProps = {
   onClose: () => void
 }
 
-/**
- * Reverse side of the card, rendered in place of the front (same grid cell,
- * no animation): greyed-out poster as background, details + compact editor
- * on top of it.
- */
 const ArchiveMovieBack = ({ movie, onClose }: BackProps) => {
   const [confirmingDelete, setConfirmingDelete] = useState(false)
 
@@ -164,7 +157,7 @@ const ArchiveMovieBack = ({ movie, onClose }: BackProps) => {
         src={posterField || movie.poster || posterPlaceholder}
         alt=""
         aria-hidden
-        className="absolute inset-0 h-full w-full object-cover opacity-25 grayscale"
+        className="absolute inset-0 h-full w-full object-cover opacity-25 blur grayscale"
       />
       <div className="scrollbar-hide relative flex h-full flex-col gap-2 overflow-y-auto bg-black/40 p-2">
         <div className="flex items-center justify-between gap-1">
@@ -215,42 +208,30 @@ const ArchiveMovieBack = ({ movie, onClose }: BackProps) => {
               className="w-full bg-background/90 px-1.5 py-1 text-xs text-foreground"
             />
           </Field>
-          <Field>
-            <FieldLabel>Date</FieldLabel>
-            {/* DatePicker trigger is fixed w-[212px]; force it to the card width.
+          <div className="grid grid-cols-2 gap-1">
+            <Field>
+              <FieldLabel>Date</FieldLabel>
+              {/* DatePicker trigger is fixed w-[212px]; force it to the card width.
                 The calendar popover itself portals to body, so it stays usable. */}
-            <div className="[&_[data-slot=button]]:w-full">
+              <div className="**:data-[slot=button]:w-full">
+                <Controller
+                  name="date"
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker value={field.value ?? ''} onChange={field.onChange} />
+                  )}
+                />
+              </div>
+            </Field>
+            <Field>
+              <FieldLabel>Platform</FieldLabel>
               <Controller
-                name="date"
+                name="platform"
                 control={control}
-                render={({ field }) => (
-                  <DatePicker value={field.value ?? ''} onChange={field.onChange} />
-                )}
+                render={({ field }) => <PlatformPicker field={field} />}
               />
-            </div>
-          </Field>
-          <Field>
-            <FieldLabel>Platform</FieldLabel>
-            <Controller
-              name="platform"
-              control={control}
-              render={({ field }) => (
-                <Select placeholder="Select platform" value={field.value} onChange={field.onChange}>
-                  <SelectTrigger size="sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PLATFORMS.map(p => (
-                      <SelectItem id={p} key={p} value={p}>
-                        <img src={PLATFORMS_ICONS[p]} alt={`${p} icon`} className="mr-2 size-4" />
-                        {p}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </Field>
+            </Field>
+          </div>
           <Field>
             <FieldLabel htmlFor={`archive-poster-${movie.id}`}>Poster URL</FieldLabel>
             <input
