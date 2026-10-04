@@ -104,7 +104,8 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
                 alt={movie.platform}
                 className="h-10 w-10 bg-accent p-1.5"
               />
-              <WatchedButton movie={movie} />
+              {/* TODO: fix that 1px inconsistent size */}
+              <WatchedButton className="h-10 w-10 grow" movie={movie} />
             </div>
           </div>
           <div className="flex items-end justify-between gap-10">

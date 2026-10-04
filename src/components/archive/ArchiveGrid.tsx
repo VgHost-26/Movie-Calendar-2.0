@@ -20,8 +20,7 @@ const SKELETON_COUNT = 12
 const ArchiveGrid = ({ movies, isPending = false, isLoading = false }: Props) => {
   const { leavingCardIds, removeLeavingCardId, clearLeavingCardIds } = useAnimatedCardExit()
 
-  // The exit marker outlives the DB commit (query refetch delay); drop it once
-  // the id is actually gone from this list.
+  // The exit marker outlives the DB commit (query refetch delay); drop it once the id is actually gone from this list.
   useEffect(() => {
     if (leavingCardIds.length === 0) return
     const ids = new Set(movies.map(m => m.id))
@@ -35,7 +34,7 @@ const ArchiveGrid = ({ movies, isPending = false, isLoading = false }: Props) =>
     return (
       <div className="grid flex-1 grid-cols-2 gap-3 overflow-y-auto p-window pt-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
-          <Skeleton key={i} className="aspect-[2/3] w-full" />
+          <Skeleton key={i} className="aspect-2/3 w-full" />
         ))}
       </div>
     )

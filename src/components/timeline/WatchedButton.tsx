@@ -62,10 +62,9 @@ const WatchedButton = ({ movie, onToggled, className }: Props) => {
           aria-label={
             watched ? `Mark ${movie.title} as unwatched` : `Mark ${movie.title} as watched`
           }
-          className="bg-accent text-foreground hover:text-primary"
+          className="h-full w-full bg-accent text-foreground hover:text-primary"
         >
           {watched ? <EyeOffIcon data-icon="inline-start" /> : <EyeIcon data-icon="inline-start" />}
-          {/* {watched ? 'Watched' : 'Watched?'} */}
         </Button>
       </span>
     </TooltipTrigger>
