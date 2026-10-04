@@ -84,7 +84,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
                 <FieldErrorMessage fieldError={errors.password} />
               </Field>
               <Field>
-                <Button type="submit" >Login</Button>
+                <Button type="submit">Login</Button>
                 <Button variant="outline" type="button" onClick={handleLoginWithGoogle}>
                   Login with Google
                 </Button>

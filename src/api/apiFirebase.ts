@@ -31,12 +31,12 @@ const fetchMovies = async (userId: string) => {
 }
 
 // TODO: add listener
-export function useGetMovies(userId: string): UseQueryResult<Movie[]> {
+export function useGetMovies(userId: string, opts?: { enabled?: boolean }): UseQueryResult<Movie[]> {
   return useQuery({
     queryKey: ['movies', userId],
     queryFn: () => fetchMovies(userId),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: !!userId,
+    enabled: !!userId && (opts?.enabled ?? true),
     placeholderData: keepPreviousData,
   })
 }

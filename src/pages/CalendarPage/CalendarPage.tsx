@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from 'react'
 
 import type { Movie, ScrollDirection } from '@/Types/types'
 
-import { useGetMovies } from '@/api/apiFirebase'
+import { useGetMovies } from '@/api/apiMovies'
 import CalendarCard from '@/components/calendar/CalendarCard'
+import DemoBanner from '@/components/demo/DemoBanner'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import TextTransition from '@/components/ui/TextTransition'
@@ -63,6 +64,7 @@ const CalendarPage = () => {
 
   return (
     <div className="flex flex-1 flex-col items-start gap-4 p-4">
+      <DemoBanner className="w-full" />
       <div className="flex w-full items-end justify-between">
         <div className="flex flex-1 flex-col">
           {/* <h5 className="text-5xl font-bold text-primary">

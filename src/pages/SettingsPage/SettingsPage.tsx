@@ -20,6 +20,7 @@ import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip'
 import { LANGUAGES, PLATFORMS, PLATFORMS_ICONS, POSTER_LANGUAGES } from '@/global/globals'
 import useAuth from '@/hooks/useAuth'
 import { auth } from '@/lib/firebase'
+import { useDemoStore } from '@/stores/demoStore'
 import { useSettingsStore } from '@/stores/settingsStore'
 
 const SettingsPage = () => {
@@ -65,6 +66,11 @@ const SettingsPage = () => {
   }
 
   const handleLogout = async () => {
+    if (useDemoStore.getState().isDemoMode) {
+      useDemoStore.getState().exitDemo()
+      queryClient.clear()
+      return
+    }
     await signOut(auth)
     queryClient.clear()
   }

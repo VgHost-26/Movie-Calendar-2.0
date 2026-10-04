@@ -3,8 +3,9 @@ import { ReactLenis } from 'lenis/react'
 import { CalendarClockIcon, PlusIcon } from 'lucide-react'
 import { useMemo } from 'react'
 
-import { useGetMovies } from '@/api/apiFirebase'
+import { useGetMovies } from '@/api/apiMovies'
 import AddMovieDialog from '@/components/calendar/AddMovieDialog'
+import DemoBanner from '@/components/demo/DemoBanner'
 import ProfileIcon from '@/components/ProfileIcon/ProfileIcon'
 import { TimelineContextProvider } from '@/components/providers/TimelineContext'
 import TimelineContent from '@/components/timeline/TimelineContent'
@@ -117,6 +118,7 @@ const TimelinePageContent = () => {
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
+      <DemoBanner />
       <div className="flex items-end p-window pb-1">
         <h1 className="flex w-full gap-10 text-8xl font-bold uppercase md:text-9xl">
           <TextTransition direction={scrollDirection}>{activeCardMonth}</TextTransition>

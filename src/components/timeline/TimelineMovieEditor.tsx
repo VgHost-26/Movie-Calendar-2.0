@@ -9,7 +9,7 @@ import { toast } from 'sonner'
 import type { TMDBMovie, TMDBMulti } from '@/Types/tmdbTypes'
 import type { Movie, MovieFormData } from '@/Types/types'
 
-import { useDeleteMovie, useUpdateMovie } from '@/api/apiFirebase'
+import { useDeleteMovie, useUpdateMovie } from '@/api/apiMovies'
 import { getPosterUrl, useSearchMultiMutation } from '@/api/apiTMDB'
 import { useAnimatedCardExit } from '@/hooks/useAnimatedCardExit'
 import { movieSchema } from '@/schemas/zotSchemas'
@@ -115,7 +115,9 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
       }
     } catch (error) {
       console.error('Error searching for poster:', error)
-      toast.error('Failed to search for poster. Please try again.')
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to search for poster. Please try again.',
+      )
     }
   }
 
@@ -131,18 +133,17 @@ const TimelineMovieEditor = ({ isOpen, onOpenChange, movieData, setPosterPreview
     setPosterPreview(posterUrl)
     // setMorePostersOpen(false)
   }
-  console.log(cardWidth)
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          // TODO: after fixing sidebar there is something wrong heere (temporary fix with -50px offset)
-          initial={{ translateX: '-100%', marginRight: `${(cardWidth - 50) * -1}px` }}
+          // TODO: after fixing sidebar there is something wrong heere, or maybe something else broke it, anyway it works on FHD displays, fix required for 4k
+          initial={{ translateX: '-100%', marginRight: `${cardWidth * -1}px` }}
 
           animate={{ translateX: 0, marginRight: '0' }}
 
-          exit={{ translateX: '-100%', marginRight: `${(cardWidth - 50) * -1}px` }}
+          exit={{ translateX: '-100%', marginRight: `${cardWidth * -1}px` }}
           transition={{ duration: 0.4, ease: 'easeInOut' }}
 
           className={`scrollbar-hide z-10 h-full w-[${cardWidth}px] max-w-window-no-sidebar-icon-no-card-with-padding overflow-y-auto bg-background`}

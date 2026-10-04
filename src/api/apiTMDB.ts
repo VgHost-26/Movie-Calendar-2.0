@@ -11,6 +11,8 @@ import type {
   TMDBSearchResponse,
 } from '@/Types/tmdbTypes'
 
+import { useDemoStore } from '@/stores/demoStore'
+
 const options = {
   method: 'GET',
   headers: {
@@ -21,8 +23,31 @@ const options = {
 
 const baseUrl = 'https://api.themoviedb.org/3'
 
+// --- Demo-mode guard: the demo is public (no account), so throttle TMDB
+// poster autodetect to avoid burning through the API quota. ---
+const DEMO_MIN_INTERVAL_MS = 2000
+const DEMO_MAX_SEARCHES_PER_SESSION = 30
+let demoSearchCount = 0
+let lastDemoSearchAt = 0
+
+const checkDemoRateLimit = (): void => {
+  if (!useDemoStore.getState().isDemoMode) {
+    return
+  }
+  const now = Date.now()
+  if (demoSearchCount >= DEMO_MAX_SEARCHES_PER_SESSION) {
+    throw new Error('Demo search limit reached — create a free account for unlimited poster search.')
+  }
+  if (now - lastDemoSearchAt < DEMO_MIN_INTERVAL_MS) {
+    throw new Error('Demo search is rate-limited — please wait a moment and try again.')
+  }
+  lastDemoSearchAt = now
+  demoSearchCount += 1
+}
+
 export const fetchMovie = async (title: string, year?: string): Promise<TMDBSearchResponse> => {
   console.log('Fetching TMDB movies...')
+  checkDemoRateLimit()
   try {
     const response = await fetch(
       `${baseUrl}/search/movie?query=${title}&include_adult=true&language=en-US&page=1` +
@@ -42,6 +67,7 @@ export const fetchMovie = async (title: string, year?: string): Promise<TMDBSear
 
 export const fetchMulti = async (query: string): Promise<TMDBMultiSearchResponse> => {
   console.log('Fetching TMDB multi search...')
+  checkDemoRateLimit()
   try {
     const response = await fetch(
       `${baseUrl}/search/multi?query=${query}&include_adult=true&language=en-US&page=1`,

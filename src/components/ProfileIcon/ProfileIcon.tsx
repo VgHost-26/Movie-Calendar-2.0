@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 import useAuth from '@/hooks/useAuth'
 import { auth } from '@/lib/firebase'
+import { useDemoStore } from '@/stores/demoStore'
 
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
@@ -16,6 +17,12 @@ const ProfileIcon = () => {
   const navigate = useNavigate()
 
   const handleLogout = async () => {
+    if (useDemoStore.getState().isDemoMode) {
+      useDemoStore.getState().exitDemo()
+      navigate('/login')
+      queryClient.clear()
+      return
+    }
     await signOut(auth)
     navigate('/calendar')
     queryClient.clear()
