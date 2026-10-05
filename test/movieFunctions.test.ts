@@ -1,0 +1,47 @@
+import { describe, expect, test } from 'vitest'
+import { isReleased } from '../src/utils/movieFunctions'
+import { addDays, format } from 'date-fns'
+
+describe('isReleased', () => {
+  test('Future', () => {
+    expect(isReleased('2200-12-31')).toBe(false)
+  })
+
+  test('Past', () => {
+    expect(isReleased('1999-01-01')).toBe(true)
+  })
+
+  test('Today', () => {
+    expect(isReleased(format(new Date(), 'yyyy-MM-dd'))).toBe(true)
+  })
+
+  test('Unspecified (Comming Soon)', () => {
+    expect(isReleased('')).toBe(false)
+  })
+
+  test('Partial dates (Future)', () => {
+    expect(isReleased('2999-00-00')).toBe(false)
+    expect(isReleased('2999-01-00')).toBe(false)
+    expect(isReleased('2999-10-31')).toBe(false)
+  })
+
+  test('Partial dates (Past)', () => {
+    expect(isReleased('1999-00-00')).toBe(true)
+    expect(isReleased('1999-01-00')).toBe(true)
+    expect(isReleased('1999-10-31')).toBe(true)
+  })
+
+  test('Invalid dates (Should fallback to future)', () => {
+    expect(isReleased('invalid-date')).toBe(false)
+    expect(isReleased('45-67-88')).toBe(false)
+    expect(isReleased('456788')).toBe(false)
+  })
+
+  test('Tomorrow', () => {
+    expect(isReleased(format(addDays(new Date(), 1), 'yyyy-MM-dd'))).toBe(false)
+  })
+
+  test('Yesterday', () => {
+    expect(isReleased(format(addDays(new Date(), -1), 'yyyy-MM-dd'))).toBe(true)
+  })
+})

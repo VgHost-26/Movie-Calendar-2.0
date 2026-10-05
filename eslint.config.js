@@ -6,9 +6,10 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 import unusedImports from 'eslint-plugin-unused-imports'
 import perfectionist from 'eslint-plugin-perfectionist'
+import vitest from 'eslint-plugin-vitest'
 
 export default defineConfig([
-  globalIgnores(['dist', 'node_modules', '.git']),
+  globalIgnores(['dist', 'node_modules', '.git', '.vitest', 'test/**']),
   {
     files: ['**/*.{ts,tsx}'],
     plugins: {
@@ -16,6 +17,7 @@ export default defineConfig([
       'react-refresh': reactRefresh,
       'unused-imports': unusedImports,
       'perfectionist': perfectionist,
+      'vitest': vitest,
     },
     extends: [
       js.configs.recommended,
