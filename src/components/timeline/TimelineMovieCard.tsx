@@ -7,7 +7,7 @@ import { useIsMobile } from '@/hooks/useMobile'
 import { useTimeline } from '@/hooks/useTimeline'
 import { useTimelineStore } from '@/stores/timelineStore'
 import { type Movie } from '@/Types/types'
-import { isReleased } from '@/utils/movieFunctions'
+import { countToRelease, isReleased } from '@/utils/movieFunctions'
 
 import { AspectRatio } from '../ui/aspect-ratio'
 import TimelineMovieEditor from './TimelineMovieEditor'
@@ -102,11 +102,8 @@ const TimelineMovieCard = ({ movie, firstUnreleasedMovieIndex, index }: Props) =
               ) : (
                 <div className="flex items-stretch gap-0.5">
                   <h1 className="number-trim flex items-center text-8xl font-bold text-white">
-                    {differenceInDays(new Date(movie.date), currentDate)
-                      .toString()
-                      .padStart(2, '0')}
+                      {countToRelease(movie.date)}
                   </h1>
-
                   <div className="flex items-center justify-center">
                     <span className="text-md rotate-180 font-heading leading-none text-primary [text-align-last:justify] [text-orientation:sideways] [writing-mode:vertical-rl]">
                       Days left

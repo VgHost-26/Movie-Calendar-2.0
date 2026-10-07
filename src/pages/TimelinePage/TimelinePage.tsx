@@ -15,7 +15,7 @@ import useAuth from '@/hooks/useAuth'
 import { useIsMobile } from '@/hooks/useMobile'
 import { useTimeline } from '@/hooks/useTimeline'
 import { useTimelineStore } from '@/stores/timelineStore'
-import { isReleased } from '@/utils/movieFunctions'
+import { countToRelease, isReleased } from '@/utils/movieFunctions'
 
 const currentDate = new Date()
 const TimelinePage = () => (
@@ -53,6 +53,9 @@ const TimelinePageContent = () => {
     () => movies.findIndex(m => !isReleased(m.date)),
     [movies],
   )
+  const firstMovieToBeReleased = useMemo(()=>{
+    return movies[firstUnreleasedMovieIndex]
+  },[firstUnreleasedMovieIndex, movies])
 
   // hold first element left offset (80px)
   // treat first unreleased as first one, or last released as first one
@@ -100,21 +103,6 @@ const TimelinePageContent = () => {
       </>
     )
   }, [focusedCardId, movies])
-
-  // Alternative laoder
-  /* <div className="flex h-full items-center justify-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-           </div> */
-
-  // useEffect(() => {
-  //   console.log('trigger')
-  //   if (!movies || firstUnreleasedMovieIndex === undefined) return
-  //   console.log('trigger passed')
-  //   scrollToCard(movies.length - 1, { immediate: true })
-  //   // new Promise(resolve => setTimeout(resolve, 100)).then(() => {
-  //   // scrollToCard(firstUnreleasedMovieIndex)
-  //   // })
-  // }, [movies, firstUnreleasedMovieIndex])
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
@@ -166,21 +154,19 @@ const TimelinePageContent = () => {
         <div className="hidden items-end text-muted-foreground md:flex">
           <p>
             Next release:{' '}
-            {movies[firstUnreleasedMovieIndex]?.title && (
+            {firstMovieToBeReleased?.title && (
               <span
                 className="text-primary hover:cursor-pointer hover:underline"
                 onClick={handleScrollToFirstMovie}
               >
-                {movies[firstUnreleasedMovieIndex]?.title}
+                {firstMovieToBeReleased?.title}
               </span>
             )}{' '}
-            {movies[firstUnreleasedMovieIndex]?.date && (
+            {firstMovieToBeReleased?.date && (
               <span>
                 [
                 {`in 
-                ${differenceInDays(new Date(movies[firstUnreleasedMovieIndex].date), currentDate)
-                  .toString()
-                  .padStart(2, '0')}
+                ${countToRelease(firstMovieToBeReleased.date)}
                 days`}
                 ]
               </span>
