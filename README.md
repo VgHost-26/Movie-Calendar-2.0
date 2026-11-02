@@ -4,7 +4,7 @@ A personal radar for upcoming movie premieres. A complete rebuild of my very fir
 
 **Live app:** https://movie-calendar-2-0.vercel.app
 
-> **For recruiters / reviewers — try it in 20 seconds, no sign-up needed:**
+> **Try it out without sign-up:**
 >
 > 1. Open the **live app** above
 > 2. Click **DEMO** in the top-right corner
